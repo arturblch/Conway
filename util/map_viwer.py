@@ -1,5 +1,6 @@
 import networkx as nx
 import matplotlib.pyplot as plt
+import numpy
 
 import json
 G = nx.Graph()
@@ -49,7 +50,7 @@ objects = Objects(json.loads('''{
             "player_id": "dcdfdf83-cbcf-4cec-8ad8-c919c7f6781d",
             "position": 10,
             "product": 0,
-            "speed": 0
+            "speed": 1
         }
     ]
 }'''))
@@ -215,14 +216,29 @@ nx.draw_networkx_labels(_map.Graph, _map.pos, font_color='w')
 nx.draw_networkx_edges(_map.Graph, _map.pos, width=1.0, edge_color="k")
 
 train_obj = objects.trains[0]
-line = _map.Graph.edges(train_obj['line_idx'])[0]
+line = _map.Graph.edges(train_obj['line_idx'], data =True)[0]
 
 print(line)
 
 (x1, y1) = _map.pos[line[0]]
 (x2, y2) = _map.pos[line[1]]
-train_pos = train_obj['position']/line['length']
-(x, y) = (x1 * train_pos + x2 * (1.0 - train_pos),
-y1 * train_pos + y2 * (1.0 - train_pos))
+train_pos = train_obj['position']/line[2]['length']
 
+
+(x, y) = (x2 * train_pos + x1 * (1.0 - train_pos),
+y2 * train_pos + y1 * (1.0 - train_pos))
+
+if train_obj['speed'] == 1:
+    angle = numpy.arctan2(y2-y1, x2-x1)/(2.0*numpy.pi)*360  # degrees
+elif train_obj['speed'] == -1:
+    angle = numpy.arctan2(y1-y2, x1-x2)/(2.0*numpy.pi)*360  # degrees
+else:
+    angle = None
+
+
+
+print('angel = ', angle)
+
+
+print(x, y)
 plt.show()

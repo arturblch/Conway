@@ -58,32 +58,47 @@ class GUI:
 
             text = pg.font.Font(None, 25).render(
                 str(label), False, POINT_LABEL_COLOR)
-            text_pos_x = int((self.display_width) * self.map.pos[v][0] + RADIUS - (text.get_width() / 2))
-            text_pos_y = int((self.display_height) * self.map.pos[v][1] + RADIUS- (text.get_height() / 2))
-            self.surf.blit(
-                text, (text_pos_x,text_pos_y))
+            text_pos_x = int((self.display_width) * self.map.pos[v][0] + RADIUS
+                             - (text.get_width() / 2))
+            text_pos_y = int((self.display_height) * self.map.pos[v][1] +
+                             RADIUS - (text.get_height() / 2))
+            self.surf.blit(text, (text_pos_x, text_pos_y))
 
     def draw_fps(self):
         self.surf.blit(
             pg.font.Font(None, 30).render(
-                str('fps : %.1f' % self.clock.get_fps()), False, (255, 255, 255)),
+                str('fps : %.1f' % self.clock.get_fps()), False,
+                (255, 255, 255)),
             (self.display_width - 60, self.display_height - 20))
 
     def draw_train(self):
-        train = pg.Surface((150, 200))
-        train.fill((0, 0, 0, 0))
-        pg.draw.polygon(train, (255,0,0), [[0, 0], [30, 60],[60, 0]], 2)
         train_obj = self.objects.trains[0]
+        if train_obj.line_idx == None:
+            return
+        train = pg.Surface((30, 30), pg.SRCALPHA)
+        pg.draw.polygon(train, (255, 0, 0), [[0, 0], [15, 30], [30, 0]], 2)
 
-        line = self.map.Graph.edge[train_obj.line_idx]
+        line = self.map.Graph.edges(train_obj.line_idx, data=True)[0]
 
         (x1, y1) = self.map.pos[line[0]]
         (x2, y2) = self.map.pos[line[1]]
-        train_pos = train.position/line['length']
-        (x, y) = (x1 * train_pos + x2 * (1.0 - train_pos),
-                  y1 * train_pos + y2 * (1.0 - train_pos))
+        train_pos = train_obj.position / line[2]['length']
+        (x, y) = (x2 * train_pos + x1 * (1.0 - train_pos),
+                  y2 * train_pos + y1 * (1.0 - train_pos))
 
+        if train_obj.speed == -1:
+            angle = numpy.arctan2(y2 - y1, x2 - x1) / (
+                2.0 * numpy.pi) * 360  # degrees
+        elif train_obj.speed == 1:
+            angle = numpy.arctan2(y1 - y2, x1 - x2) / (
+                2.0 * numpy.pi) * 360  # degrees
+        else:
+            angle = None
 
+        if angle:
+            train = pg.transform.rotate(train, angle)
+            self.surf.blit(train, (self.display_width * x + RADIUS-10,
+                                   self.display_height * y + RADIUS-10))
 
     def update(self):
         self.surf.blit(self.background, (0, 0))
@@ -101,7 +116,8 @@ class GUI:
         runner = Runner()
         done = False
         try:
-            status, start_data = runner.remote_process_client.login(runner.name)
+            status, start_data = runner.remote_process_client.login(
+                runner.name)
             self.map = runner.remote_process_client.read_map()
             self.objects = runner.remote_process_client.read_objects()
             strategy = Strategy(start_data)
@@ -109,7 +125,7 @@ class GUI:
                 runner.remote_process_client.update_objects(self.objects)
                 self.update()
 
-                moves = strategy.get_moves(self.objects, self.map_graph)
+                moves = strategy.get_moves(self.objects, self.map)
                 if moves:
                     for move in moves:
                         runner.remote_process_client.move(move)
@@ -122,12 +138,11 @@ class GUI:
                         if event.key == K_s:
                             done = True
 
-
                 pg.display.flip()
                 self.clock.tick(self.fps)
         finally:
-            client.remote_process_client.logout()
-            client.remote_process_client.close()
+            runner.remote_process_client.logout()
+            runner.remote_process_client.close()
             pg.quit()
 
 

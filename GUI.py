@@ -19,6 +19,7 @@ class GUI:
         self.display_width = self.width - 2 * RADIUS
         self.display_height = self.height - 2 * RADIUS
         self.map = None
+        self.objects = None
         self.screen = pg.display.set_mode((self.width, self.height))
         self.surf = pg.Surface((width, height))
         self.background = pg.image.load(BACKGROUND_IMAGE).convert_alpha()
@@ -68,6 +69,22 @@ class GUI:
                 str('fps : %.1f' % self.clock.get_fps()), False, (255, 255, 255)),
             (self.display_width - 60, self.display_height - 20))
 
+    def draw_train(self):
+        train = pg.Surface((150, 200))
+        train.fill((0, 0, 0, 0))
+        pg.draw.polygon(train, (255,0,0), [[0, 0], [30, 60],[60, 0]], 2)
+        train_obj = self.objects.trains[0]
+
+        line = self.map.Graph.edge[train_obj.line_idx]
+
+        (x1, y1) = self.map.pos[line[0]]
+        (x2, y2) = self.map.pos[line[1]]
+        train_pos = train.position/line['length']
+        (x, y) = (x1 * train_pos + x2 * (1.0 - train_pos),
+                  y1 * train_pos + y2 * (1.0 - train_pos))
+
+
+
     def update(self):
         self.surf.blit(self.background, (0, 0))
         self.draw_edges()
@@ -75,17 +92,28 @@ class GUI:
         self.draw_fps()
         self.draw_node_labels()
 
+        self.draw_train()
+
         self.screen.blit(self.surf, (0, 0))
         pg.display.update()
 
     def run(self):
-        client = Runner()
+        runner = Runner()
         done = False
         try:
-            status, start_data = client.remote_process_client.login(client.name)
-            self.map = client.remote_process_client.read_map()
+            status, start_data = runner.remote_process_client.login(runner.name)
+            self.map = runner.remote_process_client.read_map()
+            self.objects = runner.remote_process_client.read_objects()
+            strategy = Strategy(start_data)
             while not done:
+                runner.remote_process_client.update_objects(self.objects)
                 self.update()
+
+                moves = strategy.get_moves(self.objects, self.map_graph)
+                if moves:
+                    for move in moves:
+                        runner.remote_process_client.move(move)
+                runner.remote_process_client.turn()
 
                 for event in pg.event.get():
                     if event.type == pg.QUIT:

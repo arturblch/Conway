@@ -1,10 +1,29 @@
 import networkx as nx
 import matplotlib.pyplot as plt
+
 import json
 G = nx.Graph()
 
-world_responce = json.loads(
-'''{
+
+class Map:
+    def __init__(self, responce):
+        self.Graph = nx.Graph()
+        self.Graph.add_nodes_from([(point.pop('idx'), point)
+                                   for point in responce["point"]])
+        self.Graph.add_edges_from(
+            [line.pop('point') + [
+                line,
+            ] for line in responce["line"]])
+
+        self.pos = nx.spectral_layout(self.Graph, weight="length")
+
+
+class Objects:
+    def __init__(self, response):
+        self.trains = {train['idx']: train for train in response['train']}
+        self.posts = {post['idx']: post for post in response['post']}
+
+objects = Objects(json.loads('''{
     "idx": 1,
     "post": [
         {
@@ -33,10 +52,9 @@ world_responce = json.loads(
             "speed": 0
         }
     ]
-}''')
+}'''))
 
-game_responce = json.loads(
-'''{
+_map = Map(json.loads('''{
      "idx": 1,
      "line": [
          {
@@ -187,17 +205,24 @@ game_responce = json.loads(
              "post_id": null
          }
      ]
- }''')
+ }'''))
 
 
-G.add_nodes_from([(point.pop('idx'),point) for point in game_responce["point"]])
-G.add_edges_from([line.pop('point')+[line,] for line in game_responce["line"]])
 
-pos = nx.spectral_layout(G, weight="length")
-print(pos)
 
-nx.draw_networkx_nodes(G, pos, node_color='k')
-nx.draw_networkx_labels(G, pos, font_color='w')
-nx.draw_networkx_edges(G, pos, width=1.0, edge_color="k")
+nx.draw_networkx_nodes(_map.Graph, _map.pos, node_color='k')
+nx.draw_networkx_labels(_map.Graph, _map.pos, font_color='w')
+nx.draw_networkx_edges(_map.Graph, _map.pos, width=1.0, edge_color="k")
+
+train_obj = objects.trains[0]
+line = _map.Graph.edges(train_obj['line_idx'])[0]
+
+print(line)
+
+(x1, y1) = _map.pos[line[0]]
+(x2, y2) = _map.pos[line[1]]
+train_pos = train_obj['position']/line['length']
+(x, y) = (x1 * train_pos + x2 * (1.0 - train_pos),
+y1 * train_pos + y2 * (1.0 - train_pos))
 
 plt.show()

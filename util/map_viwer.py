@@ -1,6 +1,6 @@
 import networkx as nx
 import matplotlib.pyplot as plt
-import numpy
+import math
 
 import json
 G = nx.Graph()
@@ -237,9 +237,9 @@ train_pos = train_obj['position']/line[2]['length']
 y2 * train_pos + y1 * (1.0 - train_pos))
 
 if train_obj['speed'] == 1:
-    angle = numpy.arctan2(y2-y1, x2-x1)/(2.0*numpy.pi)*360  # degrees
+    angle = math.atan2(y2-y1, x2-x1)/(2.0*math.pi)*360  # degrees
 elif train_obj['speed'] == -1:
-    angle = numpy.arctan2(y1-y2, x1-x2)/(2.0*numpy.pi)*360  # degrees
+    angle = math.atan2(y1-y2, x1-x2)/(2.0*math.pi)*360  # degrees
 else:
     angle = None
 

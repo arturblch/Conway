@@ -1,0 +1,2 @@
+pygame==1.9.3
+networkx==1.11

@@ -16,7 +16,7 @@ class Map:
                 line,
             ] for line in responce["line"]])
 
-        self.pos = nx.spectral_layout(self.Graph, weight="length")
+        self.pos = nx.spectral_layout(self.Graph, weight="length", scale=1, center=(0.5, 0.5))
 
 
 class Objects:
@@ -216,7 +216,15 @@ nx.draw_networkx_labels(_map.Graph, _map.pos, font_color='w')
 nx.draw_networkx_edges(_map.Graph, _map.pos, width=1.0, edge_color="k")
 
 train_obj = objects.trains[0]
-line = _map.Graph.edges(train_obj['line_idx'], data =True)[0]
+
+def finde_line(G, key, value):
+    for a in G.edges(data=True):
+        print(a)
+        if a[2][key]==value:
+            return a
+
+line = list(_map.Graph.edges(data=True))[0]
+
 
 print(line)
 

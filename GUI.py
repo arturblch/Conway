@@ -78,7 +78,7 @@ class GUI:
         train = pg.Surface((30, 30), pg.SRCALPHA)
         pg.draw.polygon(train, (255, 0, 0), [[0, 0], [15, 30], [30, 0]], 2)
 
-        line = self.map.Graph.edges(train_obj.line_idx, data=True)[0]
+        line = self.map.find_line(train_obj.line_idx)
 
         (x1, y1) = self.map.pos[line[0]]
         (x2, y2) = self.map.pos[line[1]]

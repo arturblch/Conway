@@ -7,7 +7,7 @@ class Map:
         self.Graph.add_nodes_from([(point.pop('idx'),point) for point in responce["point"]])
         self.Graph.add_edges_from([line.pop('point')+[line,] for line in responce["line"]])
 
-        self.pos = nx.spectral_layout(self.Graph, weight="length")
+        self.pos = nx.spectral_layout(self.Graph, weight="length", scale=1, center=(0.5, 0.5))
 
     def get_first_neighbor(self, point):
         neighbors = list(self.Graph.neighbors(point))
@@ -15,3 +15,8 @@ class Map:
 
     def get_line(self, u, v):
         return self.Graph.get_edge_data(u, v)['idx']
+
+    def find_line(self, key, value):
+        for e in self.Graph.edges(data=True):
+            if e[2]['idx']==value:
+                return e

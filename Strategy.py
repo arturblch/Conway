@@ -23,12 +23,12 @@ class Strategy:
     def get_move(self, train: Train, map_graph: Map):
         if train.speed == 0:
             train.arrival()
-            if train.position is None:                                                  # Если поезд ещё не начинал путь
-                train.departure(self.home, map_graph.get_first_neighbor(self.home))     # Отправляем его к первому соседнему городу
+            if train.departure_point is None:
+                train.departure(self.home, map_graph.get_first_neighbor(self.home))
                 line = map_graph.get_line(train.departure_point, train.arrival_point)
                 return Move(line, 1, train.idx)
-            if train.current_point != self.home:                                        # Если поезд прибыл не домой
-                train.departure(train.current_point, self.home)                         # Отправляем поезд домой
+            if train.current_point != self.home:
+                train.departure(train.current_point, self.home)
                 line = map_graph.get_line(train.departure_point, train.arrival_point)
-                return Move(line, 1, train.idx)
+                return Move(line, -1, train.idx)
             self.in_progress = False

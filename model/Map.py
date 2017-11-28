@@ -16,7 +16,7 @@ class Map:
 
         self.line = {line.pop('idx'): line for line in responce["line"]}
 
-        self.pos = nx.spectral_layout(self.Graph, weight="length")
+        self.pos = nx.spring_layout(self.Graph, weight="length")
 
     def get_first_neighbor(self, point):
         neighbors = list(self.Graph.neighbors(point))

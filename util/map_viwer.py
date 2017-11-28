@@ -6,20 +6,6 @@ from util.maps import map02
 import json
 G = nx.Graph()
 
-
-class Map:
-    def __init__(self, responce):
-        self.Graph = nx.Graph()
-        self.Graph.add_nodes_from([(point.pop('idx'), point)
-                                   for point in responce["point"]])
-        self.Graph.add_edges_from(
-            [line.pop('point') + [
-                line,
-            ] for line in responce["line"]])
-
-        self.pos = nx.spectral_layout(self.Graph, weight="length", scale=1, center=(0.5, 0.5))
-
-
 class Objects:
     def __init__(self, response):
         self.trains = {train['idx']: train for train in response['train']}

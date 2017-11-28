@@ -1,10 +1,31 @@
 import networkx as nx
 import matplotlib.pyplot as plt
+import math
+from util.maps import map02
+
 import json
 G = nx.Graph()
 
-world_responce = json.loads(
-'''{
+
+class Map:
+    def __init__(self, responce):
+        self.Graph = nx.Graph()
+        self.Graph.add_nodes_from([(point.pop('idx'), point)
+                                   for point in responce["point"]])
+        self.Graph.add_edges_from(
+            [line.pop('point') + [
+                line,
+            ] for line in responce["line"]])
+
+        self.pos = nx.spectral_layout(self.Graph, weight="length", scale=1, center=(0.5, 0.5))
+
+
+class Objects:
+    def __init__(self, response):
+        self.trains = {train['idx']: train for train in response['train']}
+        self.posts = {post['idx']: post for post in response['post']}
+
+objects = Objects(json.loads('''{
     "idx": 1,
     "post": [
         {
@@ -30,174 +51,49 @@ world_responce = json.loads(
             "player_id": "dcdfdf83-cbcf-4cec-8ad8-c919c7f6781d",
             "position": 10,
             "product": 0,
-            "speed": 0
+            "speed": 1
         }
     ]
-}''')
+}'''))
 
-game_responce = json.loads(
-'''{
-     "idx": 1,
-     "line": [
-         {
-             "idx": 1,
-             "length": 10,
-             "point": [
-                 1,
-                 7
-             ]
-         },
-         {
-             "idx": 2,
-             "length": 10,
-             "point": [
-                 8,
-                 2
-             ]
-         },
-         {
-             "idx": 3,
-             "length": 10,
-             "point": [
-                 9,
-                 3
-             ]
-         },
-         {
-             "idx": 4,
-             "length": 10,
-             "point": [
-                 10,
-                 4
-             ]
-         },
-         {
-             "idx": 5,
-             "length": 10,
-             "point": [
-                 11,
-                 5
-             ]
-         },
-         {
-             "idx": 6,
-             "length": 10,
-             "point": [
-                 12,
-                 6
-             ]
-         },
-         {
-             "idx": 7,
-             "length": 10,
-             "point": [
-                 7,
-                 8
-             ]
-         },
-         {
-             "idx": 8,
-             "length": 10,
-             "point": [
-                 8,
-                 9
-             ]
-         },
-         {
-             "idx": 9,
-             "length": 10,
-             "point": [
-                 9,
-                 10
-             ]
-         },
-         {
-             "idx": 10,
-             "length": 10,
-             "point": [
-                 10,
-                 11
-             ]
-         },
-         {
-             "idx": 11,
-             "length": 10,
-             "point": [
-                 11,
-                 12
-             ]
-         },
-         {
-             "idx": 12,
-             "length": 10,
-             "point": [
-                 12,
-                 7
-             ]
-         }
-     ],
-     "name": "map01",
-     "point": [
-         {
-             "idx": 1,
-             "post_id": 1
-         },
-         {
-             "idx": 2,
-             "post_id": null
-         },
-         {
-             "idx": 3,
-             "post_id": null
-         },
-         {
-             "idx": 4,
-             "post_id": null
-         },
-         {
-             "idx": 5,
-             "post_id": null
-         },
-         {
-             "idx": 6,
-             "post_id": null
-         },
-         {
-             "idx": 7,
-             "post_id": 2
-         },
-         {
-             "idx": 8,
-             "post_id": null
-         },
-         {
-             "idx": 9,
-             "post_id": null
-         },
-         {
-             "idx": 10,
-             "post_id": null
-         },
-         {
-             "idx": 11,
-             "post_id": null
-         },
-         {
-             "idx": 12,
-             "post_id": null
-         }
-     ]
- }''')
+_map = map02
+
+nx.draw_networkx_nodes(_map.Graph, _map.pos, node_color='k')
+nx.draw_networkx_labels(_map.Graph, _map.pos, font_color='w')
+nx.draw_networkx_edges(_map.Graph, _map.pos, width=1.0, edge_color="k")
+
+train_obj = objects.trains[0]
+
+def finde_line(G, key, value):
+    for a in G.edges(data=True):
+        print(a)
+        if a[2][key]==value:
+            return a
+
+line = list(_map.Graph.edges(data=True))[0]
 
 
-G.add_nodes_from([(point.pop('idx'),point) for point in game_responce["point"]])
-G.add_edges_from([line.pop('point')+[line,] for line in game_responce["line"]])
+print(line)
 
-pos = nx.spectral_layout(G, weight="length")
-print(pos)
+(x1, y1) = _map.pos[line[0]]
+(x2, y2) = _map.pos[line[1]]
+train_pos = train_obj['position']/line[2]['length']
 
-nx.draw_networkx_nodes(G, pos, node_color='k')
-nx.draw_networkx_labels(G, pos, font_color='w')
-nx.draw_networkx_edges(G, pos, width=1.0, edge_color="k")
 
+(x, y) = (x2 * train_pos + x1 * (1.0 - train_pos),
+y2 * train_pos + y1 * (1.0 - train_pos))
+
+if train_obj['speed'] == 1:
+    angle = math.atan2(y2-y1, x2-x1)/(2.0*math.pi)*360  # degrees
+elif train_obj['speed'] == -1:
+    angle = math.atan2(y1-y2, x1-x2)/(2.0*math.pi)*360  # degrees
+else:
+    angle = None
+
+
+
+print('angel = ', angle)
+
+
+print(x, y)
 plt.show()

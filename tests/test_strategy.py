@@ -1,8 +1,8 @@
 import pytest
 import json
 from Strategy import Strategy
-from model.World import World
-from model.Game import Game
+from model.Objects import Objects
+from model.Map import Map
 from model.Move import Move
 
 start_data = json.loads(
@@ -26,7 +26,7 @@ start_data = json.loads(
     ]
 }''')
 
-game_responce = json.loads(
+layer0 = json.loads(
 '''{
      "idx": 1,
      "line": [
@@ -180,7 +180,39 @@ game_responce = json.loads(
      ]
  }''')
 
-world_responce = json.loads(
+layer1_1 = json.loads(
+'''{
+    "idx": 1,
+    "post": [
+        {
+            "armor": 0,
+            "idx": 1,
+            "name": "town-one",
+            "population": 10,
+            "product": 0,
+            "type": 1
+        },
+        {
+            "idx": 2,
+            "name": "market-one",
+            "product": 20,
+            "type": 2
+        }
+    ],
+    "train": [
+        {
+            "capacity": 15,
+            "idx": 0,
+            "line_idx": null,
+            "player_id": "dcdfdf83-cbcf-4cec-8ad8-c919c7f6781d",
+            "position": null,
+            "product": 0,
+            "speed": 0
+        }
+    ]
+}''')
+
+layer1_2 = json.loads(
 '''{
     "idx": 1,
     "post": [
@@ -205,26 +237,30 @@ world_responce = json.loads(
             "idx": 0,
             "line_idx": 1,
             "player_id": "dcdfdf83-cbcf-4cec-8ad8-c919c7f6781d",
-            "position": 10,
-            "product": 0,
-            "speed": 0
+            "position": null,
+            "product": 1,
+            "speed": 1
         }
     ]
 }''')
 
+map_graph = Map(layer0)
 
-world = World(posts=world_responce['post'], trains=world_responce['train'])
-game = Game(lines=game_responce['line'], points=game_responce['point'])
 
-def test_defult():
-
+def test_first_move():
     strategy = Strategy(start_data)
-    next_move = strategy.move(world, game)
+    objects = Objects(layer1_1)
+    moves = strategy.get_moves(objects, map_graph)
+    test_move = Move(1, 1, 0)
+    assert len(moves) == 1
+    move = moves[0]
+    assert move.line_idx == test_move.line_idx
+    assert move.speed == test_move.speed
+    assert move.train_idx == test_move.train_idx
 
-    print(next_move)
-    test_move = Move(12,1,0)
-    assert next_move.line_idx == test_move.line_idx
-    assert next_move.speed == test_move.speed
-    assert next_move.train_idx == test_move.train_idx
 
-
+def test_turn():
+    strategy = Strategy(start_data)
+    objects = Objects(layer1_2)
+    moves = strategy.get_moves(objects, map_graph)
+    assert len(moves) == 0

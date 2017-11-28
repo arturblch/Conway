@@ -25,7 +25,6 @@ class Runner:
                     for move in moves:
                         self.remote_process_client.move(move)
                 self.remote_process_client.turn()
-
         finally:
             self.remote_process_client.logout()
             self.remote_process_client.close()

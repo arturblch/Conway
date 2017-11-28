@@ -19,7 +19,7 @@ class Train:
     def arrival(self):
         self.current_point = self.arrival_point
         self.arrival_point = None
-        self.departure_point = None
+        # self.departure_point = None
 
     def update(self, response):
         self.capacity = response['capacity']

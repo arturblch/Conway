@@ -12,9 +12,3 @@ class Objects:
                 self.posts[post['idx']] = Town(post)
             if post['type'] == 2:
                 self.posts[post['idx']] = Market(post)
-
-    def update(self, response):
-        for train in response['train']:
-            self.trains[train['idx']].update(train)
-        for post in response['post']:
-            self.posts[post['idx']].update(post)

@@ -13,14 +13,13 @@ class Runner:
             self.name = "Mickey"
 
     def run(self):
-        status, start_data = self.remote_process_client.login(self.name)
+        status, player_data = self.remote_process_client.login(self.name)
         try:
             map_graph = self.remote_process_client.read_map()
-            objects = self.remote_process_client.read_objects()
-            strategy = Strategy(start_data)
+            strategy = Strategy(player_data)
             # while strategy.in_progress:
             for _ in range(11):
-                self.remote_process_client.update_objects(objects)
+                objects = self.remote_process_client.read_objects()
                 moves = strategy.get_moves(objects, map_graph)
                 if moves:
                     for move in moves:

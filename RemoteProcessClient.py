@@ -68,6 +68,8 @@ class RemoteProcessClient:
         else:
             logger.error("write_message received wrong action=%s", action)
             raise ValueError("Received wrong action=%s" % action)
+        if data is None:
+            data = {}
         self.write_string(json.dumps(data))
         logger.info("Loging message: %s", data)
         return self.read_response()

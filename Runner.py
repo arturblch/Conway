@@ -18,7 +18,8 @@ class Runner:
             map_graph = self.remote_process_client.read_map()
             objects = self.remote_process_client.read_objects()
             strategy = Strategy(start_data)
-            while strategy.in_progress:
+            # while strategy.in_progress:
+            for _ in range(11):
                 self.remote_process_client.update_objects(objects)
                 moves = strategy.get_moves(objects, map_graph)
                 if moves:

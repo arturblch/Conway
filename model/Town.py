@@ -1,4 +1,4 @@
-class Towm:
+class Town:
     def __init__(self, post):
         self.name = post["name"]
         self.armor = post["armor"]

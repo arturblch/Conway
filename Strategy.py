@@ -22,13 +22,11 @@ class Strategy:
     # Hardcoded strategy
     def get_move(self, train: Train, map_graph: Map):
         if train.speed == 0:
-            train.arrival()
-            if train.departure_point is None:
-                train.departure(self.home, map_graph.get_first_neighbor(self.home))
-                line = map_graph.get_line(train.departure_point, train.arrival_point)
-                return Move(line, 1, train.idx)
-            if train.current_point != self.home:
-                train.departure(train.current_point, self.home)
-                line = map_graph.get_line(train.departure_point, train.arrival_point)
-                return Move(line, -1, train.idx)
-            self.in_progress = False
+            point = map_graph.get_point(train.line_idx, train.position)
+            if point == self.home:
+                line, speed = map_graph.departure(self.home, map_graph.get_first_neighbor(self.home))
+                return Move(line, speed, train.idx)
+            else:
+                line, speed = map_graph.departure(point, self.home)
+                return Move(line, speed, train.idx)
+            # self.in_progress = False

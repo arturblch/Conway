@@ -6,7 +6,7 @@ class Town:
         self.product = post["product"]
         self.type = post["type"]
 
-    # def update(self, post):             Нужно?
-    #     self.armor = post["armor"]
-    #     self.population = post["population"]
-    #     self.product = post["product"]
+    def update(self, post):
+        self.armor = post["armor"]
+        self.population = post["population"]
+        self.product = post["product"]

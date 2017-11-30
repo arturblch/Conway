@@ -1,5 +1,5 @@
 import sys
-from Strategy import Strategy
+from Strategy_2 import Strategy_2
 from RemoteProcessClient import RemoteProcessClient
 
 
@@ -13,11 +13,11 @@ class Runner:
             self.name = "Mickey"
 
     def run(self):
-        status, player_data = self.remote_process_client.login(self.name)
+        player_data = self.remote_process_client.login(self.name)
         try:
             map_graph = self.remote_process_client.read_map()
             objects = self.remote_process_client.read_objects()
-            strategy = Strategy(player_data, map_graph, objects)
+            strategy = Strategy_2(player_data, map_graph, objects)
             # while strategy.in_progress:
             for _ in range(30):
                 self.remote_process_client.update_objects(strategy.objects)

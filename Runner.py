@@ -1,34 +1,28 @@
 import sys
-from Strategy import Strategy
+from Strategy_2 import Strategy_2
 from RemoteProcessClient import RemoteProcessClient
-from model.StatusCode import StatusCode
 
 
 class Runner:
-    def __init__(self, gui=False):
+    def __init__(self):
         if sys.argv.__len__() == 4:
             self.remote_process_client = RemoteProcessClient(sys.argv[1], int(sys.argv[2]))
             self.name = sys.argv[3]
         else:
             self.remote_process_client = RemoteProcessClient('wgforge-srv.wargaming.net', 443)
             self.name = "Mickey"
-        
-        if gui:
-            import GUI
-            self.gui = GUI()
-
 
     def run(self):
-        status, start_data = self.remote_process_client.login(self.name)
-        if status != StatusCode.OKEY:
-            raise ValueError("Something wrong happen")
+        player_data = self.remote_process_client.login(self.name)
         try:
             map_graph = self.remote_process_client.read_map()
             objects = self.remote_process_client.read_objects()
-            strategy = Strategy(start_data)
-            while strategy.in_progress:
-                self.remote_process_client.update_objects(objects)
-                moves = strategy.get_moves(objects, map_graph)
+            strategy = Strategy_2(player_data, map_graph, objects)
+            # while strategy.in_progress:
+            for _ in range(30):
+                self.remote_process_client.update_objects(strategy.objects)
+
+                moves = strategy.get_moves()
                 if moves:
                     for move in moves:
                         self.remote_process_client.move(move)

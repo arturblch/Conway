@@ -5,30 +5,40 @@ from model.Train import Train
 
 
 class Strategy:
-    def __init__(self, start_data):
-        self.home = start_data["home"]["post_id"]
-        self.train_ids = [train['idx'] for train in start_data["train"]]
+    def __init__(self, player_data):
+        self.home = player_data["home"]["post_id"]
+        self.town = player_data["town"]["idx"]
+        self.train_ids = [train['idx'] for train in player_data["train"]]
         self.in_progress = True
 
     def get_moves(self, objects: Objects, map_graph: Map):
         moves = []
         for train_id in self.train_ids:
             train = objects.trains[train_id]
-            move = self.get_move(train, map_graph)
+            move = self.get_move(train, objects, map_graph)
             if move:
                 moves.append(move)
         return moves
 
-    # Hardcoded strategy
-    def get_move(self, train: Train, map_graph: Map):
+    def get_move(self, train: Train, objects: Objects, map_graph: Map):
         if train.speed == 0:
-            train.arrival()
-            if train.departure_point is None:
-                train.departure(self.home, map_graph.get_first_neighbor(self.home))
-                line = map_graph.get_line(train.departure_point, train.arrival_point)
-                return Move(line, 1, train.idx)
-            if train.current_point != self.home:
-                train.departure(train.current_point, self.home)
-                line = map_graph.get_line(train.departure_point, train.arrival_point)
-                return Move(line, -1, train.idx)
-            self.in_progress = False
+            current_point = map_graph.get_point(train.line_idx, train.position)
+            markets = objects.markets
+            town = objects.towns[self.town]
+            max_potential = (0, map_graph.get_point(1, 0))  # home point
+            for market in markets.values():
+                market_point = map_graph.get_market_point(market)
+                distance = map_graph.get_distance(current_point.idx, market_point.idx)
+                return_distance = map_graph.get_distance(market_point.idx, self.home)
+                if town.population*(distance+return_distance) <= town.product:
+                    market_potential = min(market.product + market.replenishment*distance, market.product_capacity) - \
+                                       town.population*(distance+return_distance)
+                    if market_potential > max_potential[0]:
+                        max_potential = (market_potential, market_point)
+            departure_point = max_potential[1]
+            if current_point != departure_point:
+                next_point = map_graph.get_next_point(current_point.idx, departure_point.idx)
+                line, speed = map_graph.departure(current_point.idx, next_point.idx)
+                print(f"CURRENT: {current_point} NEXT: {next_point}")
+                return Move(line.idx, speed, train.idx)
+            # self.in_progress = False

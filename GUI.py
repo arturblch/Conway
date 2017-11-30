@@ -116,13 +116,14 @@ class GUI:
     def turn(self):
         self.update()
         for event in pg.event.get():
-            if event.type == pg.QUIT:
-                done = True
-            if event.type == KEYDOWN:
-                if event.key == K_s:
+            if event.type == pg.QUIT or event.type == KEYDOWN and event.key == K_s:
+                self.close()
 
         pg.display.flip()
         self.clock.tick(self.fps)
+
+def close(self):
+        pg.quit()
 
 if __name__ == '__main__':
     gui = GUI()

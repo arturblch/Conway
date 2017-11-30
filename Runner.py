@@ -18,7 +18,7 @@ class Runner:
             map_graph = self.remote_process_client.read_map()
             strategy = Strategy(player_data)
             # while strategy.in_progress:
-            for _ in range(11):
+            for _ in range(30):
                 objects = self.remote_process_client.read_objects()
                 moves = strategy.get_moves(objects, map_graph)
                 if moves:

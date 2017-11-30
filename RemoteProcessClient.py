@@ -4,6 +4,7 @@ import json
 import logging
 from model.Objects import Objects
 from model.Map import Map
+from model.Player import Player
 
 # create logger
 logger = logging.getLogger('RemouteClient')
@@ -47,7 +48,8 @@ class RemoteProcessClient:
         self.socket.settimeout(5)
 
     def login(self, name):
-        return self.write_message('LOGIN', {"name": name})
+        response = self.write_message('LOGIN', {"name": name})
+        return Player(response)
 
     def logout(self):
         return self.write_message('LOGOUT')
@@ -126,6 +128,10 @@ class RemoteProcessClient:
     def read_objects(self):
         layer = self.write_message('MAP', {"layer": 1})[1]
         return Objects(layer)
+
+    def update_objects(self, objects):
+        layer = self.write_message('MAP', {"layer": 1})[1]
+        objects.update(layer)
 
     def read_map(self):
         layer = self.write_message('MAP', {"layer": 0})[1]

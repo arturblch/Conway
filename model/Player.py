@@ -1,8 +1,9 @@
-# До лучших времен
+# Лучшие времена
+from model.Point import Point
+
 class Player:
-    def __init__(self, home, idx, name, town, trains):
-        self.home = home
-        self.idx = idx
-        self.name = name
-        self.town = town
-        self.trains = trains
+    def __init__(self, response):
+        self.home = Point(response['home'])
+        self.idx = response['home']idx
+        self.name = response['home']name
+        self.trains = [train['idx'] for train in response['train']]

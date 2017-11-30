@@ -161,6 +161,8 @@ def test_init():
 
     assert list(
         test_map.Graph.nodes) == [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
-    
-    assert test_map.line[3]['length'] == 10
-    assert test_map.line[3]['point'] == [9, 3]
+
+    assert test_map.lines[3].length == 10
+    assert test_map.lines[3].start_point  == 9
+    assert test_map.lines[3].end_point  == 3
+

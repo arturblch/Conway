@@ -7,3 +7,9 @@ class Train:
         self.position = response['position']
         self.product = response['product']
         self.speed = response['speed']
+
+    def update(self, response):
+        self.line_idx = response['line_idx']
+        self.position = response['position']
+        self.product = response['product']
+        self.speed = response['speed']

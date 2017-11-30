@@ -12,14 +12,15 @@ RADIUS = 20
 
 
 class GUI:
-    def __init__(self, width=600, height=600):
+    def __init__(self, map_graph, objects, width=600, height=600):
         pg.init()
         self.width = width
         self.height = height
         self.display_width = self.width - 2 * RADIUS
         self.display_height = self.height - 2 * RADIUS
-        self.map = None
-        self.objects = None
+
+        self.map = map_graph
+        self.objects = objects
         self.screen = pg.display.set_mode((self.width, self.height))
         self.surf = pg.Surface((width, height))
         self.background = pg.image.load(BACKGROUND_IMAGE).convert_alpha()
@@ -112,7 +113,7 @@ class GUI:
         self.screen.blit(self.surf, (0, 0))
         pg.display.update()
 
-    def turn(self):  
+    def turn(self):
         self.update()
         for event in pg.event.get():
             if event.type == pg.QUIT:

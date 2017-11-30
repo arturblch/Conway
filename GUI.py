@@ -112,39 +112,16 @@ class GUI:
         self.screen.blit(self.surf, (0, 0))
         pg.display.update()
 
-    def run(self):
-        runner = Runner()
-        done = False
-        try:
-            status, start_data = runner.remote_process_client.login(
-                runner.name)
-            self.map = runner.remote_process_client.read_map()
-            self.objects = runner.remote_process_client.read_objects()
-            strategy = Strategy(start_data)
-            while not done:
-                runner.remote_process_client.update_objects(self.objects)
-                self.update()
+    def turn(self):  
+        self.update()
+        for event in pg.event.get():
+            if event.type == pg.QUIT:
+                done = True
+            if event.type == KEYDOWN:
+                if event.key == K_s:
 
-                moves = strategy.get_moves(self.objects, self.map)
-                if moves:
-                    for move in moves:
-                        runner.remote_process_client.move(move)
-                runner.remote_process_client.turn()
-
-                for event in pg.event.get():
-                    if event.type == pg.QUIT:
-                        done = True
-                    if event.type == KEYDOWN:
-                        if event.key == K_s:
-                            done = True
-
-                pg.display.flip()
-                self.clock.tick(self.fps)
-        finally:
-            runner.remote_process_client.logout()
-            runner.remote_process_client.close()
-            pg.quit()
-
+        pg.display.flip()
+        self.clock.tick(self.fps)
 
 if __name__ == '__main__':
     gui = GUI()

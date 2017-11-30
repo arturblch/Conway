@@ -16,5 +16,5 @@ class Strategy_2:
                 moves.append(move)
         return moves
 
-    def get_move():
+    def get_move(self, train):
         return Move(1, 1, 0)  # Just test

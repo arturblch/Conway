@@ -3,8 +3,11 @@ from model.Point import Point
 
 class Player:
     def __init__(self, response):
-        self.home = Point(response['home'])
-        self.idx = response['home']idx
-        self.name = response['home']name
+        if response['home'] != None:
+            self.home = Point(**response['home'])
+        else:
+            self.home = None
+        self.idx = response['idx']
+        self.name = response['name']
         self.trains = [train['idx'] for train in response['train']]
-        self.alive = True
+        self.is_alive = True

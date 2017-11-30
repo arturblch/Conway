@@ -1,8 +1,6 @@
 import pygame as pg
 from pygame.locals import *
 import math
-from Runner import Runner
-from Strategy import Strategy
 
 BACKGROUND_IMAGE = 'grass.jpg'
 POINT_COLOR = (0, 0, 0)
@@ -77,13 +75,13 @@ class GUI:
         if train_obj.line_idx == None:
             return
         train = pg.Surface((30, 30), pg.SRCALPHA)
-        pg.draw.polygon(train, (255, 0, 0), [[0, 0], [15, 30], [30, 0]], 2)
+        pg.draw.polygon(train, (255, 0, 0), [[0, 0], [15, 30], [30, 0]], 0)
 
-        line = self.map.find_line(train_obj.line_idx)
+        line = self.map.lines[train_obj.line_idx]
 
-        (x1, y1) = self.map.pos[line[0]]
-        (x2, y2) = self.map.pos[line[1]]
-        train_pos = train_obj.position / line[2]['length']
+        (x1, y1) = self.map.pos[line.start_point]
+        (x2, y2) = self.map.pos[line.end_point]
+        train_pos = train_obj.position / line.length
         (x, y) = (x2 * train_pos + x1 * (1.0 - train_pos),
                   y2 * train_pos + y1 * (1.0 - train_pos))
 
@@ -122,7 +120,7 @@ class GUI:
         pg.display.flip()
         self.clock.tick(self.fps)
 
-def close(self):
+    def close(self):
         pg.quit()
 
 if __name__ == '__main__':

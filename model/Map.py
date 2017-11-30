@@ -12,7 +12,7 @@ class Map:
         self.Graph.add_edges_from([
             (*line['point'], {'weight': line['length']})
             for line in response["line"]])
-        self.pos = nx.spring_layout(self.Graph)
+        self.pos = nx.spring_layout(self.Graph, center=(0.5, 0.5))
 
     def get_neighbors(self, point):
         return list(self.Graph.neighbors(point))

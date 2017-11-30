@@ -7,7 +7,7 @@ from GUI import GUI
 class Runner:
     def __init__(self):
 
-        if sys.argv[2] == '-gui':
+        if len(sys.argv)>=2 and sys.argv[1] == '-gui':
             self.is_gui = True
         else:
             self.is_gui = False
@@ -23,6 +23,7 @@ class Runner:
             strategy = Strategy_2(player, map_graph, objects)
             if self.is_gui:
                 self.gui = GUI(map_graph, objects)
+            i = 30
             while player.is_alive:
                 self.remote_process_client.update_objects(strategy.objects)
 
@@ -33,6 +34,10 @@ class Runner:
                 if self.is_gui:
                     self.gui.turn()
                 self.remote_process_client.turn()
+                if i!=0:
+                    i -=1
+                else:
+                    player.is_alive = False
         finally:
             self.remote_process_client.logout()
             self.remote_process_client.close()

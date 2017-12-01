@@ -199,5 +199,15 @@ map_graph = Map(json.loads('''{
 def test_base():
     i = 30
     gui = GUI(player, map_graph, objects)
+    gui.fps = 10
     while player.is_alive:
         gui.turn()
+        if objects.trains[0].position == 10:
+            objects.trains[0].speed = -1
+        elif objects.trains[0].position == 0:
+            objects.trains[0].speed = 1
+        objects.trains[0].position += objects.trains[0].speed
+
+
+
+test_base()

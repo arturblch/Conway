@@ -85,6 +85,7 @@ class GUI:
         train_pos = train_obj.position / line.length
         (x, y) = (x2 * train_pos + x1 * (1.0 - train_pos),
                   y2 * train_pos + y1 * (1.0 - train_pos))
+        print(x1, y1)
 
         if train_obj.speed == -1:
             angle = math.atan2(y2 - y1, x2 - x1) / (
@@ -94,6 +95,8 @@ class GUI:
                 2.0 * math.pi) * 360  # degrees
         else:
             angle = None
+        angle = angle - 90
+        print('angle ', angle)
 
         if angle:
             train = pg.transform.rotate(train, angle)

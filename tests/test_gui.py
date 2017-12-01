@@ -1,15 +1,19 @@
 from GUI import GUI
 from model.Map import Map
 from model.Objects import Objects
+
 import json
+
 
 class Player:
     def __init__(self):
         self.is_alive = True
 
+
 player = Player()
 
-objects = Objects(json.loads('''{
+objects = Objects(
+    json.loads('''{
 "idx": 1,
     "post": [
         {
@@ -36,14 +40,15 @@ objects = Objects(json.loads('''{
             "idx": 0,
             "line_idx": 1,
             "player_id": "dcdfdf83-cbcf-4cec-8ad8-c919c7f6781d",
-            "position": 5,
+            "position": 0,
             "product": 0,
             "speed": 1
         }
     ]
 }'''))
 
-map_graph = Map(json.loads('''{
+map_graph = Map(
+    json.loads('''{
     "idx": 1,
     "line": [
         {
@@ -196,18 +201,20 @@ map_graph = Map(json.loads('''{
     ]
 }'''))
 
+
 def test_base():
     i = 30
     gui = GUI(player, map_graph, objects)
     gui.fps = 10
     while player.is_alive:
+        print(gui.paused)
         gui.turn()
-        if objects.trains[0].position == 10:
-            objects.trains[0].speed = -1
-        elif objects.trains[0].position == 0:
-            objects.trains[0].speed = 1
-        objects.trains[0].position += objects.trains[0].speed
-
+        if gui.paused == False:
+            if objects.trains[0].position == 10:
+                objects.trains[0].speed = -1
+            elif objects.trains[0].position == 0:
+                objects.trains[0].speed = 1
+            objects.trains[0].position += objects.trains[0].speed
 
 
 test_base()

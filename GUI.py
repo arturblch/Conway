@@ -1,6 +1,7 @@
 import pygame as pg
 from pygame.locals import *
 import math
+from time import sleep
 
 BACKGROUND_IMAGE = 'grass.jpg'
 POINT_COLOR = (0, 0, 0)
@@ -26,6 +27,7 @@ class GUI:
         self.background = pg.transform.scale(self.background, (width, height))
         self.clock = pg.time.Clock()
         self.fps = 60
+        self.paused = False
         pg.display.set_caption("Train Game")
         self.myfont = pg.font.SysFont('arial', 15)
 
@@ -39,16 +41,16 @@ class GUI:
 
     def draw_edges(self, edgelist=None):
         if edgelist is None:
-            edgelist = self.map.Graph.edges()
+            edgelist = self.map.lines
 
-        for e in edgelist:
+        for l in edgelist.values():
 
             pg.draw.line(
                 self.surf, LINE_COLOR,
-                (int((self.display_width) * self.map.pos[e[0]][0] + RADIUS),
-                 int((self.display_width) * self.map.pos[e[0]][1] + RADIUS)),
-                (int((self.display_height) * self.map.pos[e[1]][0] + RADIUS),
-                 int((self.display_height) * self.map.pos[e[1]][1] + RADIUS)),
+                (int((self.display_width) * self.map.pos[l.start_point][0] + RADIUS),
+                 int((self.display_width) * self.map.pos[l.start_point][1] + RADIUS)),
+                (int((self.display_height) * self.map.pos[l.end_point][0] + RADIUS),
+                 int((self.display_height) * self.map.pos[l.end_point][1] + RADIUS)),
                 5)
 
     def draw_node_labels(self, labels=None):
@@ -76,7 +78,7 @@ class GUI:
         if train_obj.line_idx == None:
             return
         train = pg.Surface((30, 30), pg.SRCALPHA)
-        pg.draw.polygon(train, (255, 0, 0), [[0, 0], [15, 30], [30, 0]], 0)
+        pg.draw.polygon(train, (255, 0, 0), [[0, 0], [30, 15], [0, 30]], 0)
 
         line = self.map.lines[train_obj.line_idx]
 
@@ -85,23 +87,26 @@ class GUI:
         train_pos = train_obj.position / line.length
         (x, y) = (x2 * train_pos + x1 * (1.0 - train_pos),
                   y2 * train_pos + y1 * (1.0 - train_pos))
-        print(x1, y1)
+        print('pos_node', x1, y1)
+        print('pos_node 2', x2, y2)
+        print('train pos', train_pos)
+        print('coord', x, y)
 
-        if train_obj.speed == -1:
-            angle = math.atan2(y2 - y1, x2 - x1) / (
+        if train_obj.speed == 1:
+            angle = math.atan2(y1 - y2, x2 - x1) / (
                 2.0 * math.pi) * 360  # degrees
-        elif train_obj.speed == 1:
-            angle = math.atan2(y1 - y2, x1 - x2) / (
+        elif train_obj.speed == -1:
+            angle = math.atan2(y2 - y1, x1 - x2) / (
                 2.0 * math.pi) * 360  # degrees
         else:
             angle = None
-        angle = angle - 90
-        print('angle ', angle)
 
         if angle:
+            angle = angle
             train = pg.transform.rotate(train, angle)
-            self.surf.blit(train, (self.display_width * x + RADIUS - 10,
-                                   self.display_height * y + RADIUS - 10))
+        print('angle', angle)
+        self.surf.blit(train, (int(self.display_width * x),
+                                    int(self.display_height * y)))
 
     def update(self):
         self.surf.blit(self.background, (0, 0))
@@ -116,13 +121,20 @@ class GUI:
         pg.display.update()
 
     def turn(self):
-        self.update()
-        pg.display.flip()
-        self.clock.tick(self.fps)
-        for event in pg.event.get():
+        
+        if not self.paused:
+            self.update()
+            pg.display.flip()
+            self.clock.tick(self.fps)
+        else:
+            sleep(0.2)
 
+        for event in pg.event.get():
             if event.type == pg.QUIT or event.type == KEYDOWN and event.key == K_s:
                 self.close()
+            if event.type == KEYDOWN and event.key == K_p:
+                self.paused = not self.paused
+
 
     def close(self):
         pg.quit()

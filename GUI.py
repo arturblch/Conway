@@ -10,8 +10,9 @@ RADIUS = 20
 
 
 class GUI:
-    def __init__(self, map_graph, objects, width=600, height=600):
+    def __init__(self, player, map_graph, objects, width=600, height=600):
         pg.init()
+        self.player = player
         self.width = width
         self.height = height
         self.display_width = self.width - 2 * RADIUS
@@ -96,8 +97,8 @@ class GUI:
 
         if angle:
             train = pg.transform.rotate(train, angle)
-            self.surf.blit(train, (self.display_width * x + RADIUS-10,
-                                   self.display_height * y + RADIUS-10))
+            self.surf.blit(train, (self.display_width * x + RADIUS - 10,
+                                   self.display_height * y + RADIUS - 10))
 
     def update(self):
         self.surf.blit(self.background, (0, 0))
@@ -113,15 +114,17 @@ class GUI:
 
     def turn(self):
         self.update()
+        pg.display.flip()
+        self.clock.tick(self.fps)
         for event in pg.event.get():
+
             if event.type == pg.QUIT or event.type == KEYDOWN and event.key == K_s:
                 self.close()
 
-        pg.display.flip()
-        self.clock.tick(self.fps)
-
     def close(self):
         pg.quit()
+        self.player.is_alive = False
+
 
 if __name__ == '__main__':
     gui = GUI()

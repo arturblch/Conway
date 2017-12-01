@@ -1,32 +1,16 @@
 from GUI import GUI
-from model.Player import Player
 from model.Map import Map
 from model.Objects import Objects
 import json
 
-player =  Player(json.loads('''{
-    "home": {
-        "idx": 1,
-        "post_id": 1
-    },
-    "idx": "dcdfdf83-cbcf-4cec-8ad8-c919c7f6781d",
-    "name": "Mickey",
-    "train": [
-        {
-            "capacity": 15,
-            "idx": 0,
-            "line_idx": null,
-            "player_id": "dcdfdf83-cbcf-4cec-8ad8-c919c7f6781d",
-            "position": null,
-            "product": 0,
-            "speed": 0
-        }
-    ]
-}'''))
+class Player:
+    def __init__(self):
+        self.is_alive = True
 
+player = Player()
 
 objects = Objects(json.loads('''{
-    "idx": 1,
+"idx": 1,
     "post": [
         {
             "armor": 0,
@@ -37,6 +21,8 @@ objects = Objects(json.loads('''{
             "type": 1
         },
         {
+            "product_capacity": 20,
+            "replenishment" : 5,
             "idx": 2,
             "name": "market-one",
             "product": 20,
@@ -45,11 +31,12 @@ objects = Objects(json.loads('''{
     ],
     "train": [
         {
+            "product_capacity": 20,
             "capacity": 15,
             "idx": 0,
             "line_idx": 1,
             "player_id": "dcdfdf83-cbcf-4cec-8ad8-c919c7f6781d",
-            "position": 10,
+            "position": 5,
             "product": 0,
             "speed": 1
         }
@@ -209,15 +196,8 @@ map_graph = Map(json.loads('''{
     ]
 }'''))
 
-def test_base:
-    gui = GUI(map_graph, objects)
-    while strategy.in_progress:
-        self.remote_process_client.update_objects(strategy.objects)
-
-        moves = strategy.get_moves()
-        if moves:
-            for move in moves:
-                self.remote_process_client.move(move)
-        if self.is_gui:
-            self.gui.turn()
-        self.remote_process_client.turn()
+def test_base():
+    i = 30
+    gui = GUI(player, map_graph, objects)
+    while player.is_alive:
+        gui.turn()

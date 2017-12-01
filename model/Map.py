@@ -7,12 +7,16 @@ class Map:
     def __init__(self, response):
         self.Graph = nx.Graph()
         self.lines = {line['idx']: Line(**line) for line in response["line"]}
-        self.points = {point['idx']: Point(**point) for point in response["point"]}
+        self.points = {
+            point['idx']: Point(**point)
+            for point in response["point"]
+        }
         self.Graph.add_nodes_from(self.points.keys())
-        self.Graph.add_edges_from([
-            (*line['point'], {'weight': line['length']})
-            for line in response["line"]])
-        self.pos = nx.spring_layout(self.Graph, center=(0.5, 0.5))
+        self.Graph.add_edges_from([(*line['point'], {
+            'weight': line['length']
+        }) for line in response["line"]])
+        self.pos = nx.spring_layout(
+            self.Graph, scale=0.5, center=(0.5, 0.5), iterations=200)
 
     def get_neighbors(self, point):
         return list(self.Graph.neighbors(point))

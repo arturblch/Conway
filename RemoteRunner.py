@@ -1,11 +1,11 @@
 import sys
-from Strategy_2 import Strategy_2
+from Strategy_2 import Strategy
 from RemoteProcessClient import RemoteProcessClient
 from GUI import GUI
 
 
 class Runner:
-    def __init__(self):
+    def __init__(self, name="Mickey"):
 
         if len(sys.argv)>=2 and sys.argv[1] == '-gui':
             self.is_gui = True
@@ -13,16 +13,16 @@ class Runner:
             self.is_gui = False
 
         self.remote_process_client = RemoteProcessClient('wgforge-srv.wargaming.net', 443)
-        self.name = "Mickey"
+        self.name = name
 
     def run(self):
-        player = self.remote_process_client.login(self.name)
         try:
+            player = self.remote_process_client.login(self.name)
             map_graph = self.remote_process_client.read_map()
             objects = self.remote_process_client.read_objects()
-            strategy = Strategy_2(player, map_graph, objects)
+            strategy = Strategy(player, map_graph, objects)
             if self.is_gui:
-                self.gui = GUI(map_graph, objects)
+                self.gui = GUI(player, map_graph, objects)
             i = 30
             while player.is_alive:
                 self.remote_process_client.update_objects(strategy.objects)
@@ -41,6 +41,8 @@ class Runner:
         finally:
             self.remote_process_client.logout()
             self.remote_process_client.close()
+
+        return player.is_alive                  # for testing
 
 
 if __name__ == '__main__':

@@ -15,6 +15,3 @@ class Market:
 
     def __repr__(self):
         return f"Market {self.idx}"
-
-    def update(self, post):               
-        self.product = post['product']

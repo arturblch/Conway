@@ -26,8 +26,8 @@ class GUI:
         self.background = pg.image.load(BACKGROUND_IMAGE).convert_alpha()
         self.background = pg.transform.scale(self.background, (width, height))
         self.clock = pg.time.Clock()
-        self.fps = 5
-        self.paused = False
+        self.fps = 30
+        self.paused = True
         pg.display.set_caption("Train Game")
         self.myfont = pg.font.SysFont('arial', 15)
 
@@ -104,7 +104,6 @@ class GUI:
         if angle:
             angle = angle
             train = pg.transform.rotate(train, angle)
-        print('angle', angle)
         self.surf.blit(train, (int(self.display_width * x),
                                     int(self.display_height * y)))
 
@@ -121,17 +120,16 @@ class GUI:
         pg.display.update()
 
     def turn(self):
+        if self.player.is_alive == True:
+            self.update()
+            pg.display.flip()
+            self.clock.tick(self.fps)
 
-        self.update()
-        pg.display.flip()
-        self.clock.tick(self.fps)
-
-
-        for event in pg.event.get():
-            if event.type == pg.QUIT or event.type == KEYDOWN and event.key == K_s:
-                self.close()
-            if event.type == KEYDOWN and event.key == K_p:
-                self.paused = not self.paused
+            for event in pg.event.get():
+                if event.type == pg.QUIT or event.type == KEYDOWN and event.key == K_s:
+                    self.close()
+                if event.type == KEYDOWN and event.key == K_p:
+                    self.paused = not self.paused
 
     def update_objects(self, objects):
         self.objects = objects

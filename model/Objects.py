@@ -9,8 +9,6 @@ class Objects:
             train['idx']: Train(train)
             for train in response['train']
         }
-        
-
         self.towns = {}
         self.markets = {}
         for post in response['post']:
@@ -19,7 +17,7 @@ class Objects:
             if post['type'] == 2:
                 self.markets[post['idx']] = Market(post)
 
-    def update_trains(self, lines):
+    def update_trains_node(self, lines):
         if lines:
             for train in self.trains.values():
                 train.update_node(lines)

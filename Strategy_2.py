@@ -19,6 +19,6 @@ class Strategy:
     def get_move(self, train):
         if train.position == 10:
             return Move(1, -1, 0)  # Just test
-        else:
+        elif train.position == 0:
             return Move(1, 1, 0)  # Just test
             

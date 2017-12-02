@@ -9,6 +9,7 @@ class Train:
         self.speed = response['speed']
         self.node = None
 
+
     def update_node(self, lines):
         cur_line = lines[self.line_idx]
 
@@ -18,3 +19,4 @@ class Train:
             self.node = cur_line.start_point
         else:
             self.node = None
+

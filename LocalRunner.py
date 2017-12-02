@@ -23,16 +23,14 @@ class Runner:
             self.gui = GUI(player, map_graph, objects)
         i = 300
         while player.is_alive:
-            objects = self.process_client.read_objects()
-            if self.is_gui:
-                self.gui.update_objects(objects)
             moves = strategy.get_moves()
             if moves:
                 for move in moves:
-                    print(move.speed)
                     self.process_client.move(move)
             if self.is_gui:
-                while(self.gui.paused):
+                while self.gui.paused and player.is_alive:
+                    self.gui.turn()
+                else:
                     self.gui.turn()
             self.process_client.turn()
             if i != 0:

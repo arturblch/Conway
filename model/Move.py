@@ -3,3 +3,7 @@ class Move:
         self.line_idx = line_idx
         self.speed = speed
         self.train_idx = train_idx
+
+    def __repr__(self):
+        return 'line - %d, speed - %d, train -%d' %(
+                self.line_idx, self.speed, self.train_idx)

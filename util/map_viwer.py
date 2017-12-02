@@ -1,7 +1,7 @@
 import networkx as nx
 import matplotlib.pyplot as plt
 import math
-from util.maps import map02
+from util.WorldGetter import WorldGetter
 from model.Objects import Objects
 
 import json
@@ -40,8 +40,8 @@ objects = Objects(json.loads('''{
         }
     ]
 }'''))
-
-_map = map02
+factory = WorldGetter()
+_map = factory.get_map(1)
 
 nx.draw_networkx_nodes(_map.Graph, _map.pos, node_color='k')
 nx.draw_networkx_labels(_map.Graph, _map.pos, font_color='w')

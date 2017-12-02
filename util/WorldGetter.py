@@ -407,9 +407,9 @@ class WorldGetter:
                 "idx": 0,
                 "line_idx": 1,
                 "player_id": "1867fde9-5c0d-4db8-9b71-e0145832e4d4",
-                "position": 3,
+                "position": 0,
                 "product": 0,
-                "speed": 1
+                "speed": 0
             }
         ]
     }''')

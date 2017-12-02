@@ -26,7 +26,7 @@ class GUI:
         self.background = pg.image.load(BACKGROUND_IMAGE).convert_alpha()
         self.background = pg.transform.scale(self.background, (width, height))
         self.clock = pg.time.Clock()
-        self.fps = 60
+        self.fps = 5
         self.paused = False
         pg.display.set_caption("Train Game")
         self.myfont = pg.font.SysFont('arial', 15)
@@ -87,10 +87,10 @@ class GUI:
         train_pos = train_obj.position / line.length
         (x, y) = (x2 * train_pos + x1 * (1.0 - train_pos),
                   y2 * train_pos + y1 * (1.0 - train_pos))
-        print('pos_node', x1, y1)
-        print('pos_node 2', x2, y2)
-        print('train pos', train_pos)
-        print('coord', x, y)
+        # print('pos_node', x1, y1)
+        # print('pos_node 2', x2, y2)
+        # print('train pos', train_pos)
+        # print('coord', x, y)
 
         if train_obj.speed == 1:
             angle = math.atan2(y1 - y2, x2 - x1) / (
@@ -121,13 +121,11 @@ class GUI:
         pg.display.update()
 
     def turn(self):
-        
-        if not self.paused:
-            self.update()
-            pg.display.flip()
-            self.clock.tick(self.fps)
-        else:
-            sleep(0.2)
+
+        self.update()
+        pg.display.flip()
+        self.clock.tick(self.fps)
+
 
         for event in pg.event.get():
             if event.type == pg.QUIT or event.type == KEYDOWN and event.key == K_s:
@@ -135,6 +133,8 @@ class GUI:
             if event.type == KEYDOWN and event.key == K_p:
                 self.paused = not self.paused
 
+    def update_objects(self, objects):
+        self.objects = objects
 
     def close(self):
         pg.quit()

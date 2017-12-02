@@ -25,7 +25,7 @@ class Runner:
                 self.gui = GUI(player, map_graph, objects)
             i = 30
             while player.is_alive:
-                self.remote_process_client.update_objects(strategy.objects)
+                objects = self.remote_process_client.read_objects()
 
                 moves = strategy.get_moves()
                 if moves:

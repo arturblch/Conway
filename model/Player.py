@@ -11,6 +11,6 @@ class Player:
         self.name = response['name']
         if response['train']:
             self.trains = [train['idx'] for train in response['train']]
-        else
+        else:
             self.trains = None
         self.is_alive = True

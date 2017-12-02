@@ -1,4 +1,5 @@
 import sys
+from time import sleep
 from Strategy_2 import Strategy
 from LocalProcessClient import ProcessClient
 from GUI import GUI
@@ -21,22 +22,23 @@ class Runner:
         strategy = Strategy(player, map_graph, objects)
         if self.is_gui:
             self.gui = GUI(player, map_graph, objects)
-        i = 300
+            
         while player.is_alive:
-            moves = strategy.get_moves()
-            if moves:
-                for move in moves:
-                    self.process_client.move(move)
             if self.is_gui:
-                while self.gui.paused and player.is_alive:
-                    self.gui.turn()
-                else:
-                    self.gui.turn()
-            self.process_client.turn()
-            if i != 0:
-                i -=1
+                self.gui.turn()
+                if((not self.gui.paused) or self.gui.onestep):
+                    moves = strategy.get_moves()
+                    if moves:
+                        for move in moves:
+                            self.process_client.move(move)
+                    self.process_client.turn()
             else:
-                player.is_alive = False
+                moves = strategy.get_moves()
+                if moves:
+                    for move in moves:
+                        self.process_client.move(move)
+                self.process_client.turn()
+                sleep(0.5)
 
 
         return player.is_alive                  # for testing

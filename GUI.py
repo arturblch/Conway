@@ -28,6 +28,7 @@ class GUI:
         self.clock = pg.time.Clock()
         self.fps = 30
         self.paused = True
+        self.onestep = False
         pg.display.set_caption("Train Game")
         self.myfont = pg.font.SysFont('arial', 15)
 
@@ -47,11 +48,14 @@ class GUI:
 
             pg.draw.line(
                 self.surf, LINE_COLOR,
-                (int((self.display_width) * self.map.pos[l.start_point][0] + RADIUS),
-                 int((self.display_width) * self.map.pos[l.start_point][1] + RADIUS)),
-                (int((self.display_height) * self.map.pos[l.end_point][0] + RADIUS),
-                 int((self.display_height) * self.map.pos[l.end_point][1] + RADIUS)),
-                5)
+                (int((self.display_width) * self.map.pos[l.start_point][0] +
+                     RADIUS),
+                 int((self.display_width) * self.map.pos[l.start_point][1] +
+                     RADIUS)),
+                (int((self.display_height) * self.map.pos[l.end_point][0] +
+                     RADIUS),
+                 int((self.display_height) * self.map.pos[l.end_point][1] +
+                     RADIUS)), 5)
 
     def draw_node_labels(self, labels=None):
         if labels is None:
@@ -104,8 +108,8 @@ class GUI:
         if angle:
             angle = angle
             train = pg.transform.rotate(train, angle)
-        self.surf.blit(train, (int(self.display_width * x),
-                                    int(self.display_height * y)))
+        self.surf.blit(
+            train, (int(self.display_width * x), int(self.display_height * y)))
 
     def update(self):
         self.surf.blit(self.background, (0, 0))
@@ -121,15 +125,28 @@ class GUI:
 
     def turn(self):
         if self.player.is_alive == True:
+            self.onestep = False
+            for event in pg.event.get():
+                if event.type == pg.QUIT:
+                    self.player.is_alive == False
+                    return
+                if event.type == KEYDOWN:
+                    if event.key == K_s:
+                        self.player.is_alive == False
+                        return
+                    elif event.key == K_n:
+                        self.onestep = True
+                    elif event.key == K_p:
+                        self.paused = not self.paused
+                    elif (event.key == K_PLUS) or (event.key == K_EQUALS):
+                        self.fps += 1
+                    elif event.key == K_MINUS:
+                        self.fps -= 1
+                        if self.fps < 1: self.fps = 1
+
             self.update()
             pg.display.flip()
             self.clock.tick(self.fps)
-
-            for event in pg.event.get():
-                if event.type == pg.QUIT or event.type == KEYDOWN and event.key == K_s:
-                    self.close()
-                if event.type == KEYDOWN and event.key == K_p:
-                    self.paused = not self.paused
 
     def update_objects(self, objects):
         self.objects = objects

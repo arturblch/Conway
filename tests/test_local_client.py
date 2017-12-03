@@ -13,15 +13,17 @@ class TestProcessClient:
 
     def test_right_move_from_node(self):
         self.train.position = 10
-        self.process_client.update_trains_node()
+        self.train.line_idx = 1
+        self.process_client.turn_trains()
         move = Move(7, 1, self.train.idx)
         self.process_client.move(move)
-        assert self.train.speed == 1
+        assert self.train.speed == 0
         assert self.train.line_idx == 7
 
     def test_right_move_from_line(self):
         self.train.position = 5
-        self.process_client.update_trains_node()
+        self.train.line_idx = 1
+        self.process_client.turn_trains()
         move = Move(1, 1, self.train.idx)
         self.process_client.move(move)
         assert self.train.speed == 1
@@ -30,7 +32,8 @@ class TestProcessClient:
 
     def test_wrong_move_from_line(self):
         self.train.position = 9
-        self.process_client.update_trains_node()
+        self.train.line_idx = 1
+        self.process_client.turn_trains()
         move = Move(7, 1, self.train.idx)
         self.process_client.move(move)
         assert self.train.speed == 0
@@ -38,7 +41,8 @@ class TestProcessClient:
 
     def test_wrong_move_from_node(self):
         self.train.position = 10
-        self.process_client.update_trains_node()
+        self.train.line_idx = 1
+        self.process_client.turn_trains()
         move = Move(3, 1, self.train.idx)
         self.process_client.move(move)
         assert self.train.speed == 0
@@ -46,14 +50,16 @@ class TestProcessClient:
 
     def test_turn_wrong_speed(self):
         self.train.position = 10
+        self.train.line_idx = 1
         self.train.speed = 1
-        self.process_client.turn()
+        self.process_client.turn_trains()
         assert self.train.speed == 0
         assert self.train.position == 10
 
     def test_turn_right_speed(self):
         self.train.position = 5
+        self.train.line_idx = 1
         self.train.speed = 1
-        self.process_client.turn()
+        self.process_client.turn_trains()
         assert self.train.speed == 1
         assert self.train.position == 6

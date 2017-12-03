@@ -16,7 +16,7 @@ fh.setLevel(logging.DEBUG)
 
 # create console handler and set level to debug
 ch = logging.StreamHandler()
-ch.setLevel(logging.DEBUG)
+ch.setLevel(logging.ERROR)
 
 # create formatter and add it to the handlers
 formatter = logging.Formatter(
@@ -74,7 +74,8 @@ class RemoteProcessClient:
             data = {}
         self.write_string(json.dumps(data))
         logger.info("Loging message: %s", data)
-        return self.read_response()
+        if action != 'LOGOUT':
+            return self.read_response()
 
     def read_response(self):
         result = self.read_uint()
@@ -127,6 +128,10 @@ class RemoteProcessClient:
     def read_objects(self):
         layer = self.write_message('MAP', {"layer": 1})[1]
         return Objects(layer)
+
+    def update_objects(self, objects):
+        layer = self.write_message('MAP', {"layer": 1})[1]
+        objects.update(layer)
 
     def read_map(self):
         layer = self.write_message('MAP', {"layer": 0})[1]

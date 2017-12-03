@@ -9,12 +9,9 @@ class Strategy:
 
     def get_moves(self):
         moves = []
-        for train_id in self.player.trains:
-            train = self.objects.trains[train_id]
-            move = self.get_move(train)
-            if move:
-                moves.append(move)
+        move = self.get_move()
+        moves.append(move)
         return moves
 
-    def get_move(self, train):
+    def get_move(self):
         return Move(1, 1, 0)  # Just test

@@ -13,5 +13,8 @@ class Market:
             self.replenishment = None
         self.type = post["type"]
 
+    def update(self, post):
+        self.product = post['product']
+
     def __repr__(self):
         return f"Market {self.idx}"

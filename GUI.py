@@ -125,34 +125,34 @@ class GUI:
             (self.display_width - 60, self.display_height - 20))
 
     def draw_train(self):
-        train_obj = self.objects.trains[0]
-        if train_obj.line_idx == None:
-            return
-        train = pg.Surface((30, 30), pg.SRCALPHA)
-        pg.draw.polygon(train, (255, 0, 0), [[0, 0], [30, 15], [0, 30]], 0)
+        for train in self.objects.trains.values():
+            if train.line_idx == None:
+                return
+            train_surf = pg.Surface((30, 30), pg.SRCALPHA)
+            pg.draw.polygon(train_surf, (255, 0, 0), [[0, 0], [30, 15], [0, 30]], 0)
 
-        line = self.map.lines[train_obj.line_idx]
+            line = self.map.lines[train.line_idx]
 
-        (x1, y1) = self.map.pos[line.start_point]
-        (x2, y2) = self.map.pos[line.end_point]
-        train_pos = train_obj.position / line.length
-        (x, y) = (x2 * train_pos + x1 * (1.0 - train_pos),
-                  y2 * train_pos + y1 * (1.0 - train_pos))
+            (x1, y1) = self.map.pos[line.start_point]
+            (x2, y2) = self.map.pos[line.end_point]
+            train_pos = train.position / line.length
+            (x, y) = (x2 * train_pos + x1 * (1.0 - train_pos),
+                      y2 * train_pos + y1 * (1.0 - train_pos))
 
-        if train_obj.speed == 1:
-            angle = math.atan2(y1 - y2, x2 - x1) / (
-                2.0 * math.pi) * 360  # degrees
-        elif train_obj.speed == -1:
-            angle = math.atan2(y2 - y1, x1 - x2) / (
-                2.0 * math.pi) * 360  # degrees
-        else:
-            angle = None
+            if train.speed == 1:
+                angle = math.atan2(y1 - y2, x2 - x1) / (
+                    2.0 * math.pi) * 360  # degrees
+            elif train.speed == -1:
+                angle = math.atan2(y2 - y1, x1 - x2) / (
+                    2.0 * math.pi) * 360  # degrees
+            else:
+                angle = None
 
-        if angle:
-            angle = angle
-            train = pg.transform.rotate(train, angle)
-        self.surf.blit(
-            train, (int(self.display_width * x), int(self.display_height * y)))
+            if angle:
+                angle = angle
+                train_surf = pg.transform.rotate(train_surf, angle)
+            self.surf.blit(
+                train_surf, (int(self.display_width * x), int(self.display_height * y)))
 
     def update(self):
         self.surf.blit(self.background, (0, 0))
@@ -195,7 +195,6 @@ class GUI:
 
     def close(self):
         pg.quit()
-        self.player.is_alive = False
 
 
 if __name__ == '__main__':

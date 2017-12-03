@@ -205,9 +205,9 @@ map_graph = Map(
 def test_base():
     i = 30
     gui = GUI(player, map_graph, objects)
-    gui.fps = 10
+    gui.fps = 30
+    gui.paused = False
     while player.is_alive:
-        print(gui.paused)
         gui.turn()
         if gui.paused == False:
             if objects.trains[0].position == 10:
@@ -215,6 +215,9 @@ def test_base():
             elif objects.trains[0].position == 0:
                 objects.trains[0].speed = 1
             objects.trains[0].position += objects.trains[0].speed
+            if i>0:
+                i-=1
+            else:
+                player.is_alive = False
 
-
-test_base()
+    gui.close()

@@ -45,15 +45,15 @@ class ProcessClient:
         logger.info("Login")
 
         return self.player
+
     def init_train(self):
         for train in self.objects.trains.values():
             train.node = self.player.home.idx
 
-
     def turn_trains(self):
         for train in self.objects.trains.values():
             if train.line_idx != None:
-                if not self.check_speed(train):
+                if not self.check_speed(train, train.speed):
                     train.speed = 0
                 train.position += train.speed
                 train.update_node(self.map.lines)
@@ -61,18 +61,18 @@ class ProcessClient:
                     post_id = self.map.points[train.node].post_id
                     if post_id:
                         if post_id in self.objects.towns.keys():
-                            self.objects.towns[post_id].product += train.product
+                            self.objects.towns[
+                                post_id].product += train.product
                             train.product = 0
                         elif post_id in self.objects.markets.keys():
-                            train.product += self.objects.markets[post_id].product
+                            train.product += self.objects.markets[
+                                post_id].product
                             self.objects.markets[post_id].product = 0
-            
 
     def turn_markets(self):
         for market in self.objects.markets.values():
             if market.product < market.product_capacity:
                 market.product += market.replenishment
-
 
     def turn_towns(self):
         for town in self.objects.towns.values():
@@ -88,25 +88,26 @@ class ProcessClient:
         for market in self.objects.markets.values():
             str_post.append([market.name, market.product, '-'])
 
-        print(tabulate(str_post, headers=['name', 'products', 'population']), '\n')
+        print(
+            tabulate(str_post, headers=['name', 'products', 'population']),
+            '\n')
 
         for train in self.objects.trains.values():
             print(
-                    tabulate(
-                        [[
-                            train.idx, train.product, train.line_idx, train.speed,
-                            train.position
-                        ]],
-                        headers=[
-                            'Train_id', 'product', 'line_idx', 'speed', 'position'
-                        ]))
+                tabulate(
+                    [[
+                        train.idx, train.product, train.line_idx, train.speed,
+                        train.position
+                    ]],
+                    headers=[
+                        'Train_id', 'product', 'line_idx', 'speed', 'position'
+                    ]))
 
     def turn(self):
         self.turn_markets()
         self.turn_trains()
         self.turn_towns()
         self.print_state()
-        
 
     def move(self, move):
         logger.info(move)
@@ -114,16 +115,19 @@ class ProcessClient:
             train = self.objects.trains[move.train_idx]
             if move.line_idx in self.map.lines.keys():
                 if move.line_idx == train.line_idx:
-                    train.speed = move.speed
+                    if self.check_speed(train, move.speed):
+                        train.speed = move.speed
                 line = self.map.lines[move.line_idx]
                 if train.node == line.start_point:
                     train.line_idx = move.line_idx
-                    train.speed = move.speed
+                    if self.check_speed(train, move.speed):
+                        train.speed = move.speed
                     train.position = 0
 
                 if train.node == line.end_point:
                     train.line_idx = move.line_idx
-                    train.speed = move.speed
+                    if self.check_speed(train, move.speed):
+                        train.speed = move.speed
                     train.position = line.length
 
     def read_objects(self):
@@ -132,8 +136,7 @@ class ProcessClient:
     def read_map(self):
         return self.map
 
-    def check_speed(self, train):
-        if 0 <= train.position + train.speed <= self.map.lines[train.
-                                                               line_idx].length:
+    def check_speed(self, train, speed):
+        if 0 <= train.position + speed <= self.map.lines[train.line_idx].length:
             return True
         return False

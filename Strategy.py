@@ -25,22 +25,30 @@ class Strategy:
             current_point = map_graph.get_point(train.line_idx, train.position)
             markets = objects.markets
             town = objects.towns[self.town]
-            # max_potential = (town.product-town.population, map_graph.get_point(1, 0))  # home point
-            max_potential = (0, map_graph.get_point(1, 0))  # home point
+
+            # if current_point.idx != self.home:
+            #     distance = map_graph.get_distance(current_point.idx, self.home)
+            # else:
+            #     distance = 1
+            # max_potential = (town.product - town.population*distance + train.product, map_graph.get_point(1, 0))
+
+            max_potential = (0, map_graph.get_point(1, 0))
             for market in markets.values():
                 market_point = map_graph.get_market_point(market)
                 if market_point == current_point:
                     continue
                 distance = map_graph.get_distance(current_point.idx, market_point.idx)
                 return_distance = map_graph.get_distance(market_point.idx, self.home)
-                if town.product - town.population*(distance+return_distance) >= town.population:
+                if town.product - town.population*(distance+return_distance) >= 0:
                     market_potential = min(market.product + market.replenishment*distance, market.product_capacity) - \
                                        town.population*(distance+return_distance) + town.product + train.product
                     print((market_potential, market), max_potential)
                     if market_potential > max_potential[0]:
                         max_potential = (market_potential, market_point)
             arrival_point = max_potential[1]
+            print(f"ARRIVAL: {arrival_point}")
             if current_point != arrival_point:
+                # print(current_point, arrival_point)
                 next_point = map_graph.get_next_point(current_point.idx, arrival_point.idx)
                 line, speed = map_graph.departure(current_point.idx, next_point.idx)
                 print(f"CURRENT: {current_point} NEXT: {next_point}")

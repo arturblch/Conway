@@ -115986,3 +115986,815 @@
 2017-12-03 18:15:15,801 - Action: LOGOUT
 2017-12-03 18:15:15,802 - Loging message: {}
 2017-12-03 18:15:15,802 - Close socket
+2017-12-03 18:38:20,523 - Create socket
+2017-12-03 18:38:20,604 - Connection done
+2017-12-03 18:38:20,604 - Action: LOGIN
+2017-12-03 18:38:20,606 - Loging message: {'name': 'Mickey'}
+2017-12-03 18:38:20,678 - Result code: 0
+2017-12-03 18:38:20,680 - Action: MAP
+2017-12-03 18:38:20,681 - Loging message: {'layer': 0}
+2017-12-03 18:38:20,757 - Result code: 0
+2017-12-03 18:38:20,800 - Action: MAP
+2017-12-03 18:38:20,800 - Loging message: {'layer': 1}
+2017-12-03 18:38:20,839 - Result code: 0
+2017-12-03 18:38:21,435 - Action: MAP
+2017-12-03 18:38:21,435 - Loging message: {'layer': 1}
+2017-12-03 18:38:21,550 - Result code: 0
+2017-12-03 18:38:21,598 - Action: MAP
+2017-12-03 18:38:21,599 - Loging message: {'layer': 1}
+2017-12-03 18:38:21,706 - Result code: 0
+2017-12-03 18:38:21,757 - Action: MAP
+2017-12-03 18:38:21,758 - Loging message: {'layer': 1}
+2017-12-03 18:38:21,875 - Result code: 0
+2017-12-03 18:38:21,918 - Action: MAP
+2017-12-03 18:38:21,918 - Loging message: {'layer': 1}
+2017-12-03 18:38:22,025 - Result code: 0
+2017-12-03 18:38:22,080 - Action: MAP
+2017-12-03 18:38:22,081 - Loging message: {'layer': 1}
+2017-12-03 18:38:22,192 - Result code: 0
+2017-12-03 18:38:22,242 - Action: MAP
+2017-12-03 18:38:22,243 - Loging message: {'layer': 1}
+2017-12-03 18:38:22,349 - Result code: 0
+2017-12-03 18:38:22,394 - Action: MAP
+2017-12-03 18:38:22,394 - Loging message: {'layer': 1}
+2017-12-03 18:38:22,600 - Result code: 0
+2017-12-03 18:38:22,652 - Action: MAP
+2017-12-03 18:38:22,652 - Loging message: {'layer': 1}
+2017-12-03 18:38:22,759 - Result code: 0
+2017-12-03 18:38:22,807 - Action: MAP
+2017-12-03 18:38:22,807 - Loging message: {'layer': 1}
+2017-12-03 18:38:22,884 - Result code: 0
+2017-12-03 18:38:22,927 - Action: MAP
+2017-12-03 18:38:22,927 - Loging message: {'layer': 1}
+2017-12-03 18:38:22,995 - Result code: 0
+2017-12-03 18:38:23,043 - Action: MAP
+2017-12-03 18:38:23,043 - Loging message: {'layer': 1}
+2017-12-03 18:38:23,112 - Result code: 0
+2017-12-03 18:38:23,165 - Action: MOVE
+2017-12-03 18:38:23,166 - Loging message: {'line_idx': 1, 'speed': 1, 'train_idx': 0}
+2017-12-03 18:38:23,273 - Result code: 0
+2017-12-03 18:38:23,273 - Action: TURN
+2017-12-03 18:38:23,274 - Loging message: {}
+2017-12-03 18:38:23,340 - Result code: 0
+2017-12-03 18:38:23,341 - Action: MAP
+2017-12-03 18:38:23,341 - Loging message: {'layer': 1}
+2017-12-03 18:38:23,793 - Result code: 0
+2017-12-03 18:38:23,836 - Action: MOVE
+2017-12-03 18:38:23,836 - Loging message: {'line_idx': 1, 'speed': -1, 'train_idx': 0}
+2017-12-03 18:38:23,870 - Result code: 0
+2017-12-03 18:38:23,871 - Action: TURN
+2017-12-03 18:38:23,871 - Loging message: {}
+2017-12-03 18:38:23,983 - Result code: 0
+2017-12-03 18:38:23,983 - Action: MAP
+2017-12-03 18:38:23,984 - Loging message: {'layer': 1}
+2017-12-03 18:38:24,059 - Result code: 0
+2017-12-03 18:38:24,103 - Action: MOVE
+2017-12-03 18:38:24,103 - Loging message: {'line_idx': 1, 'speed': 1, 'train_idx': 0}
+2017-12-03 18:38:24,175 - Result code: 0
+2017-12-03 18:38:24,175 - Action: TURN
+2017-12-03 18:38:24,176 - Loging message: {}
+2017-12-03 18:38:24,287 - Result code: 0
+2017-12-03 18:38:24,288 - Action: MAP
+2017-12-03 18:38:24,288 - Loging message: {'layer': 1}
+2017-12-03 18:38:24,362 - Result code: 0
+2017-12-03 18:38:24,393 - Action: MOVE
+2017-12-03 18:38:24,394 - Loging message: {'line_idx': 1, 'speed': -1, 'train_idx': 0}
+2017-12-03 18:38:24,499 - Result code: 0
+2017-12-03 18:38:24,500 - Action: TURN
+2017-12-03 18:38:24,500 - Loging message: {}
+2017-12-03 18:38:24,567 - Result code: 0
+2017-12-03 18:38:24,568 - Action: MAP
+2017-12-03 18:38:24,568 - Loging message: {'layer': 1}
+2017-12-03 18:38:24,635 - Result code: 0
+2017-12-03 18:38:24,678 - Action: MOVE
+2017-12-03 18:38:24,678 - Loging message: {'line_idx': 1, 'speed': 1, 'train_idx': 0}
+2017-12-03 18:38:24,783 - Result code: 0
+2017-12-03 18:38:24,784 - Action: TURN
+2017-12-03 18:38:24,784 - Loging message: {}
+2017-12-03 18:38:24,890 - Result code: 0
+2017-12-03 18:38:24,890 - Action: MAP
+2017-12-03 18:38:24,890 - Loging message: {'layer': 1}
+2017-12-03 18:38:24,961 - Result code: 0
+2017-12-03 18:38:25,006 - Action: MOVE
+2017-12-03 18:38:25,007 - Loging message: {'line_idx': 1, 'speed': -1, 'train_idx': 0}
+2017-12-03 18:38:25,113 - Result code: 0
+2017-12-03 18:38:25,114 - Action: TURN
+2017-12-03 18:38:25,114 - Loging message: {}
+2017-12-03 18:38:25,239 - Result code: 0
+2017-12-03 18:38:25,239 - Action: MAP
+2017-12-03 18:38:25,240 - Loging message: {'layer': 1}
+2017-12-03 18:38:25,366 - Result code: 0
+2017-12-03 18:38:25,417 - Action: MOVE
+2017-12-03 18:38:25,417 - Loging message: {'line_idx': 1, 'speed': 1, 'train_idx': 0}
+2017-12-03 18:38:25,523 - Result code: 0
+2017-12-03 18:38:25,523 - Action: TURN
+2017-12-03 18:38:25,523 - Loging message: {}
+2017-12-03 18:38:25,595 - Result code: 0
+2017-12-03 18:38:25,595 - Action: MAP
+2017-12-03 18:38:25,596 - Loging message: {'layer': 1}
+2017-12-03 18:38:25,705 - Result code: 0
+2017-12-03 18:38:25,754 - Action: MOVE
+2017-12-03 18:38:25,754 - Loging message: {'line_idx': 1, 'speed': -1, 'train_idx': 0}
+2017-12-03 18:38:25,861 - Result code: 0
+2017-12-03 18:38:25,862 - Action: TURN
+2017-12-03 18:38:25,862 - Loging message: {}
+2017-12-03 18:38:25,969 - Result code: 0
+2017-12-03 18:38:25,969 - Action: MAP
+2017-12-03 18:38:25,970 - Loging message: {'layer': 1}
+2017-12-03 18:38:26,082 - Result code: 0
+2017-12-03 18:38:26,122 - Action: MOVE
+2017-12-03 18:38:26,122 - Loging message: {'line_idx': 1, 'speed': 1, 'train_idx': 0}
+2017-12-03 18:38:26,236 - Result code: 0
+2017-12-03 18:38:26,236 - Action: TURN
+2017-12-03 18:38:26,237 - Loging message: {}
+2017-12-03 18:38:26,349 - Result code: 0
+2017-12-03 18:38:26,350 - Action: MAP
+2017-12-03 18:38:26,350 - Loging message: {'layer': 1}
+2017-12-03 18:38:26,424 - Result code: 0
+2017-12-03 18:38:26,460 - Action: MOVE
+2017-12-03 18:38:26,460 - Loging message: {'line_idx': 1, 'speed': -1, 'train_idx': 0}
+2017-12-03 18:38:26,569 - Result code: 0
+2017-12-03 18:38:26,569 - Action: TURN
+2017-12-03 18:38:26,569 - Loging message: {}
+2017-12-03 18:38:26,637 - Result code: 0
+2017-12-03 18:38:26,637 - Action: MAP
+2017-12-03 18:38:26,637 - Loging message: {'layer': 1}
+2017-12-03 18:38:26,705 - Result code: 0
+2017-12-03 18:38:26,737 - Action: MOVE
+2017-12-03 18:38:26,738 - Loging message: {'line_idx': 1, 'speed': 1, 'train_idx': 0}
+2017-12-03 18:38:26,849 - Result code: 0
+2017-12-03 18:38:26,849 - Action: TURN
+2017-12-03 18:38:26,850 - Loging message: {}
+2017-12-03 18:38:26,962 - Result code: 0
+2017-12-03 18:38:26,962 - Action: MAP
+2017-12-03 18:38:26,962 - Loging message: {'layer': 1}
+2017-12-03 18:38:27,033 - Result code: 0
+2017-12-03 18:38:27,066 - Action: MOVE
+2017-12-03 18:38:27,066 - Loging message: {'line_idx': 1, 'speed': -1, 'train_idx': 0}
+2017-12-03 18:38:27,162 - Result code: 0
+2017-12-03 18:38:27,162 - Action: TURN
+2017-12-03 18:38:27,162 - Loging message: {}
+2017-12-03 18:38:27,231 - Result code: 0
+2017-12-03 18:38:27,231 - Action: MAP
+2017-12-03 18:38:27,231 - Loging message: {'layer': 1}
+2017-12-03 18:38:27,298 - Result code: 0
+2017-12-03 18:38:27,328 - Action: MOVE
+2017-12-03 18:38:27,329 - Loging message: {'line_idx': 1, 'speed': 1, 'train_idx': 0}
+2017-12-03 18:38:27,435 - Result code: 0
+2017-12-03 18:38:27,436 - Action: TURN
+2017-12-03 18:38:27,436 - Loging message: {}
+2017-12-03 18:38:27,567 - Result code: 0
+2017-12-03 18:38:27,567 - Action: MAP
+2017-12-03 18:38:27,568 - Loging message: {'layer': 1}
+2017-12-03 18:38:27,688 - Result code: 0
+2017-12-03 18:38:27,734 - Action: MOVE
+2017-12-03 18:38:27,734 - Loging message: {'line_idx': 1, 'speed': -1, 'train_idx': 0}
+2017-12-03 18:38:27,842 - Result code: 0
+2017-12-03 18:38:27,842 - Action: TURN
+2017-12-03 18:38:27,842 - Loging message: {}
+2017-12-03 18:38:27,908 - Result code: 0
+2017-12-03 18:38:27,908 - Action: MAP
+2017-12-03 18:38:27,909 - Loging message: {'layer': 1}
+2017-12-03 18:38:27,998 - Result code: 0
+2017-12-03 18:38:28,030 - Action: MOVE
+2017-12-03 18:38:28,030 - Loging message: {'line_idx': 1, 'speed': 1, 'train_idx': 0}
+2017-12-03 18:38:28,137 - Result code: 0
+2017-12-03 18:38:28,138 - Action: TURN
+2017-12-03 18:38:28,138 - Loging message: {}
+2017-12-03 18:38:28,243 - Result code: 0
+2017-12-03 18:38:28,244 - Action: MAP
+2017-12-03 18:38:28,244 - Loging message: {'layer': 1}
+2017-12-03 18:38:28,362 - Result code: 0
+2017-12-03 18:38:28,414 - Action: MOVE
+2017-12-03 18:38:28,414 - Loging message: {'line_idx': 1, 'speed': -1, 'train_idx': 0}
+2017-12-03 18:38:28,522 - Result code: 0
+2017-12-03 18:38:28,522 - Action: TURN
+2017-12-03 18:38:28,522 - Loging message: {}
+2017-12-03 18:38:28,596 - Result code: 0
+2017-12-03 18:38:28,596 - Action: MAP
+2017-12-03 18:38:28,596 - Loging message: {'layer': 1}
+2017-12-03 18:38:28,664 - Result code: 0
+2017-12-03 18:38:28,717 - Action: MOVE
+2017-12-03 18:38:28,718 - Loging message: {'line_idx': 1, 'speed': 1, 'train_idx': 0}
+2017-12-03 18:38:28,795 - Result code: 0
+2017-12-03 18:38:28,796 - Action: TURN
+2017-12-03 18:38:28,796 - Loging message: {}
+2017-12-03 18:38:28,867 - Result code: 0
+2017-12-03 18:38:28,867 - Action: MAP
+2017-12-03 18:38:28,868 - Loging message: {'layer': 1}
+2017-12-03 18:38:28,975 - Result code: 0
+2017-12-03 18:38:29,025 - Action: MOVE
+2017-12-03 18:38:29,025 - Loging message: {'line_idx': 1, 'speed': -1, 'train_idx': 0}
+2017-12-03 18:38:29,132 - Result code: 0
+2017-12-03 18:38:29,133 - Action: TURN
+2017-12-03 18:38:29,133 - Loging message: {}
+2017-12-03 18:38:29,205 - Result code: 0
+2017-12-03 18:38:29,206 - Action: MAP
+2017-12-03 18:38:29,206 - Loging message: {'layer': 1}
+2017-12-03 18:38:29,314 - Result code: 0
+2017-12-03 18:38:29,357 - Action: MOVE
+2017-12-03 18:38:29,357 - Loging message: {'line_idx': 1, 'speed': 1, 'train_idx': 0}
+2017-12-03 18:38:29,429 - Result code: 0
+2017-12-03 18:38:29,429 - Action: TURN
+2017-12-03 18:38:29,430 - Loging message: {}
+2017-12-03 18:38:29,537 - Result code: 0
+2017-12-03 18:38:29,537 - Action: MAP
+2017-12-03 18:38:29,538 - Loging message: {'layer': 1}
+2017-12-03 18:38:29,645 - Result code: 0
+2017-12-03 18:38:29,687 - Action: MOVE
+2017-12-03 18:38:29,687 - Loging message: {'line_idx': 1, 'speed': -1, 'train_idx': 0}
+2017-12-03 18:38:29,762 - Result code: 0
+2017-12-03 18:38:29,762 - Action: TURN
+2017-12-03 18:38:29,762 - Loging message: {}
+2017-12-03 18:38:29,871 - Result code: 0
+2017-12-03 18:38:29,871 - Action: MAP
+2017-12-03 18:38:29,871 - Loging message: {'layer': 1}
+2017-12-03 18:38:29,979 - Result code: 0
+2017-12-03 18:38:30,012 - Action: MOVE
+2017-12-03 18:38:30,012 - Loging message: {'line_idx': 1, 'speed': 1, 'train_idx': 0}
+2017-12-03 18:38:30,079 - Result code: 0
+2017-12-03 18:38:30,080 - Action: TURN
+2017-12-03 18:38:30,080 - Loging message: {}
+2017-12-03 18:38:30,163 - Result code: 0
+2017-12-03 18:38:30,163 - Action: LOGOUT
+2017-12-03 18:38:30,163 - Loging message: {}
+2017-12-03 18:38:30,164 - Close socket
+2017-12-03 18:38:36,233 - Create socket
+2017-12-03 18:38:36,325 - Connection done
+2017-12-03 18:38:36,325 - Action: LOGIN
+2017-12-03 18:38:36,326 - Loging message: {'name': 'Mickey'}
+2017-12-03 18:38:36,404 - Result code: 0
+2017-12-03 18:38:36,405 - Action: MAP
+2017-12-03 18:38:36,405 - Loging message: {'layer': 0}
+2017-12-03 18:38:36,670 - Result code: 0
+2017-12-03 18:38:36,699 - Action: MAP
+2017-12-03 18:38:36,699 - Loging message: {'layer': 1}
+2017-12-03 18:38:36,773 - Result code: 0
+2017-12-03 18:38:37,371 - Action: MAP
+2017-12-03 18:38:37,371 - Loging message: {'layer': 1}
+2017-12-03 18:38:37,493 - Result code: 0
+2017-12-03 18:38:37,529 - Action: MAP
+2017-12-03 18:38:37,529 - Loging message: {'layer': 1}
+2017-12-03 18:38:37,604 - Result code: 0
+2017-12-03 18:38:37,636 - Action: MAP
+2017-12-03 18:38:37,637 - Loging message: {'layer': 1}
+2017-12-03 18:38:37,673 - Result code: 0
+2017-12-03 18:38:37,705 - Action: MAP
+2017-12-03 18:38:37,705 - Loging message: {'layer': 1}
+2017-12-03 18:38:37,802 - Result code: 0
+2017-12-03 18:38:37,837 - Action: MAP
+2017-12-03 18:38:37,837 - Loging message: {'layer': 1}
+2017-12-03 18:38:37,911 - Result code: 0
+2017-12-03 18:38:37,942 - Action: MAP
+2017-12-03 18:38:37,942 - Loging message: {'layer': 1}
+2017-12-03 18:38:38,049 - Result code: 0
+2017-12-03 18:38:38,090 - Action: MAP
+2017-12-03 18:38:38,090 - Loging message: {'layer': 1}
+2017-12-03 18:38:38,197 - Result code: 0
+2017-12-03 18:38:38,239 - Action: MAP
+2017-12-03 18:38:38,240 - Loging message: {'layer': 1}
+2017-12-03 18:38:38,361 - Result code: 0
+2017-12-03 18:38:38,411 - Action: MAP
+2017-12-03 18:38:38,411 - Loging message: {'layer': 1}
+2017-12-03 18:38:38,524 - Result code: 0
+2017-12-03 18:38:38,570 - Action: MAP
+2017-12-03 18:38:38,571 - Loging message: {'layer': 1}
+2017-12-03 18:38:38,679 - Result code: 0
+2017-12-03 18:38:38,711 - Action: MAP
+2017-12-03 18:38:38,711 - Loging message: {'layer': 1}
+2017-12-03 18:38:38,835 - Result code: 0
+2017-12-03 18:38:38,886 - Action: MAP
+2017-12-03 18:38:38,886 - Loging message: {'layer': 1}
+2017-12-03 18:38:38,993 - Result code: 0
+2017-12-03 18:38:39,042 - Action: MAP
+2017-12-03 18:38:39,042 - Loging message: {'layer': 1}
+2017-12-03 18:38:39,163 - Result code: 0
+2017-12-03 18:38:39,202 - Action: MAP
+2017-12-03 18:38:39,202 - Loging message: {'layer': 1}
+2017-12-03 18:38:39,315 - Result code: 0
+2017-12-03 18:38:39,367 - Action: MAP
+2017-12-03 18:38:39,367 - Loging message: {'layer': 1}
+2017-12-03 18:38:39,475 - Result code: 0
+2017-12-03 18:38:39,518 - Action: MAP
+2017-12-03 18:38:39,519 - Loging message: {'layer': 1}
+2017-12-03 18:38:39,601 - Result code: 0
+2017-12-03 18:38:39,645 - Action: MAP
+2017-12-03 18:38:39,645 - Loging message: {'layer': 1}
+2017-12-03 18:38:39,790 - Result code: 0
+2017-12-03 18:38:39,845 - Action: MAP
+2017-12-03 18:38:39,845 - Loging message: {'layer': 1}
+2017-12-03 18:38:39,961 - Result code: 0
+2017-12-03 18:38:40,007 - Action: MAP
+2017-12-03 18:38:40,007 - Loging message: {'layer': 1}
+2017-12-03 18:38:40,081 - Result code: 0
+2017-12-03 18:38:40,126 - Action: MAP
+2017-12-03 18:38:40,126 - Loging message: {'layer': 1}
+2017-12-03 18:38:40,195 - Result code: 0
+2017-12-03 18:38:40,242 - Action: MAP
+2017-12-03 18:38:40,243 - Loging message: {'layer': 1}
+2017-12-03 18:38:40,367 - Result code: 0
+2017-12-03 18:38:40,417 - Action: MAP
+2017-12-03 18:38:40,417 - Loging message: {'layer': 1}
+2017-12-03 18:38:40,489 - Result code: 0
+2017-12-03 18:38:40,533 - Action: MAP
+2017-12-03 18:38:40,533 - Loging message: {'layer': 1}
+2017-12-03 18:38:40,606 - Result code: 0
+2017-12-03 18:38:40,652 - Action: MAP
+2017-12-03 18:38:40,653 - Loging message: {'layer': 1}
+2017-12-03 18:38:40,724 - Result code: 0
+2017-12-03 18:38:40,768 - Action: MAP
+2017-12-03 18:38:40,769 - Loging message: {'layer': 1}
+2017-12-03 18:38:40,836 - Result code: 0
+2017-12-03 18:38:40,879 - Action: MAP
+2017-12-03 18:38:40,879 - Loging message: {'layer': 1}
+2017-12-03 18:38:40,986 - Result code: 0
+2017-12-03 18:38:41,028 - Action: MAP
+2017-12-03 18:38:41,028 - Loging message: {'layer': 1}
+2017-12-03 18:38:41,101 - Result code: 0
+2017-12-03 18:38:41,146 - Action: MAP
+2017-12-03 18:38:41,147 - Loging message: {'layer': 1}
+2017-12-03 18:38:41,269 - Result code: 0
+2017-12-03 18:38:41,317 - Action: MAP
+2017-12-03 18:38:41,318 - Loging message: {'layer': 1}
+2017-12-03 18:38:41,396 - Result code: 0
+2017-12-03 18:38:41,443 - Action: MAP
+2017-12-03 18:38:41,443 - Loging message: {'layer': 1}
+2017-12-03 18:38:41,563 - Result code: 0
+2017-12-03 18:38:41,614 - Action: MAP
+2017-12-03 18:38:41,615 - Loging message: {'layer': 1}
+2017-12-03 18:38:41,684 - Result code: 0
+2017-12-03 18:38:41,733 - Action: LOGOUT
+2017-12-03 18:38:41,733 - Loging message: {}
+2017-12-03 18:38:41,733 - Close socket
+2017-12-03 18:39:09,397 - Create socket
+2017-12-03 18:39:09,433 - Connection done
+2017-12-03 18:39:09,434 - Action: LOGIN
+2017-12-03 18:39:09,435 - Loging message: {'name': 'Mickey'}
+2017-12-03 18:39:09,509 - Result code: 0
+2017-12-03 18:39:09,510 - Action: MAP
+2017-12-03 18:39:09,511 - Loging message: {'layer': 0}
+2017-12-03 18:39:09,585 - Result code: 0
+2017-12-03 18:39:09,618 - Action: MAP
+2017-12-03 18:39:09,618 - Loging message: {'layer': 1}
+2017-12-03 18:39:09,652 - Result code: 0
+2017-12-03 18:39:10,246 - Action: MAP
+2017-12-03 18:39:10,247 - Loging message: {'layer': 1}
+2017-12-03 18:39:10,286 - Result code: 0
+2017-12-03 18:39:10,317 - Action: MAP
+2017-12-03 18:39:10,318 - Loging message: {'layer': 1}
+2017-12-03 18:39:10,351 - Result code: 0
+2017-12-03 18:39:10,396 - Action: MAP
+2017-12-03 18:39:10,397 - Loging message: {'layer': 1}
+2017-12-03 18:39:10,471 - Result code: 0
+2017-12-03 18:39:10,516 - Action: MAP
+2017-12-03 18:39:10,517 - Loging message: {'layer': 1}
+2017-12-03 18:39:10,551 - Result code: 0
+2017-12-03 18:39:10,581 - Action: MAP
+2017-12-03 18:39:10,581 - Loging message: {'layer': 1}
+2017-12-03 18:39:10,670 - Result code: 0
+2017-12-03 18:39:10,713 - Action: MOVE
+2017-12-03 18:39:10,713 - Loging message: {'line_idx': 1, 'speed': 1, 'train_idx': 0}
+2017-12-03 18:39:10,822 - Result code: 0
+2017-12-03 18:39:10,822 - Action: TURN
+2017-12-03 18:39:10,823 - Loging message: {}
+2017-12-03 18:39:10,935 - Result code: 0
+2017-12-03 18:39:10,936 - Action: MAP
+2017-12-03 18:39:10,936 - Loging message: {'layer': 1}
+2017-12-03 18:39:11,043 - Result code: 0
+2017-12-03 18:39:11,076 - Action: MOVE
+2017-12-03 18:39:11,076 - Loging message: {'line_idx': 1, 'speed': -1, 'train_idx': 0}
+2017-12-03 18:39:11,183 - Result code: 0
+2017-12-03 18:39:11,183 - Action: TURN
+2017-12-03 18:39:11,184 - Loging message: {}
+2017-12-03 18:39:11,251 - Result code: 0
+2017-12-03 18:39:11,251 - Action: MAP
+2017-12-03 18:39:11,251 - Loging message: {'layer': 1}
+2017-12-03 18:39:11,319 - Result code: 0
+2017-12-03 18:39:11,351 - Action: MOVE
+2017-12-03 18:39:11,351 - Loging message: {'line_idx': 1, 'speed': 1, 'train_idx': 0}
+2017-12-03 18:39:11,464 - Result code: 0
+2017-12-03 18:39:11,464 - Action: TURN
+2017-12-03 18:39:11,464 - Loging message: {}
+2017-12-03 18:39:11,533 - Result code: 0
+2017-12-03 18:39:11,533 - Action: MAP
+2017-12-03 18:39:11,533 - Loging message: {'layer': 1}
+2017-12-03 18:39:11,668 - Result code: 0
+2017-12-03 18:39:11,711 - Action: MOVE
+2017-12-03 18:39:11,712 - Loging message: {'line_idx': 1, 'speed': -1, 'train_idx': 0}
+2017-12-03 18:39:11,779 - Result code: 0
+2017-12-03 18:39:11,779 - Action: TURN
+2017-12-03 18:39:11,780 - Loging message: {}
+2017-12-03 18:39:11,846 - Result code: 0
+2017-12-03 18:39:11,846 - Action: MAP
+2017-12-03 18:39:11,847 - Loging message: {'layer': 1}
+2017-12-03 18:39:11,913 - Result code: 0
+2017-12-03 18:39:11,969 - Action: MOVE
+2017-12-03 18:39:11,969 - Loging message: {'line_idx': 1, 'speed': 1, 'train_idx': 0}
+2017-12-03 18:39:12,084 - Result code: 0
+2017-12-03 18:39:12,084 - Action: TURN
+2017-12-03 18:39:12,085 - Loging message: {}
+2017-12-03 18:39:12,151 - Result code: 0
+2017-12-03 18:39:12,151 - Action: MAP
+2017-12-03 18:39:12,151 - Loging message: {'layer': 1}
+2017-12-03 18:39:12,219 - Result code: 0
+2017-12-03 18:39:12,274 - Action: MOVE
+2017-12-03 18:39:12,275 - Loging message: {'line_idx': 1, 'speed': -1, 'train_idx': 0}
+2017-12-03 18:39:12,341 - Result code: 0
+2017-12-03 18:39:12,341 - Action: TURN
+2017-12-03 18:39:12,341 - Loging message: {}
+2017-12-03 18:39:12,409 - Result code: 0
+2017-12-03 18:39:12,409 - Action: MAP
+2017-12-03 18:39:12,410 - Loging message: {'layer': 1}
+2017-12-03 18:39:12,477 - Result code: 0
+2017-12-03 18:39:12,523 - Action: MOVE
+2017-12-03 18:39:12,524 - Loging message: {'line_idx': 1, 'speed': 1, 'train_idx': 0}
+2017-12-03 18:39:12,590 - Result code: 0
+2017-12-03 18:39:12,590 - Action: TURN
+2017-12-03 18:39:12,591 - Loging message: {}
+2017-12-03 18:39:12,700 - Result code: 0
+2017-12-03 18:39:12,700 - Action: MAP
+2017-12-03 18:39:12,701 - Loging message: {'layer': 1}
+2017-12-03 18:39:12,768 - Result code: 0
+2017-12-03 18:39:12,819 - Action: MOVE
+2017-12-03 18:39:12,819 - Loging message: {'line_idx': 1, 'speed': -1, 'train_idx': 0}
+2017-12-03 18:39:12,887 - Result code: 0
+2017-12-03 18:39:12,887 - Action: TURN
+2017-12-03 18:39:12,888 - Loging message: {}
+2017-12-03 18:39:12,999 - Result code: 0
+2017-12-03 18:39:12,999 - Action: MAP
+2017-12-03 18:39:13,000 - Loging message: {'layer': 1}
+2017-12-03 18:39:13,067 - Result code: 0
+2017-12-03 18:39:13,118 - Action: MOVE
+2017-12-03 18:39:13,119 - Loging message: {'line_idx': 1, 'speed': 1, 'train_idx': 0}
+2017-12-03 18:39:13,186 - Result code: 0
+2017-12-03 18:39:13,187 - Action: TURN
+2017-12-03 18:39:13,187 - Loging message: {}
+2017-12-03 18:39:13,295 - Result code: 0
+2017-12-03 18:39:13,295 - Action: MAP
+2017-12-03 18:39:13,295 - Loging message: {'layer': 1}
+2017-12-03 18:39:13,363 - Result code: 0
+2017-12-03 18:39:13,416 - Action: MOVE
+2017-12-03 18:39:13,416 - Loging message: {'line_idx': 1, 'speed': -1, 'train_idx': 0}
+2017-12-03 18:39:13,525 - Result code: 0
+2017-12-03 18:39:13,525 - Action: TURN
+2017-12-03 18:39:13,525 - Loging message: {}
+2017-12-03 18:39:13,595 - Result code: 0
+2017-12-03 18:39:13,595 - Action: MAP
+2017-12-03 18:39:13,596 - Loging message: {'layer': 1}
+2017-12-03 18:39:13,665 - Result code: 0
+2017-12-03 18:39:13,717 - Action: MOVE
+2017-12-03 18:39:13,717 - Loging message: {'line_idx': 1, 'speed': 1, 'train_idx': 0}
+2017-12-03 18:39:13,824 - Result code: 0
+2017-12-03 18:39:13,824 - Action: TURN
+2017-12-03 18:39:13,825 - Loging message: {}
+2017-12-03 18:39:13,894 - Result code: 0
+2017-12-03 18:39:13,894 - Action: MAP
+2017-12-03 18:39:13,895 - Loging message: {'layer': 1}
+2017-12-03 18:39:13,962 - Result code: 0
+2017-12-03 18:39:14,002 - Action: MOVE
+2017-12-03 18:39:14,002 - Loging message: {'line_idx': 1, 'speed': -1, 'train_idx': 0}
+2017-12-03 18:39:14,074 - Result code: 0
+2017-12-03 18:39:14,075 - Action: TURN
+2017-12-03 18:39:14,075 - Loging message: {}
+2017-12-03 18:39:14,182 - Result code: 0
+2017-12-03 18:39:14,182 - Action: MAP
+2017-12-03 18:39:14,182 - Loging message: {'layer': 1}
+2017-12-03 18:39:14,290 - Result code: 0
+2017-12-03 18:39:14,321 - Action: MOVE
+2017-12-03 18:39:14,321 - Loging message: {'line_idx': 1, 'speed': 1, 'train_idx': 0}
+2017-12-03 18:39:14,432 - Result code: 0
+2017-12-03 18:39:14,433 - Action: TURN
+2017-12-03 18:39:14,433 - Loging message: {}
+2017-12-03 18:39:14,543 - Result code: 0
+2017-12-03 18:39:14,543 - Action: MAP
+2017-12-03 18:39:14,544 - Loging message: {'layer': 1}
+2017-12-03 18:39:14,619 - Result code: 0
+2017-12-03 18:39:14,660 - Action: MOVE
+2017-12-03 18:39:14,661 - Loging message: {'line_idx': 1, 'speed': -1, 'train_idx': 0}
+2017-12-03 18:39:14,773 - Result code: 0
+2017-12-03 18:39:14,773 - Action: TURN
+2017-12-03 18:39:14,774 - Loging message: {}
+2017-12-03 18:39:14,881 - Result code: 0
+2017-12-03 18:39:14,881 - Action: MAP
+2017-12-03 18:39:14,882 - Loging message: {'layer': 1}
+2017-12-03 18:39:14,962 - Result code: 0
+2017-12-03 18:39:15,011 - Action: MOVE
+2017-12-03 18:39:15,011 - Loging message: {'line_idx': 1, 'speed': 1, 'train_idx': 0}
+2017-12-03 18:39:15,118 - Result code: 0
+2017-12-03 18:39:15,118 - Action: TURN
+2017-12-03 18:39:15,119 - Loging message: {}
+2017-12-03 18:39:15,226 - Result code: 0
+2017-12-03 18:39:15,226 - Action: MAP
+2017-12-03 18:39:15,227 - Loging message: {'layer': 1}
+2017-12-03 18:39:15,294 - Result code: 0
+2017-12-03 18:39:15,350 - Action: MOVE
+2017-12-03 18:39:15,350 - Loging message: {'line_idx': 1, 'speed': -1, 'train_idx': 0}
+2017-12-03 18:39:15,460 - Result code: 0
+2017-12-03 18:39:15,460 - Action: TURN
+2017-12-03 18:39:15,461 - Loging message: {}
+2017-12-03 18:39:15,528 - Result code: 0
+2017-12-03 18:39:15,529 - Action: MAP
+2017-12-03 18:39:15,529 - Loging message: {'layer': 1}
+2017-12-03 18:39:15,596 - Result code: 0
+2017-12-03 18:39:15,627 - Action: MOVE
+2017-12-03 18:39:15,627 - Loging message: {'line_idx': 1, 'speed': 1, 'train_idx': 0}
+2017-12-03 18:39:15,695 - Result code: 0
+2017-12-03 18:39:15,695 - Action: TURN
+2017-12-03 18:39:15,695 - Loging message: {}
+2017-12-03 18:39:15,802 - Result code: 0
+2017-12-03 18:39:15,802 - Action: MAP
+2017-12-03 18:39:15,802 - Loging message: {'layer': 1}
+2017-12-03 18:39:15,911 - Result code: 0
+2017-12-03 18:39:15,965 - Action: MOVE
+2017-12-03 18:39:15,965 - Loging message: {'line_idx': 1, 'speed': -1, 'train_idx': 0}
+2017-12-03 18:39:16,034 - Result code: 0
+2017-12-03 18:39:16,034 - Action: TURN
+2017-12-03 18:39:16,035 - Loging message: {}
+2017-12-03 18:39:16,105 - Result code: 0
+2017-12-03 18:39:16,105 - Action: MAP
+2017-12-03 18:39:16,106 - Loging message: {'layer': 1}
+2017-12-03 18:39:16,173 - Result code: 0
+2017-12-03 18:39:16,217 - Action: MOVE
+2017-12-03 18:39:16,217 - Loging message: {'line_idx': 1, 'speed': 1, 'train_idx': 0}
+2017-12-03 18:39:16,327 - Result code: 0
+2017-12-03 18:39:16,327 - Action: TURN
+2017-12-03 18:39:16,328 - Loging message: {}
+2017-12-03 18:39:16,395 - Result code: 0
+2017-12-03 18:39:16,395 - Action: MAP
+2017-12-03 18:39:16,396 - Loging message: {'layer': 1}
+2017-12-03 18:39:16,504 - Result code: 0
+2017-12-03 18:39:16,547 - Action: MOVE
+2017-12-03 18:39:16,547 - Loging message: {'line_idx': 1, 'speed': -1, 'train_idx': 0}
+2017-12-03 18:39:16,653 - Result code: 0
+2017-12-03 18:39:16,653 - Action: TURN
+2017-12-03 18:39:16,653 - Loging message: {}
+2017-12-03 18:39:16,722 - Result code: 0
+2017-12-03 18:39:16,722 - Action: MAP
+2017-12-03 18:39:16,723 - Loging message: {'layer': 1}
+2017-12-03 18:39:16,831 - Result code: 0
+2017-12-03 18:39:16,860 - Action: MOVE
+2017-12-03 18:39:16,860 - Loging message: {'line_idx': 1, 'speed': 1, 'train_idx': 0}
+2017-12-03 18:39:16,928 - Result code: 0
+2017-12-03 18:39:16,929 - Action: TURN
+2017-12-03 18:39:16,929 - Loging message: {}
+2017-12-03 18:39:16,996 - Result code: 0
+2017-12-03 18:39:16,996 - Action: MAP
+2017-12-03 18:39:16,996 - Loging message: {'layer': 1}
+2017-12-03 18:39:17,103 - Result code: 0
+2017-12-03 18:39:17,133 - Action: MOVE
+2017-12-03 18:39:17,133 - Loging message: {'line_idx': 1, 'speed': -1, 'train_idx': 0}
+2017-12-03 18:39:17,239 - Result code: 0
+2017-12-03 18:39:17,239 - Action: TURN
+2017-12-03 18:39:17,240 - Loging message: {}
+2017-12-03 18:39:17,307 - Result code: 0
+2017-12-03 18:39:17,307 - Action: MAP
+2017-12-03 18:39:17,308 - Loging message: {'layer': 1}
+2017-12-03 18:39:17,378 - Result code: 0
+2017-12-03 18:39:17,433 - Action: MOVE
+2017-12-03 18:39:17,434 - Loging message: {'line_idx': 1, 'speed': 1, 'train_idx': 0}
+2017-12-03 18:39:17,505 - Result code: 0
+2017-12-03 18:39:17,506 - Action: TURN
+2017-12-03 18:39:17,506 - Loging message: {}
+2017-12-03 18:39:17,573 - Result code: 0
+2017-12-03 18:39:17,573 - Action: MAP
+2017-12-03 18:39:17,574 - Loging message: {'layer': 1}
+2017-12-03 18:39:17,681 - Result code: 0
+2017-12-03 18:39:17,735 - Action: MOVE
+2017-12-03 18:39:17,736 - Loging message: {'line_idx': 1, 'speed': -1, 'train_idx': 0}
+2017-12-03 18:39:17,803 - Result code: 0
+2017-12-03 18:39:17,803 - Action: TURN
+2017-12-03 18:39:17,803 - Loging message: {}
+2017-12-03 18:39:17,915 - Result code: 0
+2017-12-03 18:39:17,915 - Action: MAP
+2017-12-03 18:39:17,915 - Loging message: {'layer': 1}
+2017-12-03 18:39:17,984 - Result code: 0
+2017-12-03 18:39:18,019 - Action: MOVE
+2017-12-03 18:39:18,019 - Loging message: {'line_idx': 1, 'speed': 1, 'train_idx': 0}
+2017-12-03 18:39:18,126 - Result code: 0
+2017-12-03 18:39:18,127 - Action: TURN
+2017-12-03 18:39:18,127 - Loging message: {}
+2017-12-03 18:39:18,236 - Result code: 0
+2017-12-03 18:39:18,237 - Action: MAP
+2017-12-03 18:39:18,237 - Loging message: {'layer': 1}
+2017-12-03 18:39:18,307 - Result code: 0
+2017-12-03 18:39:18,343 - Action: MOVE
+2017-12-03 18:39:18,343 - Loging message: {'line_idx': 1, 'speed': -1, 'train_idx': 0}
+2017-12-03 18:39:18,451 - Result code: 0
+2017-12-03 18:39:18,451 - Action: TURN
+2017-12-03 18:39:18,451 - Loging message: {}
+2017-12-03 18:39:18,520 - Result code: 0
+2017-12-03 18:39:18,520 - Action: MAP
+2017-12-03 18:39:18,520 - Loging message: {'layer': 1}
+2017-12-03 18:39:18,633 - Result code: 0
+2017-12-03 18:39:18,676 - Action: MOVE
+2017-12-03 18:39:18,677 - Loging message: {'line_idx': 1, 'speed': 1, 'train_idx': 0}
+2017-12-03 18:39:18,786 - Result code: 0
+2017-12-03 18:39:18,786 - Action: TURN
+2017-12-03 18:39:18,787 - Loging message: {}
+2017-12-03 18:39:18,894 - Result code: 0
+2017-12-03 18:39:18,894 - Action: LOGOUT
+2017-12-03 18:39:18,895 - Loging message: {}
+2017-12-03 18:39:18,895 - Close socket
+2017-12-03 18:40:17,418 - Create socket
+2017-12-03 18:40:17,455 - Connection done
+2017-12-03 18:40:17,455 - Action: LOGIN
+2017-12-03 18:40:17,456 - Loging message: {'name': 'Mickey'}
+2017-12-03 18:40:17,532 - Result code: 0
+2017-12-03 18:40:17,533 - Action: MAP
+2017-12-03 18:40:17,533 - Loging message: {'layer': 0}
+2017-12-03 18:40:17,570 - Result code: 0
+2017-12-03 18:40:17,615 - Action: MAP
+2017-12-03 18:40:17,616 - Loging message: {'layer': 1}
+2017-12-03 18:40:17,654 - Result code: 0
+2017-12-03 18:40:18,264 - Action: MAP
+2017-12-03 18:40:18,265 - Loging message: {'layer': 1}
+2017-12-03 18:40:18,300 - Result code: 0
+2017-12-03 18:40:18,346 - Action: MAP
+2017-12-03 18:40:18,347 - Loging message: {'layer': 1}
+2017-12-03 18:40:18,420 - Result code: 0
+2017-12-03 18:40:18,466 - Action: MAP
+2017-12-03 18:40:18,466 - Loging message: {'layer': 1}
+2017-12-03 18:40:18,501 - Result code: 0
+2017-12-03 18:40:18,531 - Action: MAP
+2017-12-03 18:40:18,531 - Loging message: {'layer': 1}
+2017-12-03 18:40:18,609 - Result code: 0
+2017-12-03 18:40:18,661 - Action: MAP
+2017-12-03 18:40:18,662 - Loging message: {'layer': 1}
+2017-12-03 18:40:18,730 - Result code: 0
+2017-12-03 18:40:18,785 - Action: MAP
+2017-12-03 18:40:18,785 - Loging message: {'layer': 1}
+2017-12-03 18:40:18,894 - Result code: 0
+2017-12-03 18:40:18,940 - Action: MAP
+2017-12-03 18:40:18,940 - Loging message: {'layer': 1}
+2017-12-03 18:40:19,012 - Result code: 0
+2017-12-03 18:40:19,060 - Action: MAP
+2017-12-03 18:40:19,061 - Loging message: {'layer': 1}
+2017-12-03 18:40:19,132 - Result code: 0
+2017-12-03 18:40:19,177 - Action: MAP
+2017-12-03 18:40:19,177 - Loging message: {'layer': 1}
+2017-12-03 18:40:19,246 - Result code: 0
+2017-12-03 18:40:19,293 - Action: MAP
+2017-12-03 18:40:19,294 - Loging message: {'layer': 1}
+2017-12-03 18:40:19,400 - Result code: 0
+2017-12-03 18:40:19,925 - Action: MAP
+2017-12-03 18:40:19,925 - Loging message: {'layer': 1}
+2017-12-03 18:40:19,960 - Result code: 0
+2017-12-03 18:40:19,990 - Action: MAP
+2017-12-03 18:40:19,990 - Loging message: {'layer': 1}
+2017-12-03 18:40:20,025 - Result code: 0
+2017-12-03 18:40:20,055 - Action: MAP
+2017-12-03 18:40:20,056 - Loging message: {'layer': 1}
+2017-12-03 18:40:20,096 - Result code: 0
+2017-12-03 18:40:20,126 - Action: MAP
+2017-12-03 18:40:20,126 - Loging message: {'layer': 1}
+2017-12-03 18:40:20,161 - Result code: 0
+2017-12-03 18:40:20,205 - Action: MAP
+2017-12-03 18:40:20,205 - Loging message: {'layer': 1}
+2017-12-03 18:40:20,313 - Result code: 0
+2017-12-03 18:40:20,367 - Action: MAP
+2017-12-03 18:40:20,367 - Loging message: {'layer': 1}
+2017-12-03 18:40:20,474 - Result code: 0
+2017-12-03 18:40:20,525 - Action: MOVE
+2017-12-03 18:40:20,525 - Loging message: {'line_idx': 1, 'speed': 1, 'train_idx': 0}
+2017-12-03 18:40:20,637 - Result code: 0
+2017-12-03 18:40:20,638 - Action: TURN
+2017-12-03 18:40:20,638 - Loging message: {}
+2017-12-03 18:40:20,705 - Result code: 0
+2017-12-03 18:40:20,705 - Action: MAP
+2017-12-03 18:40:20,706 - Loging message: {'layer': 1}
+2017-12-03 18:40:20,812 - Result code: 0
+2017-12-03 18:40:20,846 - Action: MOVE
+2017-12-03 18:40:20,846 - Loging message: {'line_idx': 1, 'speed': -1, 'train_idx': 0}
+2017-12-03 18:40:20,914 - Result code: 0
+2017-12-03 18:40:20,915 - Action: TURN
+2017-12-03 18:40:20,915 - Loging message: {}
+2017-12-03 18:40:20,994 - Result code: 0
+2017-12-03 18:40:20,994 - Action: MAP
+2017-12-03 18:40:20,995 - Loging message: {'layer': 1}
+2017-12-03 18:40:21,107 - Result code: 0
+2017-12-03 18:40:21,139 - Action: MOVE
+2017-12-03 18:40:21,139 - Loging message: {'line_idx': 1, 'speed': 1, 'train_idx': 0}
+2017-12-03 18:40:21,207 - Result code: 0
+2017-12-03 18:40:21,207 - Action: TURN
+2017-12-03 18:40:21,207 - Loging message: {}
+2017-12-03 18:40:21,274 - Result code: 0
+2017-12-03 18:40:21,274 - Action: MAP
+2017-12-03 18:40:21,274 - Loging message: {'layer': 1}
+2017-12-03 18:40:21,385 - Result code: 0
+2017-12-03 18:40:21,432 - Action: MOVE
+2017-12-03 18:40:21,433 - Loging message: {'line_idx': 1, 'speed': -1, 'train_idx': 0}
+2017-12-03 18:40:21,539 - Result code: 0
+2017-12-03 18:40:21,540 - Action: TURN
+2017-12-03 18:40:21,540 - Loging message: {}
+2017-12-03 18:40:21,608 - Result code: 0
+2017-12-03 18:40:21,608 - Action: MAP
+2017-12-03 18:40:21,609 - Loging message: {'layer': 1}
+2017-12-03 18:40:21,715 - Result code: 0
+2017-12-03 18:40:21,760 - Action: MOVE
+2017-12-03 18:40:21,760 - Loging message: {'line_idx': 1, 'speed': 1, 'train_idx': 0}
+2017-12-03 18:40:21,866 - Result code: 0
+2017-12-03 18:40:21,867 - Action: TURN
+2017-12-03 18:40:21,867 - Loging message: {}
+2017-12-03 18:40:21,934 - Result code: 0
+2017-12-03 18:40:21,934 - Action: MAP
+2017-12-03 18:40:21,934 - Loging message: {'layer': 1}
+2017-12-03 18:40:22,040 - Result code: 0
+2017-12-03 18:40:22,088 - Action: MOVE
+2017-12-03 18:40:22,089 - Loging message: {'line_idx': 1, 'speed': -1, 'train_idx': 0}
+2017-12-03 18:40:22,194 - Result code: 0
+2017-12-03 18:40:22,195 - Action: TURN
+2017-12-03 18:40:22,195 - Loging message: {}
+2017-12-03 18:40:22,306 - Result code: 0
+2017-12-03 18:40:22,307 - Action: MAP
+2017-12-03 18:40:22,307 - Loging message: {'layer': 1}
+2017-12-03 18:40:22,415 - Result code: 0
+2017-12-03 18:40:22,457 - Action: MOVE
+2017-12-03 18:40:22,457 - Loging message: {'line_idx': 1, 'speed': 1, 'train_idx': 0}
+2017-12-03 18:40:22,531 - Result code: 0
+2017-12-03 18:40:22,531 - Action: TURN
+2017-12-03 18:40:22,532 - Loging message: {}
+2017-12-03 18:40:22,638 - Result code: 0
+2017-12-03 18:40:22,639 - Action: MAP
+2017-12-03 18:40:22,639 - Loging message: {'layer': 1}
+2017-12-03 18:40:22,709 - Result code: 0
+2017-12-03 18:40:22,756 - Action: MOVE
+2017-12-03 18:40:22,756 - Loging message: {'line_idx': 1, 'speed': -1, 'train_idx': 0}
+2017-12-03 18:40:22,871 - Result code: 0
+2017-12-03 18:40:22,871 - Action: TURN
+2017-12-03 18:40:22,872 - Loging message: {}
+2017-12-03 18:40:22,940 - Result code: 0
+2017-12-03 18:40:22,940 - Action: MAP
+2017-12-03 18:40:22,941 - Loging message: {'layer': 1}
+2017-12-03 18:40:23,048 - Result code: 0
+2017-12-03 18:40:23,088 - Action: MOVE
+2017-12-03 18:40:23,089 - Loging message: {'line_idx': 1, 'speed': 1, 'train_idx': 0}
+2017-12-03 18:40:23,160 - Result code: 0
+2017-12-03 18:40:23,161 - Action: TURN
+2017-12-03 18:40:23,161 - Loging message: {}
+2017-12-03 18:40:23,229 - Result code: 0
+2017-12-03 18:40:23,230 - Action: MAP
+2017-12-03 18:40:23,230 - Loging message: {'layer': 1}
+2017-12-03 18:40:23,299 - Result code: 0
+2017-12-03 18:40:23,349 - Action: MOVE
+2017-12-03 18:40:23,350 - Loging message: {'line_idx': 1, 'speed': -1, 'train_idx': 0}
+2017-12-03 18:40:23,455 - Result code: 0
+2017-12-03 18:40:23,456 - Action: TURN
+2017-12-03 18:40:23,456 - Loging message: {}
+2017-12-03 18:40:23,563 - Result code: 0
+2017-12-03 18:40:23,564 - Action: MAP
+2017-12-03 18:40:23,564 - Loging message: {'layer': 1}
+2017-12-03 18:40:23,675 - Result code: 0
+2017-12-03 18:40:23,731 - Action: MOVE
+2017-12-03 18:40:23,731 - Loging message: {'line_idx': 1, 'speed': 1, 'train_idx': 0}
+2017-12-03 18:40:23,799 - Result code: 0
+2017-12-03 18:40:23,800 - Action: TURN
+2017-12-03 18:40:23,800 - Loging message: {}
+2017-12-03 18:40:23,867 - Result code: 0
+2017-12-03 18:40:23,867 - Action: MAP
+2017-12-03 18:40:23,868 - Loging message: {'layer': 1}
+2017-12-03 18:40:23,973 - Result code: 0
+2017-12-03 18:40:24,006 - Action: MOVE
+2017-12-03 18:40:24,006 - Loging message: {'line_idx': 1, 'speed': -1, 'train_idx': 0}
+2017-12-03 18:40:24,076 - Result code: 0
+2017-12-03 18:40:24,076 - Action: TURN
+2017-12-03 18:40:24,076 - Loging message: {}
+2017-12-03 18:40:24,193 - Result code: 0
+2017-12-03 18:40:24,194 - Action: MAP
+2017-12-03 18:40:24,194 - Loging message: {'layer': 1}
+2017-12-03 18:40:24,270 - Result code: 0
+2017-12-03 18:40:24,301 - Action: MOVE
+2017-12-03 18:40:24,301 - Loging message: {'line_idx': 1, 'speed': 1, 'train_idx': 0}
+2017-12-03 18:40:24,408 - Result code: 0
+2017-12-03 18:40:24,408 - Action: TURN
+2017-12-03 18:40:24,409 - Loging message: {}
+2017-12-03 18:40:24,477 - Result code: 0
+2017-12-03 18:40:24,477 - Action: MAP
+2017-12-03 18:40:24,477 - Loging message: {'layer': 1}
+2017-12-03 18:40:24,545 - Result code: 0
+2017-12-03 18:40:24,586 - Action: MOVE
+2017-12-03 18:40:24,587 - Loging message: {'line_idx': 1, 'speed': -1, 'train_idx': 0}
+2017-12-03 18:40:24,698 - Result code: 0
+2017-12-03 18:40:24,699 - Action: TURN
+2017-12-03 18:40:24,699 - Loging message: {}
+2017-12-03 18:40:24,766 - Result code: 0
+2017-12-03 18:40:24,767 - Action: MAP
+2017-12-03 18:40:24,767 - Loging message: {'layer': 1}
+2017-12-03 18:40:24,873 - Result code: 0
+2017-12-03 18:40:24,919 - Action: MOVE
+2017-12-03 18:40:24,919 - Loging message: {'line_idx': 1, 'speed': 1, 'train_idx': 0}
+2017-12-03 18:40:25,025 - Result code: 0
+2017-12-03 18:40:25,026 - Action: TURN
+2017-12-03 18:40:25,026 - Loging message: {}
+2017-12-03 18:40:25,108 - Result code: 0
+2017-12-03 18:40:25,108 - Action: MAP
+2017-12-03 18:40:25,108 - Loging message: {'layer': 1}
+2017-12-03 18:40:25,215 - Result code: 0
+2017-12-03 18:40:25,253 - Action: MOVE
+2017-12-03 18:40:25,253 - Loging message: {'line_idx': 1, 'speed': -1, 'train_idx': 0}
+2017-12-03 18:40:25,327 - Result code: 0
+2017-12-03 18:40:25,327 - Action: TURN
+2017-12-03 18:40:25,327 - Loging message: {}
+2017-12-03 18:40:25,398 - Result code: 0
+2017-12-03 18:40:25,399 - Action: LOGOUT
+2017-12-03 18:40:25,399 - Loging message: {}
+2017-12-03 18:40:25,399 - Close socket

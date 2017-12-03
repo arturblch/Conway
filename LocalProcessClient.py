@@ -53,9 +53,9 @@ class ProcessClient:
     def turn_trains(self):
         for train in self.objects.trains.values():
             if train.line_idx != None:
+                train.position += train.speed
                 if not self.check_speed(train, train.speed):
                     train.speed = 0
-                train.position += train.speed
                 train.update_node(self.map.lines)
                 if train.node:
                     post_id = self.map.points[train.node].post_id
@@ -115,19 +115,16 @@ class ProcessClient:
             train = self.objects.trains[move.train_idx]
             if move.line_idx in self.map.lines.keys():
                 if move.line_idx == train.line_idx:
-                    if self.check_speed(train, move.speed):
-                        train.speed = move.speed
+                    train.speed = move.speed
                 line = self.map.lines[move.line_idx]
                 if train.node == line.start_point:
                     train.line_idx = move.line_idx
-                    if self.check_speed(train, move.speed):
-                        train.speed = move.speed
+                    train.speed = move.speed
                     train.position = 0
 
                 if train.node == line.end_point:
                     train.line_idx = move.line_idx
-                    if self.check_speed(train, move.speed):
-                        train.speed = move.speed
+                    train.speed = move.speed
                     train.position = line.length
 
     def read_objects(self):
@@ -137,6 +134,10 @@ class ProcessClient:
         return self.map
 
     def check_speed(self, train, speed):
+        if train.position != None:
+            pos = train.position
+        else:
+            pos
         if 0 <= train.position + speed <= self.map.lines[train.line_idx].length:
             return True
         return False

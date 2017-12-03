@@ -41,20 +41,72 @@ class ProcessClient:
         self.map = Map(factory.get_map())
         self.objects = Objects(factory.get_objects())
         self.player = Player(factory.get_player())
+        self.init_train()
         logger.info("Login")
 
         return self.player
+    def init_train(self):
+        for train in self.objects.trains.values():
+            train.node = self.player.home.idx
+
+
+    def turn_trains(self):
+        for train in self.objects.trains.values():
+            if train.line_idx != None:
+                if not self.check_speed(train):
+                    train.speed = 0
+                train.position += train.speed
+                train.update_node(self.map.lines)
+                if train.node:
+                    post_id = self.map.points[train.node].post_id
+                    if post_id:
+                        if post_id in self.objects.towns.keys():
+                            self.objects.towns[post_id].product += train.product
+                            train.product = 0
+                        elif post_id in self.objects.markets.keys():
+                            train.product += self.objects.markets[post_id].product
+                            self.objects.markets[post_id].product = 0
+            
+
+    def turn_markets(self):
+        for market in self.objects.markets.values():
+            if market.product < market.product_capacity:
+                market.product += market.replenishment
+
+
+    def turn_towns(self):
+        for town in self.objects.towns.values():
+            if town.product < town.population:
+                town.population -= 1
+            town.product = (town.product - town.population
+                            if town.product - town.population > 0 else 0)
+
+    def print_state(self):
+        str_post = []
+        for town in self.objects.towns.values():
+            str_post.append([town.name, town.product, town.population])
+        for market in self.objects.markets.values():
+            str_post.append([market.name, market.product, '-'])
+
+        print(tabulate(str_post, headers=['name', 'products', 'population']), '\n')
+
+        for train in self.objects.trains.values():
+            print(
+                    tabulate(
+                        [[
+                            train.idx, train.product, train.line_idx, train.speed,
+                            train.position
+                        ]],
+                        headers=[
+                            'Train_id', 'product', 'line_idx', 'speed', 'position'
+                        ]))
 
     def turn(self):
-        for train in self.objects.trains.values():
-            if not self.check_speed(train):
-                train.speed = 0
-            train.position += train.speed
-            train.update_node(self.map.lines)
-            print(
-                tabulate(
-                    [[train.idx, train.line_idx, train.speed, train.position]],
-                    headers=['Train_id', 'line_idx', 'speed', 'position']))
+        self.turn_markets()
+        self.turn_trains()
+        self.turn_towns()
+        self.print_state()
+        
 
     def move(self, move):
         logger.info(move)
@@ -82,6 +134,6 @@ class ProcessClient:
 
     def check_speed(self, train):
         if 0 <= train.position + train.speed <= self.map.lines[train.
-                                                             line_idx].length:
+                                                               line_idx].length:
             return True
         return False

@@ -16,7 +16,7 @@ class Runner:
         self.process_client = ProcessClient()
 
     def run(self):
-        player = self.process_client.login(1)
+        player = self.process_client.login(2)
         map_graph = self.process_client.read_map()
         objects = self.process_client.read_objects()
         strategy = Strategy(player, map_graph, objects)

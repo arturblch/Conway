@@ -17,8 +17,8 @@ class Strategy:
         return moves
 
     def get_move(self, train):
-        if train.position == 10:
-            return Move(1, -1, 0)  # Just test
-        elif train.position == 0:
+        if train.position == 0 or train.position == None:
             return Move(1, 1, 0)  # Just test
+        elif train.position == self.map.lines[train.line_idx].length:
+            return Move(1, -1, 0)  # Just test
             

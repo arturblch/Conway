@@ -20,9 +20,9 @@ class WorldGetter:
             {
                 "capacity": 200,
                 "idx": 0,
-                "line_idx": 1,
+                "line_idx": null,
                 "player_id": "082309a9-354d-4673-9533-b97fdf9a042a",
-                "position": 0,
+                "position": null,
                 "product": 0,
                 "speed": 0
             }
@@ -398,6 +398,8 @@ class WorldGetter:
                 "idx": 2,
                 "name": "market-one",
                 "product": 20,
+                "product_capacity" : 20,
+                "replenishment" : 1,
                 "type": 2
             }
         ],
@@ -454,9 +456,9 @@ class WorldGetter:
             {
                 "capacity": 200,
                 "idx": 0,
-                "line_idx": 1,
+                "line_idx": null,
                 "player_id": "082309a9-354d-4673-9533-b97fdf9a042a",
-                "position": 1,
+                "position": null,
                 "product": 25,
                 "speed": 0
             }

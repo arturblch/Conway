@@ -7,7 +7,7 @@ class Market:
         self.replenishment = post['replenishment']
 
     def __repr__(self):
-        return f"Market {self.idx}"
+        return f"{self.name}"
 
     # def update(self, post):               Нужно?
     #     self.product = post['product']

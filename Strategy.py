@@ -10,6 +10,7 @@ class Strategy:
         self.town = player_data["town"]["idx"]
         self.train_ids = [train['idx'] for train in player_data["train"]]
         self.in_progress = True
+        self.best_way = [], 0   # way through markets, product count after return
 
     def get_moves(self, objects: Objects, map_graph: Map):
         moves = []
@@ -57,3 +58,34 @@ class Strategy:
                 print('WAITING :(')
                 print(f"CURRENT: {current_point} POTENTIAL: {max_potential[0]}")
             # self.in_progress = False
+
+    def choose_path(self, map_graph: Map, markets, product, train_prod, path=None):
+        home = map_graph.get_point(1, 0)
+        if path is None:
+            path = []
+            current_point = home
+        else:
+            current_point = map_graph.get_market_point(path[-1])
+        for market in markets:
+            market_point = map_graph.get_market_point(market)
+            distance = map_graph.get_distance(current_point.idx, market_point.idx)
+            return_distance = map_graph.get_distance(market_point.idx, home.idx)
+            if product - 3*(distance+return_distance) >= 0:
+                new_train_prod = train_prod + markets[market]
+                new_markets = markets.copy()
+                new_path = path.copy()
+                if path:
+                    m = path[-1]
+                    new_markets.update({m: min(m.product + m.replenishment*distance, m.product_capacity)})
+                new_markets.pop(market)
+                new_path.append(market)
+                for m in new_markets:
+                    new_markets.update({m: min(m.product + m.replenishment*distance, m.product_capacity)})
+                # print(new_markets)
+                total_prod = product-3*distance + new_train_prod - 3*return_distance
+                # print(total_prod, self.best_way[1])
+                if total_prod >= self.best_way[1]:
+                    self.best_way = new_path, total_prod
+                # print(new_path, total_prod)
+                self.choose_path(map_graph, new_markets, product-3*distance, new_train_prod, new_path)
+

@@ -10,7 +10,8 @@ class Strategy:
         self.town = player_data["town"]["idx"]
         self.train_ids = [train['idx'] for train in player_data["train"]]
         self.in_progress = True
-        self.best_way = [], 0   # way through markets, product count after return
+        self.population = player_data["town"]["population"]
+        self.best_way = [], 0   # way through markets, product growth on each move
 
     def get_moves(self, objects: Objects, map_graph: Map):
         moves = []
@@ -24,8 +25,6 @@ class Strategy:
     def get_move(self, train: Train, objects: Objects, map_graph: Map):
         if train.speed == 0:
             current_point = map_graph.get_point(train.line_idx, train.position)
-            town = objects.towns[self.town]
-            markets = {market: market.product for market in objects.markets.values()}
             if len(self.best_way[0]) == 0:
                 if current_point.idx != self.home:
                     next_point = map_graph.get_next_point(current_point.idx, self.home)
@@ -34,7 +33,9 @@ class Strategy:
                     return Move(line.idx, speed, train.idx)
                 else:
                     self.best_way = [], 0
-                    self.choose_path(map_graph, markets, town.product, train.product, 0)
+                    town = objects.towns[self.town]
+                    markets = {market: market.product for market in objects.markets.values()}
+                    self.build_path(map_graph, markets, town.product, train.product, 0)
             market = self.best_way[0][0]
             market_point = map_graph.get_market_point(market)
             next_point = map_graph.get_next_point(current_point.idx, market_point.idx)
@@ -45,18 +46,19 @@ class Strategy:
             return Move(line.idx, speed, train.idx)
             # self.in_progress = False
 
-    def choose_path(self, map_graph: Map, markets, product, train_prod, total_distance, path=None):
-        home = map_graph.get_point(1, 0)
+    def build_path(self, map_graph: Map, markets, product, train_prod, total_distance, path=None):
+        # home_point = map_graph.get_point(1, 0)
+        home_point = map_graph.get_post(self.home)
         if path is None:
             path = []
-            current_point = home
+            current_point = home_point
         else:
             current_point = map_graph.get_market_point(path[-1])
         for market in markets:
             market_point = map_graph.get_market_point(market)
             distance = map_graph.get_distance(current_point.idx, market_point.idx)
-            return_distance = map_graph.get_distance(market_point.idx, home.idx)
-            if product - 3*(distance+return_distance) >= 0:
+            return_distance = map_graph.get_distance(market_point.idx, home_point.idx)
+            if product - self.population*(distance+return_distance) >= 0:
                 new_total_distance = total_distance + distance
                 new_train_prod = train_prod + markets[market]
                 new_markets = markets.copy()
@@ -73,5 +75,5 @@ class Strategy:
                     self.best_way = new_path, profit
                 # print(new_path, profit)
                 # print(self.best_way)
-                self.choose_path(map_graph, new_markets, product-3*distance, new_train_prod, new_total_distance, new_path)
+                self.build_path(map_graph, new_markets, product-self.population*distance, new_train_prod, new_total_distance, new_path)
 

@@ -40,3 +40,8 @@ class Map:
         for point in self.points.values():
             if point.post_id == market.idx:
                 return point
+
+    def get_post(self, idx):
+        for point in self.points.values():
+            if point.idx == idx:
+                return point

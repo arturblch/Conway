@@ -18,11 +18,6 @@ class Runner:
             map_graph = self.remote_process_client.read_map()
             strategy = Strategy(player_data)
 
-            objects = self.remote_process_client.read_objects()
-            # markets = {market: market.product for market in objects.markets.values()}
-            # strategy.rec(map_graph, markets, 35, 0)
-            # print(f'BEST WAY: {strategy.best_way}')
-
             # while strategy.in_progress:
 
             for _ in range(43):

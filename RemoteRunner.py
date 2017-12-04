@@ -1,5 +1,5 @@
 import sys
-from Strategy_2 import Strategy
+from Strategy import Strategy
 from tabulate import tabulate
 from RemoteProcessClient import RemoteProcessClient
 from GUI import GUI
@@ -28,7 +28,6 @@ class Runner:
             strategy = Strategy(self.player, self.map_graph, self.objects)
             if self.is_gui:
                 self.gui = GUI(self.player, self.map_graph, self.objects)
-            i = 30
             while self.player.is_alive:
                 self.process_client.update_objects(self.objects)
                 self.print_state()
@@ -47,10 +46,6 @@ class Runner:
                             self.process_client.move(move)
                     self.process_client.turn()
 
-                if i != 0:
-                    i -= 1
-                else:
-                    self.player.is_alive = False
         finally:
             self.process_client.logout()
             self.process_client.close()

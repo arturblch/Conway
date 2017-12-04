@@ -7,6 +7,8 @@ class Player:
             self.home = Point(**response['home'])
         else:
             self.home = None
+        self.town = response['town']["idx"]
+        self.population = response["town"]["population"]
         self.idx = response['idx']
         self.name = response['name']
         if response['train']:

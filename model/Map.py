@@ -13,10 +13,10 @@ class Map:
         }
         self.Graph.add_nodes_from(self.points.keys())
         self.Graph.add_edges_from([(*line['point'], {
-            'weight': line['length']
+            'length': line['length'], 'line': Line(**line)
         }) for line in response["line"]])
         self.pos = nx.spring_layout(
-            self.Graph, scale=0.5, center=(0.5, 0.5), iterations=200)
+            self.Graph, scale=0.5, center=(0.5, 0.5), iterations=200, weight="length")
 
     def get_neighbors(self, point):
         return list(self.Graph.neighbors(point))
@@ -36,7 +36,7 @@ class Map:
         return line, speed
 
     def get_distance(self, u, v):
-        return nx.shortest_path_length(self.Graph, source=u, target=v)
+        return nx.shortest_path_length(self.Graph, source=u, target=v, weight='length')
 
     def get_next_point(self, u, v):
         next_point_idx = nx.shortest_path(self.Graph, source=u, target=v)[1]
@@ -45,4 +45,9 @@ class Map:
     def get_market_point(self, market):
         for point in self.points.values():
             if point.post_id == market.idx:
+                return point
+
+    def get_post(self, idx):
+        for point in self.points.values():
+            if point.idx == idx:
                 return point

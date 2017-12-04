@@ -1,6 +1,6 @@
 import sys
 from time import sleep
-from Strategy_2 import Strategy
+from Strategy import Strategy
 from LocalProcessClient import ProcessClient
 from GUI import GUI
 

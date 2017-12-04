@@ -73,7 +73,7 @@ class RemoteProcessClient:
         if data is None:
             data = {}
         self.write_string(json.dumps(data))
-        logger.info("Loging message: %s", data)
+        logger.info("Message: %s", data)
         if action != 'LOGOUT':
             return self.read_response()
 
@@ -82,6 +82,7 @@ class RemoteProcessClient:
         data = self.read_string()
         logger.info("Result code: %d", result)
         if data:
+            logger.info("Data: %s", data)
             return [result, json.loads(data)]
         return [result]
 

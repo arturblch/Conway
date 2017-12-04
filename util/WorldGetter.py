@@ -423,8 +423,8 @@ class WorldGetter:
                 "armor": 0,
                 "idx": 1,
                 "name": "town-one",
-                "population": 0,
-                "product": 1,
+                "population": 3,
+                "product": 35,
                 "type": 1
             },
             {
@@ -446,7 +446,7 @@ class WorldGetter:
             {
                 "idx": 4,
                 "name": "market-small",
-                "product": 0,
+                "product": 5,
                 "product_capacity": 5,
                 "replenishment": 1,
                 "type": 2
@@ -456,14 +456,16 @@ class WorldGetter:
             {
                 "capacity": 200,
                 "idx": 0,
-                "line_idx": null,
+                "line_idx": 1,
                 "player_id": "082309a9-354d-4673-9533-b97fdf9a042a",
-                "position": null,
-                "product": 25,
+                "position": 0,
+                "product": 0,
                 "speed": 0
             }
         ]
     }''')
+
+    
     def __init__(self, num=1):
         self.num = num
 

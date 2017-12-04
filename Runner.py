@@ -19,19 +19,19 @@ class Runner:
             strategy = Strategy(player_data)
 
             objects = self.remote_process_client.read_objects()
-            markets = {market: market.product for market in objects.markets.values()}
-            strategy.rec(map_graph, markets, 35, 0)
-            print(f'BEST WAY: {strategy.best_way}')
+            # markets = {market: market.product for market in objects.markets.values()}
+            # strategy.rec(map_graph, markets, 35, 0)
+            # print(f'BEST WAY: {strategy.best_way}')
 
             # while strategy.in_progress:
 
-            # for _ in range(40):
-            #     objects = self.remote_process_client.read_objects()
-            #     moves = strategy.get_moves(objects, map_graph)
-            #     if moves:
-            #         for move in moves:
-            #             self.remote_process_client.move(move)
-            #     self.remote_process_client.turn()
+            for _ in range(43):
+                objects = self.remote_process_client.read_objects()
+                moves = strategy.get_moves(objects, map_graph)
+                if moves:
+                    for move in moves:
+                        self.remote_process_client.move(move)
+                self.remote_process_client.turn()
 
         finally:
             self.remote_process_client.logout()

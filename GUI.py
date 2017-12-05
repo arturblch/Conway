@@ -1,68 +1,121 @@
 import pygame as pg
 from pygame.locals import *
 import math
-from Runner import Runner
-from Strategy import Strategy
+from time import sleep
 
 BACKGROUND_IMAGE = 'grass.jpg'
-POINT_COLOR = (0, 0, 0)
 POINT_LABEL_COLOR = (255, 255, 255)
 LINE_COLOR = (101, 67, 33)
 RADIUS = 20
 
+white = (255, 255, 255)
+red = (255, 0, 0)
+green = (0, 255, 0)
+blue = (0, 0, 255)
+black = (0, 0, 0)
+grey = (128, 128, 128)
+
 
 class GUI:
-    def __init__(self, width=600, height=600):
+    def __init__(self, player, map_graph, objects, width=600, height=600):
         pg.init()
         self.width = width
         self.height = height
         self.display_width = self.width - 2 * RADIUS
         self.display_height = self.height - 2 * RADIUS
-        self.map = None
-        self.objects = None
+
+        self.player = player
+        self.map = map_graph
+        self.objects = objects
         self.screen = pg.display.set_mode((self.width, self.height))
         self.surf = pg.Surface((width, height))
         self.background = pg.image.load(BACKGROUND_IMAGE).convert_alpha()
         self.background = pg.transform.scale(self.background, (width, height))
         self.clock = pg.time.Clock()
-        self.fps = 60
+        self.fps = 30
+        self.paused = True
+        self.onestep = False
         pg.display.set_caption("Train Game")
         self.myfont = pg.font.SysFont('arial', 15)
 
-    def draw_points(self, nodelist=None):
-        if nodelist is None:
-            nodelist = self.map.Graph.nodes()
-        for v in nodelist:
-            x_pos = int((self.display_width * self.map.pos[v][0] + RADIUS))
-            y_pos = int((self.display_height * self.map.pos[v][1] + RADIUS))
-            pg.draw.circle(self.surf, POINT_COLOR, (x_pos, y_pos), RADIUS)
+    def draw_points(self, ):
+        for point in self.map.points.values():
+            x_pos = int(
+                (self.display_width * self.map.pos[point.idx][0] + RADIUS))
+            y_pos = int(
+                (self.display_height * self.map.pos[point.idx][1] + RADIUS))
+
+            if point.post_id == None:
+                pg.draw.circle(self.surf, black, (x_pos, y_pos), RADIUS)
+
+            if point.post_id in self.objects.markets.keys():
+                mask = pg.Surface((RADIUS * 2, RADIUS * 2))
+                mask.fill(green)
+                mask.set_alpha(128)
+                self.surf.blit(mask, (x_pos - RADIUS, y_pos - RADIUS))
+                pg.draw.circle(self.surf, green, (x_pos, y_pos), RADIUS)
+
+            if point.post_id in self.objects.towns.keys():
+                mask = pg.Surface((RADIUS * 2, RADIUS * 2))
+                mask.fill(blue)
+                mask.set_alpha(128)
+                self.surf.blit(mask, (x_pos - RADIUS, y_pos - RADIUS))
+                pg.draw.circle(self.surf, blue, (x_pos, y_pos), RADIUS)
+                # s.set_alpha(128)
 
     def draw_edges(self, edgelist=None):
         if edgelist is None:
-            edgelist = self.map.Graph.edges()
+            edgelist = self.map.lines
 
-        for e in edgelist:
+        for l in edgelist.values():
 
             pg.draw.line(
                 self.surf, LINE_COLOR,
-                (int((self.display_width) * self.map.pos[e[0]][0] + RADIUS),
-                 int((self.display_width) * self.map.pos[e[0]][1] + RADIUS)),
-                (int((self.display_height) * self.map.pos[e[1]][0] + RADIUS),
-                 int((self.display_height) * self.map.pos[e[1]][1] + RADIUS)),
-                5)
+                (int((self.display_width) * self.map.pos[l.start_point][0] +
+                     RADIUS),
+                 int((self.display_width) * self.map.pos[l.start_point][1] +
+                     RADIUS)),
+                (int((self.display_height) * self.map.pos[l.end_point][0] +
+                     RADIUS),
+                 int((self.display_height) * self.map.pos[l.end_point][1] +
+                     RADIUS)), 5)
 
-    def draw_node_labels(self, labels=None):
-        if labels is None:
-            labels = dict((n, n) for n in self.map.Graph.nodes())
-        for v, label in labels.items():
+    def draw_node_labels(self):
+        for idx, point in self.map.points.items():
+            num_idx = pg.font.Font(None, 25).render(
+                str(idx), False, white)
+            text_pos_x = int((self.display_width) * self.map.pos[idx][0] + RADIUS
+                             - (num_idx.get_width() / 2))
+            text_pos_y = int((self.display_height) * self.map.pos[idx][1] +
+                             RADIUS - (num_idx.get_height() / 2))
+            self.surf.blit(num_idx, (text_pos_x, text_pos_y))
 
-            text = pg.font.Font(None, 25).render(
-                str(label), False, POINT_LABEL_COLOR)
-            text_pos_x = int((self.display_width) * self.map.pos[v][0] + RADIUS
-                             - (text.get_width() / 2))
-            text_pos_y = int((self.display_height) * self.map.pos[v][1] +
-                             RADIUS - (text.get_height() / 2))
-            self.surf.blit(text, (text_pos_x, text_pos_y))
+            if point.post_id != None:
+                name = ""
+                product = ""
+                population = ""
+                if point.post_id in self.objects.markets.keys():
+                    name = self.objects.markets[point.post_id].name
+                    product = self.objects.markets[point.post_id].product
+                else:
+                    name = self.objects.towns[point.post_id].name
+                    product = self.objects.towns[point.post_id].product
+                    population = self.objects.towns[point.post_id].population
+                    
+                    post_population = pg.font.Font(None, 19).render(
+                    str(population), False, white)
+                    self.surf.blit(post_population, (text_pos_x-RADIUS, text_pos_y-RADIUS))
+
+                post_name = pg.font.Font(None, 19).render(
+                    name, False, white)
+                post_product = pg.font.Font(None, 19).render(
+                    str(product), False, white)
+            
+                self.surf.blit(post_name, (text_pos_x, text_pos_y-RADIUS))
+                self.surf.blit(post_product, (text_pos_x, text_pos_y+RADIUS))
+
+
+            
 
     def draw_fps(self):
         self.surf.blit(
@@ -72,33 +125,34 @@ class GUI:
             (self.display_width - 60, self.display_height - 20))
 
     def draw_train(self):
-        train_obj = self.objects.trains[0]
-        if train_obj.line_idx == None:
-            return
-        train = pg.Surface((30, 30), pg.SRCALPHA)
-        pg.draw.polygon(train, (255, 0, 0), [[0, 0], [15, 30], [30, 0]], 2)
+        for train in self.objects.trains.values():
+            if train.line_idx == None:
+                return
+            train_surf = pg.Surface((30, 30), pg.SRCALPHA)
+            pg.draw.polygon(train_surf, (255, 0, 0), [[0, 0], [30, 15], [0, 30]], 0)
 
-        line = self.map.find_line(train_obj.line_idx)
+            line = self.map.lines[train.line_idx]
 
-        (x1, y1) = self.map.pos[line[0]]
-        (x2, y2) = self.map.pos[line[1]]
-        train_pos = train_obj.position / line[2]['length']
-        (x, y) = (x2 * train_pos + x1 * (1.0 - train_pos),
-                  y2 * train_pos + y1 * (1.0 - train_pos))
+            (x1, y1) = self.map.pos[line.start_point]
+            (x2, y2) = self.map.pos[line.end_point]
+            train_pos = train.position / line.length
+            (x, y) = (x2 * train_pos + x1 * (1.0 - train_pos),
+                      y2 * train_pos + y1 * (1.0 - train_pos))
 
-        if train_obj.speed == -1:
-            angle = math.atan2(y2 - y1, x2 - x1) / (
-                2.0 * math.pi) * 360  # degrees
-        elif train_obj.speed == 1:
-            angle = math.atan2(y1 - y2, x1 - x2) / (
-                2.0 * math.pi) * 360  # degrees
-        else:
-            angle = None
+            if train.speed == 1:
+                angle = math.atan2(y1 - y2, x2 - x1) / (
+                    2.0 * math.pi) * 360  # degrees
+            elif train.speed == -1:
+                angle = math.atan2(y2 - y1, x1 - x2) / (
+                    2.0 * math.pi) * 360  # degrees
+            else:
+                angle = None
 
-        if angle:
-            train = pg.transform.rotate(train, angle)
-            self.surf.blit(train, (self.display_width * x + RADIUS-10,
-                                   self.display_height * y + RADIUS-10))
+            if angle:
+                angle = angle
+                train_surf = pg.transform.rotate(train_surf, angle)
+            self.surf.blit(
+                train_surf, (int(self.display_width * x), int(self.display_height * y)))
 
     def update(self):
         self.surf.blit(self.background, (0, 0))
@@ -106,44 +160,41 @@ class GUI:
         self.draw_points()
         self.draw_fps()
         self.draw_node_labels()
-
         self.draw_train()
 
         self.screen.blit(self.surf, (0, 0))
         pg.display.update()
 
-    def run(self):
-        runner = Runner()
-        done = False
-        try:
-            status, start_data = runner.remote_process_client.login(
-                runner.name)
-            self.map = runner.remote_process_client.read_map()
-            self.objects = runner.remote_process_client.read_objects()
-            strategy = Strategy(start_data)
-            while not done:
-                runner.remote_process_client.update_objects(self.objects)
-                self.update()
+    def turn(self):
+        if self.player.is_alive == True:
+            self.onestep = False
+            for event in pg.event.get():
+                if event.type == pg.QUIT:
+                    self.player.is_alive = False
+                    return
+                if event.type == KEYDOWN:
+                    if event.key == K_s:
+                        self.player.is_alive = False
+                        return
+                    elif event.key == K_n:
+                        self.onestep = True
+                    elif event.key == K_p:
+                        self.paused = not self.paused
+                    elif (event.key == K_PLUS) or (event.key == K_EQUALS):
+                        self.fps += 1
+                    elif event.key == K_MINUS:
+                        self.fps -= 1
+                        if self.fps < 1: self.fps = 1
 
-                moves = strategy.get_moves(self.objects, self.map)
-                if moves:
-                    for move in moves:
-                        runner.remote_process_client.move(move)
-                runner.remote_process_client.turn()
+            self.update()
+            pg.display.flip()
+            self.clock.tick(self.fps)
 
-                for event in pg.event.get():
-                    if event.type == pg.QUIT:
-                        done = True
-                    if event.type == KEYDOWN:
-                        if event.key == K_s:
-                            done = True
+    def update_objects(self, objects):
+        self.objects = objects
 
-                pg.display.flip()
-                self.clock.tick(self.fps)
-        finally:
-            runner.remote_process_client.logout()
-            runner.remote_process_client.close()
-            pg.quit()
+    def close(self):
+        pg.quit()
 
 
 if __name__ == '__main__':

@@ -4,8 +4,11 @@ from model.Market import Market
 
 
 class Objects:
-    def __init__(self, response):
-        self.trains = {train['idx']: Train(train) for train in response['train']}
+    def __init__(self, response):  # lines for trains
+        self.trains = {
+            train['idx']: Train(train)
+            for train in response['train']
+        }
         self.towns = {}
         self.markets = {}
         for post in response['post']:
@@ -15,9 +18,15 @@ class Objects:
                 self.markets[post['idx']] = Market(post)
 
     def update(self, layer):
-        for train in self.trains.values():
-            train.update(layer)
-        for town in self.towns.values():
-            town.update(layer)
-        for market in self.markets.values():
-            market.update(layer)
+        for t in layer["train"]:
+            self.trains[t["idx"]].update(t)
+        for post in layer["post"]:
+            if post['type'] == 1:
+                self.towns[post['idx']].update(post)
+            if post['type'] == 2:
+                self.markets[post['idx']].update(post)
+
+    def update_trains_node(self, lines):
+        if lines:
+            for train in self.trains.values():
+                train.update_node(lines)

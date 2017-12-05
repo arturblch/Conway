@@ -159,8 +159,7 @@ map_resp = json.loads('''{
 def test_init():
     test_map = Map(map_resp)
 
-    assert list(
-        test_map.Graph.nodes) == [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+    assert list(test_map.points.keys()) == [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
 
     assert test_map.lines[3].length == 10
     assert test_map.lines[3].start_point  == 9

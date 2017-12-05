@@ -1,15 +1,11 @@
 import networkx as nx
 import matplotlib.pyplot as plt
 import math
-from util.maps import map02
+from util.WorldGetter import WorldGetter
+from model.Objects import Objects
 
 import json
 G = nx.Graph()
-
-class Objects:
-    def __init__(self, response):
-        self.trains = {train['idx']: train for train in response['train']}
-        self.posts = {post['idx']: post for post in response['post']}
 
 objects = Objects(json.loads('''{
     "idx": 1,
@@ -23,6 +19,8 @@ objects = Objects(json.loads('''{
             "type": 1
         },
         {
+            "product_capacity": 20,
+            "replenishment" : 5,
             "idx": 2,
             "name": "market-one",
             "product": 20,
@@ -31,6 +29,7 @@ objects = Objects(json.loads('''{
     ],
     "train": [
         {
+            "product_capacity": 20,
             "capacity": 15,
             "idx": 0,
             "line_idx": 1,
@@ -41,8 +40,8 @@ objects = Objects(json.loads('''{
         }
     ]
 }'''))
-
-_map = map02
+factory = WorldGetter()
+_map = factory.get_map(1)
 
 nx.draw_networkx_nodes(_map.Graph, _map.pos, node_color='k')
 nx.draw_networkx_labels(_map.Graph, _map.pos, font_color='w')
@@ -50,29 +49,20 @@ nx.draw_networkx_edges(_map.Graph, _map.pos, width=1.0, edge_color="k")
 
 train_obj = objects.trains[0]
 
-def finde_line(G, key, value):
-    for a in G.edges(data=True):
-        print(a)
-        if a[2][key]==value:
-            return a
+line = _map.lines[train_obj.line_idx]
 
-line = list(_map.Graph.edges(data=True))[0]
-
-
-print(line)
-
-(x1, y1) = _map.pos[line[0]]
-(x2, y2) = _map.pos[line[1]]
-train_pos = train_obj['position']/line[2]['length']
-
-
+(x1, y1) = _map.pos[line.start_point]
+(x2, y2) = _map.pos[line.end_point]
+train_pos = train_obj.position / line.length
 (x, y) = (x2 * train_pos + x1 * (1.0 - train_pos),
-y2 * train_pos + y1 * (1.0 - train_pos))
+          y2 * train_pos + y1 * (1.0 - train_pos))
 
-if train_obj['speed'] == 1:
-    angle = math.atan2(y2-y1, x2-x1)/(2.0*math.pi)*360  # degrees
-elif train_obj['speed'] == -1:
-    angle = math.atan2(y1-y2, x1-x2)/(2.0*math.pi)*360  # degrees
+if train_obj.speed == -1:
+    angle = math.atan2(y2 - y1, x2 - x1) / (
+        2.0 * math.pi) * 360  # degrees
+elif train_obj.speed == 1:
+    angle = math.atan2(y1 - y2, x1 - x2) / (
+        2.0 * math.pi) * 360  # degrees
 else:
     angle = None
 

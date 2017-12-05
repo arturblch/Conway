@@ -1,6 +1,6 @@
 from model.Move import Move
 
-class Strategy_2:
+class Strategy:
     def __init__(self, player, map_graph, objects):
         self.player = player
         self.map = map_graph
@@ -16,5 +16,9 @@ class Strategy_2:
                 moves.append(move)
         return moves
 
-    def get_move():
-        return Move(1, 1, 0)  # Just test
+    def get_move(self, train):
+        if train.position == 0 or train.position == None:
+            return Move(1, 1, 0)  # Just test
+        elif train.position == self.map.lines[train.line_idx].length:
+            return Move(1, -1, 0)  # Just test
+            

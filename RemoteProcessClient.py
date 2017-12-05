@@ -16,11 +16,11 @@ fh.setLevel(logging.DEBUG)
 
 # create console handler and set level to debug
 ch = logging.StreamHandler()
-ch.setLevel(logging.DEBUG)
+ch.setLevel(logging.ERROR)
 
 # create formatter and add it to the handlers
 formatter = logging.Formatter(
-    '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    '%(asctime)s - %(message)s')
 fh.setFormatter(formatter)
 ch.setFormatter(formatter)
 
@@ -48,7 +48,7 @@ class RemoteProcessClient:
         self.socket.settimeout(5)
 
     def login(self, name):
-        response = self.write_message('LOGIN', {"name": name})
+        response = self.write_message('LOGIN', {"name": name})[1]
         return Player(response)
 
     def logout(self):
@@ -73,8 +73,9 @@ class RemoteProcessClient:
         if data is None:
             data = {}
         self.write_string(json.dumps(data))
-        logger.info("Loging message: %s", data)
-        return self.read_response()
+        logger.info("Message: %s", data)
+        if action != 'LOGOUT':
+            return self.read_response()
 
     def read_response(self):
         result = self.read_uint()

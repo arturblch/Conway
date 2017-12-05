@@ -20,8 +20,8 @@ def test_defult_actions():
         remote_process_client = RemoteProcessClient('wgforge-srv.wargaming.net',
                                                     443)
         assert remote_process_client.login("Test12345")
-        assert remote_process_client.move(Move(1, 1, 0))[0] == 0
         assert remote_process_client.map(1)[0] == 0
+        assert remote_process_client.map(0)[0] == 0
         assert remote_process_client.turn()[0] == 0
 
     finally:

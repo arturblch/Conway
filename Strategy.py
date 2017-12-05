@@ -2,6 +2,7 @@ from model.Objects import Objects
 from model.Map import Map
 from model.Move import Move
 from model.Train import Train
+import copy
 
 
 class Strategy:
@@ -60,16 +61,18 @@ class Strategy:
             market_point = self.map.get_market_point(market)
             distance = self.map.get_distance(current_point.idx, market_point.idx)
             return_distance = self.map.get_distance(market_point.idx, home_point.idx)
-            if product - self.population*(distance+return_distance) >= 0:
+            if (product - self.population*(distance+return_distance)) >= 0 and (len(path) <= 5):
                 new_total_distance = total_distance + distance
                 new_train_prod = train_prod + markets[market]
                 new_markets = markets.copy()
                 new_path = path.copy()
+                new_market = copy.copy(market)
+                new_market.product = 0
                 if path:
                     m = path[-1]
                     new_markets.update({m: min(m.product + m.replenishment*distance, m.product_capacity)})
                 new_markets.pop(market)
-                new_path.append(market)
+                new_path.append(new_market)
                 for m in new_markets:
                     new_markets.update({m: min(m.product + m.replenishment*distance, m.product_capacity)})
                 profit = new_train_prod / (return_distance + new_total_distance)

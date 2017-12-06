@@ -21,7 +21,7 @@ class Map:
     def get_neighbors(self, point):
         return list(self.Graph.neighbors(point))
 
-    def get_point(self, line_idx, position):
+    def get_point(self, line_idx, position):  # нужно перенести в Train.node при Update хз как
         line = self.lines[line_idx]
         if position == 0:
             return self.points[line.start_point]
@@ -30,7 +30,7 @@ class Map:
         else:
             return None
 
-    def departure(self, departure_point, arrival_point):
+    def departure(self, departure_point, arrival_point):                        # можно преоразовать сразу в Move
         line = self.Graph.get_edge_data(departure_point, arrival_point)['line']
         speed = 1 if line.start_point == departure_point else -1
         return line, speed
@@ -42,12 +42,12 @@ class Map:
         next_point_idx = nx.shortest_path(self.Graph, source=u, target=v)[1]
         return self.points[next_point_idx]
 
-    def get_market_point(self, market):
+    def get_market_point(self, market):                      # убрать новая фича в объекте
         for point in self.points.values():
             if point.post_id == market.idx:
                 return point
 
-    def get_post(self, idx):
+    def get_post(self, idx):                                  # может создать отдельный дикт??
         for point in self.points.values():
             if point.idx == idx:
                 return point

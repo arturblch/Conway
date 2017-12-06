@@ -1,5 +1,6 @@
 import json
 
+
 class WorldGetter:
     player = json.loads('''{
     "home": {
@@ -441,7 +442,7 @@ class WorldGetter:
         ]
     }''')
 
-    objects02 =  json.loads('''{
+    objects02 = json.loads('''{
         "idx": 1,
         "post": [
             {
@@ -490,7 +491,7 @@ class WorldGetter:
         ]
     }''')
 
-    map03 =  json.loads('''{
+    map03 = json.loads('''{
         "idx": 1,
         "line": [
             {

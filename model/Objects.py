@@ -1,6 +1,7 @@
 from model.Train import Train
 from model.Town import Town
 from model.Market import Market
+from model.Storage import Storage
 
 
 class Objects:
@@ -11,11 +12,14 @@ class Objects:
         }
         self.towns = {}
         self.markets = {}
+        self.storages = {}
         for post in response['post']:
             if post['type'] == 1:
                 self.towns[post['idx']] = Town(post)
             if post['type'] == 2:
                 self.markets[post['idx']] = Market(post)
+            if post['type'] == 3:
+                self.storages[post['idx']] = Storage(post)
 
     def update(self, layer):
         for t in layer["train"]:
@@ -25,6 +29,8 @@ class Objects:
                 self.towns[post['idx']].update(post)
             if post['type'] == 2:
                 self.markets[post['idx']].update(post)
+            if post['type'] == 3:
+                self.storages[post['idx']].update(post)
 
     def update_trains_node(self, lines):
         if lines:

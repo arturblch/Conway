@@ -1,27 +1,27 @@
+# "armor": 20,
+# "armor_capacity": 20,
 # "event": [],
-# "idx": 3,
-# "name": "market-medium",
-# "point_id": 49,
-# "product": 250,
-# "product_capacity": 250,
-# "replenishment": 10,
-# "type": 2
+# "idx": 5,
+# "name": "storage-small",
+# "point_id": 32,
+# "replenishment": 1,
+# "type": 3
 
-class Market:
+class Storage:
     def __init__(self, post):
         self.event = post['event']
         self.idx = post['idx']
         self.name = post['name']
         self.point_id = post['point_id']
-        self.product = post['product']
-        self.product_capacity = post['product_capacity']
+        self.armor = post['armor']
+        self.armor_capacity = post['armor_capacity']
         self.replenishment = post['replenishment']
         self.type = post["type"]
 
     def update(self, post):
         self.event = post['event']
         self.point_id = post['point_id']
-        self.product = post['product']
+        self.armor = post['armor']
 
     def __repr__(self):
         return f"Market {self.idx}"

@@ -5,7 +5,7 @@ from model.Storage import Storage
 
 
 class Objects:
-    def __init__(self, response):  # lines for trains
+    def __init__(self, response):
         self.trains = {
             train['idx']: Train(train)
             for train in response['train']
@@ -21,18 +21,21 @@ class Objects:
             if post['type'] == 3:
                 self.storages[post['idx']] = Storage(post)
 
-    def update(self, layer):
-        for t in layer["train"]:
-            self.trains[t["idx"]].update(t)
-        for post in layer["post"]:
-            if post['type'] == 1:
-                self.towns[post['idx']].update(post)
-            if post['type'] == 2:
-                self.markets[post['idx']].update(post)
-            if post['type'] == 3:
-                self.storages[post['idx']].update(post)
+    def update(self, layer, lines):
+        self._update_trains(layer["train"], lines)
+        self._update_posts(layer["post"])
 
-    def update_trains_node(self, lines):
-        if lines:
-            for train in self.trains.values():
-                train.update_node(lines)
+    def _update_posts(self, posts):
+        for post_response in posts:
+            if post_response['type'] == 1:
+                self.towns[post_response['idx']].update(post_response)
+            if post_response['type'] == 2:
+                self.markets[post_response['idx']].update(post_response)
+            if post_response['type'] == 3:
+                self.storages[post_response['idx']].update(post_response)
+
+    def _update_trains(self, trains, lines):
+        for train_response in trains:
+            train = self.trains[train_response["idx"]]
+            train.update(train_response)
+            train.update_point(lines)

@@ -130,9 +130,9 @@ class RemoteProcessClient:
         layer = self.write_message('MAP', {"layer": 1})[1]
         return Objects(layer)
 
-    def update_objects(self, objects):
+    def update_objects(self, objects, lines):
         layer = self.write_message('MAP', {"layer": 1})[1]
-        objects.update(layer)
+        objects.update(layer, lines)
 
     def read_map(self):
         layer = self.write_message('MAP', {"layer": 0})[1]

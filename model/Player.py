@@ -1,9 +1,9 @@
-# Лучшие времена
 from model.Point import Point
+
 
 class Player:
     def __init__(self, response=None):
-        if response['home'] != None:
+        if response['home'] is not None:
             self.home = Point(**response['home'])
         else:
             self.home = None

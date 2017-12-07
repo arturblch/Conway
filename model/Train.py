@@ -28,17 +28,16 @@ class Train:
         self.position = response['position']
         self.speed = response['speed']
         self.event = response['event']
-        self.node = None
+        self.point = None
 
-    def update_node(self, lines):
-        cur_line = lines[self.line_idx]
-
-        if self.position == cur_line.length:
-            self.node = cur_line.end_point
+    def update_point(self, lines):
+        current_line = lines[self.line_idx]
+        if self.position == current_line.length:
+            self.point = current_line.end_point
         elif self.position == 0:
-            self.node = cur_line.start_point
+            self.point = current_line.start_point
         else:
-            self.node = None
+            self.point = None
 
     def update(self, response):
         # goods

@@ -7,12 +7,14 @@
 # "replenishment": 10,
 # "type": 2
 
+
 class Market:
     def __init__(self, post):
         self.event = post['event']
         self.idx = post['idx']
         self.name = post['name']
         self.point_id = post['point_id']
+        self.point = None
         self.product = post['product']
         self.product_capacity = post['product_capacity']
         self.replenishment = post['replenishment']
@@ -20,8 +22,7 @@ class Market:
 
     def update(self, post):
         self.event = post['event']
-        self.point_id = post['point_id']
         self.product = post['product']
 
     def __repr__(self):
-        return f"Market {self.idx}"
+        return f"{self.name}"

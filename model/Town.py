@@ -25,6 +25,7 @@ class Town:
         self.name = post["name"]
         self.type = post["type"]
         self.event = post['event']
+        self.point = None
             # armor properties
         self.armor = post["armor"]
         self.armor_capacity = post["armor_capacity"]
@@ -39,16 +40,20 @@ class Town:
         self.next_level_price = post["next_level_price"]
 
     def update(self, post):
+            # armor properties
         self.armor = post["armor"]
         self.armor_capacity = post["armor_capacity"]
-
+            # population properties
         self.population = post["population"]
         self.population_capacity = post["population_capacity"]
-
+            # product properties
         self.product = post["product"]
         self.product_capacity = post["product_capacity"]
-
+            # level properties
         self.level = post["level"]
         self.next_level_price = post["next_level_price"]
-
+            # other properties
         self.event = post['event']
+
+    def __repr__(self):
+        return f'{self.name}'

@@ -13,6 +13,7 @@ class Storage:
         self.idx = post['idx']
         self.name = post['name']
         self.point_id = post['point_id']
+        self.point = None
         self.armor = post['armor']
         self.armor_capacity = post['armor_capacity']
         self.replenishment = post['replenishment']
@@ -20,8 +21,7 @@ class Storage:
 
     def update(self, post):
         self.event = post['event']
-        self.point_id = post['point_id']
         self.armor = post['armor']
 
     def __repr__(self):
-        return f"Market {self.idx}"
+        return f"{self.name}"

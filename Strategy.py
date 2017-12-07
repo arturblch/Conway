@@ -27,7 +27,7 @@ class Strategy:
 
     def get_move(self, train: Train):
         if train.speed == 0:
-            current_point = self.map.get_point(train.line_idx, train.position)
+            current_point = self.map.points[train.point]
             if len(self.best_way[0]) == 0:
                 if current_point.idx != self.home:
                     next_point = self.map.get_next_point(current_point.idx, self.home)
@@ -38,9 +38,9 @@ class Strategy:
                     self.best_way = [], 0
                     town = self.objects.towns[self.town]
                     markets = {market: market.product for market in self.objects.markets.values()}
-                    self.build_path( markets, town.product, train.product, 0)
+                    self.build_path(markets, town.product, train.goods, 0)
             market = self.best_way[0][0]
-            market_point = self.map.get_market_point(market)
+            market_point = market.point
             next_point = self.map.get_next_point(current_point.idx, market_point.idx)
             line, speed = self.map.departure(current_point.idx, next_point.idx)
             if next_point == market_point:
@@ -56,9 +56,9 @@ class Strategy:
             path = []
             current_point = home_point
         else:
-            current_point = self.map.get_market_point(path[-1])
+            current_point = path[-1].point
         for market in markets:
-            market_point = self.map.get_market_point(market)
+            market_point = market.point
             distance = self.map.get_distance(current_point.idx, market_point.idx)
             return_distance = self.map.get_distance(market_point.idx, home_point.idx)
             if (product - self.population*(distance+return_distance)) >= 0 and (len(path) <= 5):

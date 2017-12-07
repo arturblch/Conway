@@ -7,6 +7,7 @@
 # "replenishment": 1,
 # "type": 3
 
+
 class Storage:
     def __init__(self, post):
         self.event = post['event']

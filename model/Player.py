@@ -1,12 +1,13 @@
 from model.Point import Point
+from model.LoginError import LoginError
 
 
 class Player:
-    def __init__(self, response=None):
-        if response['home'] is not None:
-            self.home = Point(**response['home'])
-        else:
-            self.home = None
+    def __init__(self, response):
+        if response['home'] is None:
+            raise LoginError('Bad login')
+        # self.home = response['home']['idx']
+        self.home = Point(**response['home'])
         self.town = response['town']["idx"]
         self.population = response["town"]["population"]
         self.idx = response['idx']

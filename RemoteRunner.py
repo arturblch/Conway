@@ -2,6 +2,7 @@ import sys
 from Strategy import Strategy
 from tabulate import tabulate
 from RemoteProcessClient import RemoteProcessClient
+from model.LoginError import LoginError
 from GUI import GUI
 
 
@@ -23,7 +24,12 @@ class Runner:
 
     def run(self):
         try:
-            self.player = self.process_client.login(self.name)
+            try:
+                self.player = self.process_client.login(self.name)
+            except LoginError:
+                self.process_client.logout()
+                print('BAD LOGIN')
+                exit()
             self.map_graph = self.process_client.read_map()
             self.objects = self.process_client.read_objects()
             self.map_graph.define_points(self.objects)

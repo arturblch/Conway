@@ -30,17 +30,7 @@ class Train:
         self.event = response['event']
         self.point = None
 
-    # TODO: set Point instance instead of point index
-    def update_point(self, lines):
-        current_line = lines[self.line_idx]
-        if self.position == current_line.length:
-            self.point = current_line.end_point
-        elif self.position == 0:
-            self.point = current_line.start_point
-        else:
-            self.point = None
-
-    def update(self, response):
+    def update(self, response, map_graph):
         # goods
         self.goods = response['goods']
         self.goods_capacity = response["goods_capacity"]
@@ -53,3 +43,4 @@ class Train:
         self.position = response['position']
         self.speed = response['speed']
         self.event = response['event']
+        self.point = map_graph.get_train_point(self)

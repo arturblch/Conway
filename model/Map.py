@@ -40,3 +40,11 @@ class Map:
     def get_next_point(self, u, v):
         next_point_idx = nx.shortest_path(self.Graph, source=u, target=v)[1]
         return self.points[next_point_idx]
+
+    def get_train_point(self, train):
+        current_line = self.lines[train.line_idx]
+        if train.position == current_line.length:
+            return self.points[current_line.end_point]
+        elif train.position == 0:
+            return self.points[current_line.start_point]
+        return None

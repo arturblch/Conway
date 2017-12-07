@@ -21,8 +21,8 @@ class Objects:
             if post['type'] == 3:
                 self.storages[post['idx']] = Storage(post)
 
-    def update(self, layer, lines):
-        self._update_trains(layer["train"], lines)
+    def update(self, layer, map_grap):
+        self._update_trains(layer["train"], map_grap)
         self._update_posts(layer["post"])
 
     def _update_posts(self, posts):
@@ -34,8 +34,7 @@ class Objects:
             if post_response['type'] == 3:
                 self.storages[post_response['idx']].update(post_response)
 
-    def _update_trains(self, trains, lines):
+    def _update_trains(self, trains, map_graph):
         for train_response in trains:
             train = self.trains[train_response["idx"]]
-            train.update(train_response)
-            train.update_point(lines)
+            train.update(train_response, map_graph)

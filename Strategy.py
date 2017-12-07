@@ -27,7 +27,7 @@ class Strategy:
 
     def get_move(self, train: Train):
         if train.speed == 0:
-            current_point = self.map.points[train.point]
+            current_point = train.point
             if len(self.best_way[0]) == 0:
                 if current_point != self.home:
                     next_point = self.map.get_next_point(current_point.idx, self.home)

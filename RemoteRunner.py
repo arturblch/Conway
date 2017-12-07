@@ -32,7 +32,7 @@ class Runner:
             if self.is_gui:
                 self.gui = GUI(self.player, self.map_graph, self.objects)
             while self.player.is_alive:
-                self.process_client.update_objects(self.objects, self.map_graph.lines)
+                self.process_client.update_objects(self.objects, self.map_graph)
                 self.print_state()
                 if self.is_gui:
                     self.gui.turn()

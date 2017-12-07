@@ -2340,6 +2340,10 @@ class WorldGetter:
         ]
     }''')
 
+
+
+    map_pos03 = dict([(i+1 , (i//10*1.1/10, (i %10 )*1.1/ 10)) for i in range(0,100)])
+
     objects03 = json.loads('''{
         "idx": 1,
         "post": [
@@ -2451,3 +2455,6 @@ class WorldGetter:
 
     def get_player(self):
         return self.player
+
+    def get_pos(self):
+        return getattr(self, "map_pos%02d" % self.num)

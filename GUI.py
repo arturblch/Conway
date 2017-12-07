@@ -55,6 +55,14 @@ class GUI:
                 self.surf.blit(mask, (x_pos - RADIUS, y_pos - RADIUS))
                 pg.draw.circle(self.surf, green, (x_pos, y_pos), RADIUS)
 
+            if point.post_id in self.objects.storages.keys():
+                mask = pg.Surface((RADIUS * 2, RADIUS * 2))
+                mask.fill(red)
+                mask.set_alpha(128)
+                self.surf.blit(mask, (x_pos - RADIUS, y_pos - RADIUS))
+                pg.draw.circle(self.surf, green, (x_pos, y_pos), RADIUS)
+
+
             if point.post_id in self.objects.towns.keys():
                 mask = pg.Surface((RADIUS * 2, RADIUS * 2))
                 mask.fill(blue)
@@ -97,11 +105,14 @@ class GUI:
                 if point.post_id in self.objects.markets.keys():
                     name = self.objects.markets[point.post_id].name
                     product = self.objects.markets[point.post_id].product
+                elif point.post_id in self.objects.storages.keys():
+                    name = self.objects.storages[point.post_id].name
+                    product = self.objects.storages[point.post_id].armor
                 else:
                     name = self.objects.towns[point.post_id].name
                     product = self.objects.towns[point.post_id].product
                     population = self.objects.towns[point.post_id].population
-                    
+
                     post_population = pg.font.Font(None, 19).render(
                     str(population), False, white)
                     self.surf.blit(post_population, (text_pos_x-RADIUS, text_pos_y-RADIUS))
@@ -110,12 +121,12 @@ class GUI:
                     name, False, white)
                 post_product = pg.font.Font(None, 19).render(
                     str(product), False, white)
-            
+
                 self.surf.blit(post_name, (text_pos_x, text_pos_y-RADIUS))
                 self.surf.blit(post_product, (text_pos_x, text_pos_y+RADIUS))
 
 
-            
+
 
     def draw_fps(self):
         self.surf.blit(

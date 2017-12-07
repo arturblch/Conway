@@ -1,4 +1,3 @@
-from model.Point import Point
 from model.LoginError import LoginError
 
 
@@ -6,8 +5,7 @@ class Player:
     def __init__(self, response):
         if response['home'] is None:
             raise LoginError('Bad login')
-        # self.home = response['home']['idx']
-        self.home = Point(**response['home'])
+        self.home = response['home']['idx']
         self.town = response['town']["idx"]
         self.population = response["town"]["population"]
         self.idx = response['idx']
@@ -17,3 +15,7 @@ class Player:
         else:
             self.trains = None
         self.is_alive = True
+
+    def settle(self, map_graph, objects):
+        self.home = map_graph.points[self.home]
+        self.town = objects.towns[self.town]

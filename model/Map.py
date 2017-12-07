@@ -26,6 +26,9 @@ class Map:
         for post in posts:
             post.point = self.points[post.point_id]
 
+    # TODO:
+    # 1. delete departure_point (departure_point == train.point)
+    # 2. add departure from any position of the line
     def departure(self, departure_point, arrival_point):                        # можно преоразовать сразу в Move
         line = self.Graph.get_edge_data(departure_point, arrival_point)['line']
         speed = 1 if line.start_point == departure_point else -1

@@ -12,14 +12,11 @@ class Runner:
         self.map_graph = None
         self.objects = None
         self.gui = None
-
         if len(sys.argv) >= 2 and sys.argv[1] == '-gui':
             self.is_gui = True
         else:
             self.is_gui = False
-
-        self.process_client = RemoteProcessClient('wgforge-srv.wargaming.net',
-                                                  443)
+        self.process_client = RemoteProcessClient('wgforge-srv.wargaming.net', 443)
         self.name = name
 
     def run(self):
@@ -28,11 +25,9 @@ class Runner:
                 self.player = self.process_client.login(self.name)
             except LoginError:
                 self.process_client.logout()
-                print('BAD LOGIN')
+                print('BAD LOGIN\nTRY AGAIN')
                 exit()
-            self.map_graph = self.process_client.read_map()
-            self.objects = self.process_client.read_objects()
-            self.map_graph.define_points(self.objects)
+            self.init_world()
             strategy = Strategy(self.player, self.map_graph, self.objects)
             if self.is_gui:
                 self.gui = GUI(self.player, self.map_graph, self.objects)
@@ -51,7 +46,13 @@ class Runner:
 
         return self.player.is_alive  # for testing
 
-    def move(self, strategy):
+    def init_world(self):
+        self.map_graph = self.process_client.read_map()
+        self.objects = self.process_client.read_objects()
+        self.map_graph.define_points(self.objects)
+        self.player.settle(self.map_graph, self.objects)
+
+    def move(self, strategy):                                   # move == ход
         moves = strategy.get_moves()
         if moves:
             for move in moves:

@@ -38,7 +38,7 @@ class RemoteProcessClient:
     SIGNED_BYTE_SIZE_BYTES = 1
     UNSIGNED_INTEGER_SIZE_BYTES = 4
 
-    ACTION = {"LOGIN": 1, "LOGOUT": 2, "MOVE": 3, "TURN": 5, "MAP": 10}
+    ACTION = {"LOGIN": 1, "LOGOUT": 2, "MOVE": 3, "UPGRADE": 4, "TURN": 5, "MAP": 10}
 
     def __init__(self, host, port):
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -55,7 +55,10 @@ class RemoteProcessClient:
         return self.write_message('LOGOUT')
 
     def move(self, move):
-        return self.write_message('MOVE', {"line_idx": move.line_idx, "speed": move.speed, "train_idx": move.train_idx})
+        return self.write_message('MOVE', vars(move))
+
+    def upgrade(self, up_obj):
+        return self.write_message('UPGRADE', vars(up_obj))
 
     def turn(self):
         return self.write_message('TURN')

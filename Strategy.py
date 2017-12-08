@@ -25,6 +25,25 @@ class Strategy:
                 moves.append(move)
         return moves
 
+    def move_to_point(self, train, arrival_point, offset=0):
+        if train.point = None:
+            line = self.map.lines[train.line_idx]
+        else:
+            line = self.map.Graph.edges(train.point, arrival_point)
+            if line == None:
+                return
+        need_pos = 0 + offset if line.start_point == arrival_point \
+                                  else line.length - offset
+
+        if need_pos > train.position:
+            speed = 1
+        elif need_pos < train.position:
+            speed = -1
+        else:
+            speed = 0
+        return Move(line.idx, speed, train.idx)
+
+
     def get_move(self, train: Train):
         if train.speed == 0:
             current_point = train.point

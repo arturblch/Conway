@@ -57,26 +57,31 @@ class Runner:
         if moves:
             for move in moves:
                 self.process_client.move(move)
+        up_obj = strategy.get_upgrade()
+        if up_obj:
+            self.process_client.upgrade(move)
         self.process_client.turn()
 
     def print_state(self):
         str_post = []
         for town in self.objects.towns.values():
-            str_post.append([town.name, town.product, town.population])
+            str_post.append([town.name, town.product, town.armor, town.population])
         for market in self.objects.markets.values():
-            str_post.append([market.name, market.product, '-'])
+            str_post.append([market.name, market.product, '-', '-'])
+        for storage in self.objects.storages.values():
+            str_post.append([storage.name, '-', storage.armor, '-'])
 
-        print(tabulate(str_post, headers=['name', 'products', 'population']), '\n')
+        print(tabulate(str_post, headers=['name', 'product', 'armor', 'population']), '\n')
 
         for train in self.objects.trains.values():
             print(
                     tabulate(
                         [[
-                            train.idx, train.goods, train.line_idx, train.speed,
+                            train.idx, train.goods, train.post_type, train.line_idx, train.speed,
                             train.position
                         ]],
                         headers=[
-                            'Train_id', 'product', 'line_idx', 'speed', 'position'
+                            'Train_id', 'product', 'post_type', 'line_idx', 'speed', 'position'
                         ]))
 
 

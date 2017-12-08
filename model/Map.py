@@ -11,6 +11,10 @@ class Map:
             point['idx']: Point(**point)
             for point in response["point"]
         }
+        self.post_id = {
+            point['post_id']: point['idx']
+            for point in response["point"] if point['post_id'] != None
+        }
         self.Graph.add_nodes_from(self.points.keys())
         self.Graph.add_edges_from([(*line['point'], {
             'length': line['length'], 'line': Line(**line)

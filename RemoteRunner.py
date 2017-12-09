@@ -49,7 +49,7 @@ class Runner:
     def init_world(self):
         self.map_graph = self.process_client.read_map()
         self.objects = self.process_client.read_objects()
-        self.map_graph.define_points(self.objects)
+        # self.map_graph.define_points(self.objects)
         self.player.settle(self.map_graph, self.objects)
 
     def move(self, strategy):                                   # move == ход
@@ -57,9 +57,9 @@ class Runner:
         if moves:
             for move in moves:
                 self.process_client.move(move)
-        up_obj = strategy.get_upgrade()
-        if up_obj:
-            self.process_client.upgrade(move)
+        # up_obj = strategy.get_upgrade()
+        # if up_obj:
+        #     self.process_client.upgrade(move)
         self.process_client.turn()
 
     def print_state(self):

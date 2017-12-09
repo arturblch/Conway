@@ -26,11 +26,11 @@ class Strategy:
         return moves
 
     def move_to_point(self, train, arrival_point, offset=0):
-        if train.point = None:
+        if train.point is None:
             line = self.map.lines[train.line_idx]
         else:
             line = self.map.Graph.edges(train.point, arrival_point)
-            if line == None:
+            if line is None:
                 return
         need_pos = 0 + offset if line.start_point == arrival_point \
                                   else line.length - offset
@@ -42,7 +42,6 @@ class Strategy:
         else:
             speed = 0
         return Move(line.idx, speed, train.idx)
-
 
     def get_move(self, train: Train):
         if train.speed == 0:
@@ -59,8 +58,8 @@ class Strategy:
                     self.build_path(markets, self.town.product, train.goods, 0)
             market = self.best_way[0][0]
             market_point = market.point
-            next_point = self.map.get_next_point(current_point.idx, market_point.idx)
-            line, speed = self.map.departure(current_point.idx, next_point.idx)
+            next_point = self.map.get_next_point(current_point, market_point)
+            line, speed = self.map.departure(current_point, next_point)
             if next_point == market_point:
                 self.best_way[0].pop(0)
             print(f"CURRENT: {current_point} NEXT: {next_point}")
@@ -73,10 +72,12 @@ class Strategy:
             current_point = self.home
         else:
             current_point = path[-1].point
+        if current_point is None:
+            current_point = self.home
         for market in markets:
             market_point = market.point
-            distance = self.map.get_distance(current_point.idx, market_point.idx)
-            return_distance = self.map.get_distance(market_point.idx, self.home.idx)
+            distance = self.map.get_distance(current_point, market_point)
+            return_distance = self.map.get_distance(market_point, self.home)
             if (product - self.population*(distance+return_distance)) >= 0 and (len(path) <= 5):
                 new_total_distance = total_distance + distance
                 new_train_prod = train_prod + markets[market]

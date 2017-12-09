@@ -20,7 +20,7 @@ class Town:
             # id properties 
         self.idx = post["idx"]
         self.player_id = post["player_id"]
-        self.point_id = post["point_id"]
+        self.point = post["point_id"]
             # other properties
         self.name = post["name"]
         self.type = post["type"]

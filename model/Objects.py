@@ -21,8 +21,8 @@ class Objects:
             if post['type'] == 3:
                 self.storages[post['idx']] = Storage(post)
 
-    def update(self, layer, map_grap):
-        self._update_trains(layer["train"], map_grap)
+    def update(self, layer, map_graph):
+        self._update_trains(layer["train"], map_graph)
         self._update_posts(layer["post"])
 
     def _update_posts(self, posts):

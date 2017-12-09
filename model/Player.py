@@ -17,5 +17,4 @@ class Player:
         self.is_alive = True
 
     def settle(self, map_graph, objects):
-        self.home = map_graph.points[self.home]
         self.town = objects.towns[self.town]

@@ -24,13 +24,13 @@ class Map:
     #     for post in posts:
     #         post.point = self.points[post.point_id]
 
-    # TODO:
-    # 1. delete departure_point (departure_point == train.point)
-    # 2. add departure from any position of the line
-    def departure(self, departure_point, arrival_point):                        # можно преоразовать сразу в Move
-        print(departure_point, arrival_point)
-        line = self.Graph.get_edge_data(departure_point, arrival_point)['line']
-        speed = 1 if line.start_point == departure_point else -1
+    def departure(self, train, arrival_point):                        # можно преоразовать сразу в Move
+        if train.point:
+            departure_point = train.point
+            line = self.Graph.get_edge_data(departure_point, arrival_point)['line']
+        else:
+            line = train.line_idx
+        speed = 1 if line.end_point == arrival_point else -1
         return line, speed
 
     def get_distance(self, u, v):

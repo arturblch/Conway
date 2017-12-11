@@ -3,6 +3,7 @@ from Strategy import Strategy
 from tabulate import tabulate
 from RemoteProcessClient import RemoteProcessClient
 from model.LoginError import LoginError
+from model.UpObject import UpObject
 from GUI import GUI
 
 
@@ -49,11 +50,14 @@ class Runner:
     def init_world(self):
         self.map_graph = self.process_client.read_map()
         self.objects = self.process_client.read_objects()
-        # self.map_graph.define_points(self.objects)
+        self.map_graph.define_posts(self.objects)
         self.player.settle(self.map_graph, self.objects)
 
     def move(self, strategy):                                   # move == ход
         moves = strategy.get_moves()
+        upgrades = strategy.get_upgrades()
+        if upgrades:
+            self.process_client.upgrade(upgrades)
         if moves:
             for move in moves:
                 self.process_client.move(move)

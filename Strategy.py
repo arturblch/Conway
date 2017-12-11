@@ -36,8 +36,9 @@ class Strategy:
                 trains.append(train.idx)
         if trains:
             return UpObject([], trains)
-        if self.town.armor >= self.town.next_level_price:
-            return UpObject([self.town.idx], [])
+        if self.town.next_level_price:
+            if self.town.armor >= self.town.next_level_price:
+                return UpObject([self.town.idx], [])
         if self.town.level >= 2:
             for train in self.trains:
                 if train.level == 2 and self.town.armor >= train.next_level_price:

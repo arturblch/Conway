@@ -36,13 +36,11 @@ class Strategy:
                 trains.append(train.idx)
         if trains:
             return UpObject([], trains)
-        if self.town.armor >= 100 and self.town.level == 1:
-            return UpObject([1], [])
-        if self.town.armor >= 200 and self.town.level == 2:
-            return UpObject([1], [])
+        if self.town.armor >= self.town.next_level_price:
+            return UpObject([self.town.idx], [])
         if self.town.level >= 2:
             for train in self.trains:
-                if train.level == 2 and self.town.armor >= 80:
+                if train.level == 2 and self.town.armor >= train.next_level_price:
                     return UpObject([], [train.idx, ])
 
     def get_move(self, train: Train, posts):

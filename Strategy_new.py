@@ -74,10 +74,10 @@ class Strategy:
                     self._get_target_points(self.objects.trains[train_id])
                 next_target = self.trains_points[train_id][0]
 
-            next_step = self.solver.find_path(self.map.Graph,  )
+            next_step = self.solver.find_path(self.map.Graph, self.objects.trains[train_id].point, next_target)
 
             move_obj = self._move_to_point(self, self.objects.trains[train_id],
-                                           next_target)
+                                           next_step)
             if move_obj:
                 moves.append()
 

@@ -83,7 +83,8 @@ class LRAStar(AStar):
     def find_path(self, graph, source, target):
         path = super().find_path(graph, source, target)
         next_node = path[1]
-        self._occupied_nodes.remove(source)
+        if source in self._occupied_nodes:
+            self._occupied_nodes.remove(source)
         self._occupied_nodes.append(next_node)
         return path
 

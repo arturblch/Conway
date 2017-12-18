@@ -1,6 +1,6 @@
 from model.UpObject import UpObject
 from itertools import cycle
-from model import Move
+from model.Move import Move
 from util.path import LRAStar
 
 
@@ -10,10 +10,10 @@ class Strategy:
         self.map = map_graph
         self.objects = objects
 
-        for train in self.objects.trains:
+        for train in self.objects.trains.values():
             train.point = self.map.get_train_point(train)
 
-        self.solver = LRAStar(train.point for train in self.objects.trains)
+        self.solver = LRAStar([train.point for train in self.objects.trains.values()])
         self.up_ready = False
         self.up_object = UpObject()  # Empty up object
 
@@ -67,6 +67,9 @@ class Strategy:
                 self._get_target_points(self.objects.trains[train_id])
 
         for train_id, points in self.trains_points.items():
+            if self.objects.trains[train_id].point == None:
+                print("train %d at line, no find_path" % train_id)
+                continue
             next_target = self.trains_points[train_id][0]
             if next_target == self.objects.trains[train_id].point:
                 self.trains_points[train_id].pop(0)
@@ -74,12 +77,15 @@ class Strategy:
                     self._get_target_points(self.objects.trains[train_id])
                 next_target = self.trains_points[train_id][0]
 
-            next_step = self.solver.find_path(self.map.Graph, self.objects.trains[train_id].point, next_target)
+            next_step = self.solver.find_path(self.map.Graph,
+             self.objects.trains[train_id].point, next_target)[1]
 
-            move_obj = self._move_to_point(self, self.objects.trains[train_id],
-                                           next_step)
+            print("move %d, %d" % (self.objects.trains[train_id].point, next_step))
+            move_obj = self._move_to_point(self.objects.trains[train_id], next_step)
+            #print("train %d at point, next_step %d" % (train_id, next_step))
+
             if move_obj:
-                moves.append()
+                moves.append(move_obj)
 
         if moves:
             return moves
@@ -120,20 +126,15 @@ class Strategy:
 
 
     def _move_to_point(self, train, arrival_point):
+        if train.point == arrival_point:
+            return None
         if train.point is None:
             line = self.map.lines[train.line_idx]
         else:
-            line = self.map.Graph.edges(train.point, arrival_point)
+            line = self.map.Graph.get_edge_data(train.point, arrival_point)['line']
             if line is None:
                 return None
-        need_pos = 0 if line.start_point == arrival_point else line.length 
-
-        if need_pos > train.position:
-            speed = 1
-        elif need_pos < train.position:
-            speed = -1
-        else:
-            speed = 0
+        speed = -1 if line.start_point == arrival_point else 1
 
         if line == train.line_idx and speed == train.speed:
             return None

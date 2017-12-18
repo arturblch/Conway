@@ -1,5 +1,5 @@
 import sys
-from Strategy import Strategy
+from Strategy_new import Strategy
 from tabulate import tabulate
 from RemoteProcessClient import RemoteProcessClient
 from model.LoginError import LoginError
@@ -33,7 +33,7 @@ class Runner:
                 self.gui = GUI(self.player, self.map_graph, self.objects)
             while self.player.is_alive:
                 self.process_client.update_objects(self.objects, self.map_graph)
-                self.print_state()
+                # self.print_state()
                 if self.is_gui:
                     self.gui.turn()
                     if (not self.gui.paused) or self.gui.onestep:
@@ -57,9 +57,9 @@ class Runner:
         if moves:
             for move in moves:
                 self.process_client.move(move)
-        # up_obj = strategy.get_upgrade()
-        # if up_obj:
-        #     self.process_client.upgrade(move)
+        up_obj = strategy.get_upgrade()
+        if up_obj:
+            self.process_client.upgrade(up_obj)
         self.process_client.turn()
 
     def print_state(self):

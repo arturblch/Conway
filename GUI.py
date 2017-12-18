@@ -39,23 +39,28 @@ class GUI:
         self.myfont = pg.font.SysFont('arial', 15)
 
     def draw_points(self, ):
-        for point in self.map.points.values():
+        for point in self.map.points:
             x_pos = int(
-                (self.display_width * self.map.pos[point.idx][0] + RADIUS))
+                (self.display_width * self.map.pos[point][0] + RADIUS))
             y_pos = int(
-                (self.display_height * self.map.pos[point.idx][1] + RADIUS))
+                (self.display_height * self.map.pos[point][1] + RADIUS))
 
-            if point.post_id == None:
-                pg.draw.circle(self.surf, black, (x_pos, y_pos), RADIUS)
+            pg.draw.circle(self.surf, black, (x_pos, y_pos), RADIUS)
+        
+        for post_id, idx in self.map.posts.items():
+            x_pos = int(
+                (self.display_width * self.map.pos[idx][0] + RADIUS))
+            y_pos = int(
+                (self.display_height * self.map.pos[idx][1] + RADIUS))
 
-            if point.post_id in self.objects.markets.keys():
+            if post_id in self.objects.markets.keys():
                 mask = pg.Surface((RADIUS * 2, RADIUS * 2))
                 mask.fill(green)
                 mask.set_alpha(128)
                 self.surf.blit(mask, (x_pos - RADIUS, y_pos - RADIUS))
                 pg.draw.circle(self.surf, green, (x_pos, y_pos), RADIUS)
 
-            if point.post_id in self.objects.storages.keys():
+            if post_id in self.objects.storages.keys():
                 mask = pg.Surface((RADIUS * 2, RADIUS * 2))
                 mask.fill(red)
                 mask.set_alpha(128)
@@ -63,7 +68,7 @@ class GUI:
                 pg.draw.circle(self.surf, green, (x_pos, y_pos), RADIUS)
 
 
-            if point.post_id in self.objects.towns.keys():
+            if post_id in self.objects.towns.keys():
                 mask = pg.Surface((RADIUS * 2, RADIUS * 2))
                 mask.fill(blue)
                 mask.set_alpha(128)
@@ -89,7 +94,7 @@ class GUI:
                      RADIUS)), 5)
 
     def draw_node_labels(self):
-        for idx, point in self.map.points.items():
+        for idx in self.map.points:
             num_idx = pg.font.Font(None, 25).render(
                 str(idx), False, white)
             text_pos_x = int((self.display_width) * self.map.pos[idx][0] + RADIUS
@@ -98,35 +103,36 @@ class GUI:
                              RADIUS - (num_idx.get_height() / 2))
             self.surf.blit(num_idx, (text_pos_x, text_pos_y))
 
-            if point.post_id != None:
-                name = ""
-                product = ""
-                population = ""
-                if point.post_id in self.objects.markets.keys():
-                    name = self.objects.markets[point.post_id].name
-                    product = self.objects.markets[point.post_id].product
-                elif point.post_id in self.objects.storages.keys():
-                    name = self.objects.storages[point.post_id].name
-                    product = self.objects.storages[point.post_id].armor
-                else:
-                    name = self.objects.towns[point.post_id].name
-                    product = self.objects.towns[point.post_id].product
-                    population = self.objects.towns[point.post_id].population
+        for post_id, idx in self.map.posts.items():
+            text_pos_x = int((self.display_width) * self.map.pos[idx][0] + RADIUS
+                             - (num_idx.get_width() / 2))
+            text_pos_y = int((self.display_height) * self.map.pos[idx][1] +
+                             RADIUS - (num_idx.get_height() / 2))
+            name = ""
+            product = ""
+            population = ""
+            if post_id in self.objects.markets.keys():
+                name = self.objects.markets[post_id].name
+                product = self.objects.markets[post_id].product
+            elif post_id in self.objects.storages.keys():
+                name = self.objects.storages[post_id].name
+                product = self.objects.storages[post_id].armor
+            else:
+                name = self.objects.towns[post_id].name
+                product = self.objects.towns[post_id].product
+                population = self.objects.towns[post_id].population
 
-                    post_population = pg.font.Font(None, 19).render(
-                    str(population), False, white)
-                    self.surf.blit(post_population, (text_pos_x-RADIUS, text_pos_y-RADIUS))
+                post_population = pg.font.Font(None, 19).render(
+                str(population), False, white)
+                self.surf.blit(post_population, (text_pos_x-RADIUS, text_pos_y-RADIUS))
 
-                post_name = pg.font.Font(None, 19).render(
-                    name, False, white)
-                post_product = pg.font.Font(None, 19).render(
-                    str(product), False, white)
+            post_name = pg.font.Font(None, 19).render(
+                name, False, white)
+            post_product = pg.font.Font(None, 19).render(
+                str(product), False, white)
 
-                self.surf.blit(post_name, (text_pos_x, text_pos_y-RADIUS))
-                self.surf.blit(post_product, (text_pos_x, text_pos_y+RADIUS))
-
-
-
+            self.surf.blit(post_name, (text_pos_x, text_pos_y-RADIUS))
+            self.surf.blit(post_product, (text_pos_x, text_pos_y+RADIUS))
 
     def draw_fps(self):
         self.surf.blit(

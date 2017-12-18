@@ -5,6 +5,10 @@ import copy
 
 
 class AStar:
+    """
+    Implementation of A* algorithm.
+    AStar.find_path(graph, source, target) return a list of nodes in a shortest path between source and target
+    """
     def __init__(self, weight='length'):
         self._cost = self.cost
         self._heuristic = self.heuristic
@@ -27,7 +31,6 @@ class AStar:
     @staticmethod
     def build_path(explored, target, node):
         path = [target]
-        node = node
         while node is not None:
             path.append(node)
             node = explored[node]
@@ -68,6 +71,11 @@ class AStar:
 
 
 class LRAStar(AStar):
+    """
+    Implementation of Local-Repair A* algorithm.
+    Use one instance for multiple agents.
+    LRAStar.find_path(graph, source, target) return a list of nodes in a shortest path between source and target
+    """
     def __init__(self, occupied_nodes, weight='length'):
         super().__init__(weight)
         self._successors = self.successors
@@ -89,12 +97,20 @@ class LRAStar(AStar):
 
 
 class CAStar(AStar):
+    """
+    Implementation of Cooperative A* algorithm.
+    Use one instance for multiple agents.
+    LRAStar.CA(graph, agents) return a list of paths for each agent. Each agent defined by source
+    and target nodes. Ex: LRAStar.CA(graph, [[start1, target1], [start2, target2], ...])
+
+    !!!Arrived agents are ignored!!!
+    """
     def __init__(self, occupied_nodes, weight='length'):
         super().__init__(weight)
         self._successors = self.successors
         self._occupied_nodes = {0: occupied_nodes}
 
-    def successors(self, graph, node, time):                 #
+    def successors(self, graph, node, time):
         result = []
         for node, weight in super().successors(graph, node, time):
             if time+1 not in self._occupied_nodes.keys():

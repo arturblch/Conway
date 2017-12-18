@@ -1,4 +1,4 @@
-from PathSolver import PathSolver
+from .PathSolver import PathSolver
 
 
 class WHCA(PathSolver):
@@ -9,7 +9,7 @@ class WHCA(PathSolver):
                 obstacle_penalty,
                 obstacle_threshold):
 
-        super.__init__(self, rejoin_limit, predictor, obstacle_penalty, obstacle_threshold)
+        super().__init__(rejoin_limit, predictor, obstacle_penalty, obstacle_threshold)
 
         self.window_ = window
 
@@ -18,11 +18,6 @@ class WHCA(PathSolver):
         self.nodes_primary_ = 0
         self.nodes_heuristic_ = 0
 
-    def stat_names():
-        pass
-
-    def stat_values():
-        pass
 
     def make_rejoin_search(self, from_, to, world, agent):
         return rejoin_search(from_, to, world, self.should_stop_,

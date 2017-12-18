@@ -1,6 +1,5 @@
 import networkx as nx
 from model.Line import Line
-from model.Point import Point
 
 
 class Map:
@@ -8,13 +7,21 @@ class Map:
         self.Graph = nx.Graph()
         self.lines = {line['idx']: Line(**line) for line in response["line"]}
         self.points = [point['idx'] for point in response["point"]]
-        self.posts = [point['post_id'] for point in response["point"] if point['post_id'] is not None]
+        self.posts = {
+            point['post_id']: point['idx']
+            for point in response["point"] if point['post_id'] is not None
+        }
         self.Graph.add_nodes_from(self.points)
         self.Graph.add_edges_from([(*line['point'], {
-            'length': line['length'], 'line': Line(**line)
+            'length': line['length'],
+            'line': Line(**line)
         }) for line in response["line"]])
         self.pos = nx.spring_layout(
-            self.Graph, scale=0.5, center=(0.5, 0.5), iterations=200, weight="length")
+            self.Graph,
+            scale=0.5,
+            center=(0.5, 0.5),
+            iterations=200,
+            weight="length")
 
     def get_neighbors(self, point):
         return list(self.Graph.neighbors(point))
@@ -27,14 +34,16 @@ class Map:
     # TODO:
     # 1. delete departure_point (departure_point == train.point)
     # 2. add departure from any position of the line
-    def departure(self, departure_point, arrival_point):                        # можно преоразовать сразу в Move
+    def departure(self, departure_point,
+                  arrival_point):  # можно преоразовать сразу в Move
         print(departure_point, arrival_point)
         line = self.Graph.get_edge_data(departure_point, arrival_point)['line']
         speed = 1 if line.start_point == departure_point else -1
         return line, speed
 
     def get_distance(self, u, v):
-        return nx.shortest_path_length(self.Graph, source=u, target=v, weight='length')
+        return nx.shortest_path_length(
+            self.Graph, source=u, target=v, weight='length')
 
     def get_next_point(self, u, v):
         next_point = nx.shortest_path(self.Graph, source=u, target=v)[1]

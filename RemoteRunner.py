@@ -16,7 +16,8 @@ class Runner:
             self.is_gui = True
         else:
             self.is_gui = False
-        self.process_client = RemoteProcessClient('wgforge-srv.wargaming.net', 443)
+        self.process_client = RemoteProcessClient('wgforge-srv.wargaming.net',
+                                                  443)
         self.name = name
 
     def run(self):
@@ -32,7 +33,8 @@ class Runner:
             if self.is_gui:
                 self.gui = GUI(self.player, self.map_graph, self.objects)
             while self.player.is_alive:
-                self.process_client.update_objects(self.objects, self.map_graph)
+                self.process_client.update_objects(self.objects,
+                                                   self.map_graph)
                 # self.print_state()
                 if self.is_gui:
                     self.gui.turn()
@@ -48,11 +50,17 @@ class Runner:
 
     def init_world(self):
         self.map_graph = self.process_client.read_map()
+        self.map_graph.pos = dict([
+            (
+                cord['idx'], (cord['x'] / 200, cord['y'] / 200)
+            )
+            for cord in self.process_client.read_position()["coordinate"]
+        ])
         self.objects = self.process_client.read_objects()
         # self.map_graph.define_points(self.objects)
         self.player.settle(self.map_graph, self.objects)
 
-    def move(self, strategy):                                   # move == ход
+    def move(self, strategy):  # move == ход
         moves = strategy.get_moves()
         if moves:
             for move in moves:
@@ -65,24 +73,29 @@ class Runner:
     def print_state(self):
         str_post = []
         for town in self.objects.towns.values():
-            str_post.append([town.name, town.product, town.armor, town.population])
+            str_post.append(
+                [town.name, town.product, town.armor, town.population])
         for market in self.objects.markets.values():
             str_post.append([market.name, market.product, '-', '-'])
         for storage in self.objects.storages.values():
             str_post.append([storage.name, '-', storage.armor, '-'])
 
-        print(tabulate(str_post, headers=['name', 'product', 'armor', 'population']), '\n')
+        print(
+            tabulate(
+                str_post, headers=['name', 'product', 'armor', 'population']),
+            '\n')
 
         for train in self.objects.trains.values():
             print(
-                    tabulate(
-                        [[
-                            train.idx, train.goods, train.post_type, train.line_idx, train.speed,
-                            train.position
-                        ]],
-                        headers=[
-                            'Train_id', 'product', 'post_type', 'line_idx', 'speed', 'position'
-                        ]))
+                tabulate(
+                    [[
+                        train.idx, train.goods, train.post_type,
+                        train.line_idx, train.speed, train.position
+                    ]],
+                    headers=[
+                        'Train_id', 'product', 'post_type', 'line_idx',
+                        'speed', 'position'
+                    ]))
 
 
 if __name__ == '__main__':

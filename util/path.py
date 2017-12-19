@@ -131,10 +131,10 @@ class CAStar(AStar):
                 self._occupied_nodes[i].append(node)
         return plan
 
-    def solve(self, agents):
-        plans = []
-        for agent in agents:
-            plans.append(self.replan(*agent))
+    def solve(self, train_target):
+        plans = dict()
+        for train, target in train_target.items():
+            plans.update({train: self.replan(train.point, target)})
         return plans
 
 
@@ -212,6 +212,57 @@ class WHCAStar(HCAStar):
 
     def finished(self, u, v, t):
         return u == v or t >= self.window
+
+
+
+class Position:
+    def __init__(self, point, line, pos):
+        self.point = point
+        self.line = line
+        self.pos = pos
+
+class PathSolver(AStar):
+    """
+    Implementation of CA
+    """
+    def __init__(self, graph, occupied_nodes, weight='length'):
+        super().__init__(graph, weight)
+        self._successors = self.successors
+        self._occupied_nodes = {0: occupied_nodes}
+
+    def successors(self, node, time):
+        result = []
+        for node, weight in super().successors(node, time):
+            if time+1 not in self._occupied_nodes.keys():
+                self._occupied_nodes[time+1] = []
+            if node not in self._occupied_nodes[time+1]:
+                result.append((node, weight))
+        return result
+
+    def replan(self, source, target):
+        plan = super().find_path(source, target)
+        for i, node in enumerate(plan):
+                self._occupied_nodes[i].append(node)
+        return plan
+
+    
+
+
+    def solve(self, train_target):
+        plans = dict()
+        for train, target in train_target.items():
+            plans.update({train: self.replan(train.point, target)})
+        return plans
+
+
+
+
+
+
+
+
+
+
 
 
 def test_LRAStar(state):

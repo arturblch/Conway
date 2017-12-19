@@ -56,3 +56,45 @@ class Map:
         elif train.position == 0:
             return current_line.start_point
         return None
+
+    def get_point(self, line_idx, pos):
+        line = self.lines[line_idx]
+        if pos == line.length:
+            return line.end_point
+        elif pos == 0:
+            return line.start_point
+        return None
+
+    def get_neighbors_pos(self, pos):
+        nb_pos = []
+
+        if pos.point != None:
+            nb = self.Graph.neighbors(pos.point)
+            nb_lines = [
+                self.Graph.get_edge_data(pos, nb_point)['line']
+                for nb_point in nb
+                ]
+            for line in nb_lines:
+                pos = line.length - 1 if pos.point == line.end_point else 1
+                point = self.get_point(line.idx, pos)
+                nb_pos.append(Position(point, line.idx, pos))
+        else:
+            pos_1 = pos.pos - 1
+            point_1 = self.get_point(pos.line, pos_1)
+            nb_pos.append(point_1, pos.line, pos_1)
+
+            pos_2 = pos.pos + 1
+            point_2 = self.get_point(pos.line, pos_2)
+            nb_pos.append(point_2, pos.line, pos_2)
+
+        return nb_pos
+
+class Position:
+    def __init__(self, point, line=None, pos=None):
+        self.point = point
+        self.line = line
+        self.pos = pos
+
+    def __eq__(self, other):
+        return (self.point == other.point
+                or self.line == other.line and self.pos == other.pos)

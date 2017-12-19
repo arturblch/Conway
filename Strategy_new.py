@@ -37,39 +37,45 @@ class Strategy:
             return up
 
     def _get_up_object(self):
-        town = self.player.town
-        trains_armor = 0
-        for train_id in self.player.trains:
-            if self.objects.trains[train_id].point == town.idx and self.objects.trains[train_id].post_type == 3:
-                trains_armor += self.objects.trains[train_id].goods
+        home = self.player.home
+        town = self.objects.towns[home]
 
-        sum_armor = town.armor + trains_armor
+        armor = town.armor
         train_up = []
         town_up = []
 
-        if sum_armor - town.next_level_price > 40:
-            sum_armor -= town.next_level_price
-            town_up.append(town.id)
+        if armor - town.next_level_price > 40:
+            armor -= town.next_level_price
+            town_up.append(town.idx)
 
         for train_id in self.player.trains:
             if self.objects.trains[train_id].point == town.idx:
-                if sum_armor - self.objects.trains[train_id].next_level_price > 40:
-                    sum_armor -= self.objects.trains[train_id].next_level_price
+                if armor - self.objects.trains[train_id].next_level_price > 40:
+                    armor -= self.objects.trains[train_id].next_level_price
                     train_up.append(train_id)
         if town_up or train_up:
             self.up_ready = True
             self.up_object.update(town_up, train_up)
 
-    def get_moves(self):
-        moves = []
+    def update_targets(self):
         for train_id, points in self.trains_points.items():
+            # if empty (stay at town) get new
             if not points:
                 self._get_target_points(self.objects.trains[train_id])
 
+
+    def get_moves(self):
+        moves = []
+
+        self.update_targets()
+
         for train_id, points in self.trains_points.items():
+
+
             if self.objects.trains[train_id].point == None:
                 print("train %d at line, no find_path" % train_id)
                 continue
+
             next_target = self.trains_points[train_id][0]
             if next_target == self.objects.trains[train_id].point:
                 self.trains_points[train_id].pop(0)
@@ -87,8 +93,7 @@ class Strategy:
             if move_obj:
                 moves.append(move_obj)
 
-        if moves:
-            return moves
+        return moves
 
     def _get_target_points(self, train):
         if self.trains_roles[train.idx] == 2:
@@ -120,7 +125,6 @@ class Strategy:
             path.append(self.player.home)
             self.trains_points[train.idx] = path
         else:
-            print('out')
             self.trains_points[train.idx] = [self.player.home]
 
 

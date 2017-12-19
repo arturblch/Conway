@@ -18,7 +18,7 @@ class A_star:
         goal = lambda n : n.steps_distance == window
         return do_find_path(world, goal)
 
-    def  find_distance(p, world):
+    def find_distance(p, world):
         shortest_paths = distance_storage_.get()
 
         it = shortest_paths.find(p)
@@ -44,14 +44,14 @@ class A_star:
             if self.stop_flag_:
                 return None
 
-            current = self.heap_.top()
+            current = self.heap_.pop(0)
             current_coord = Cordinate(current.pos, current.steps_distance)
 
             assert self.open_.count(current_coord)
             assert !self.closed_.count(current_coord)
 
             self.heap_.pop()
-            self.open_.erase(current_coord)
+            self.open_.pop(current_coord)
 
             if (ShouldClosePred.get(current_coord)):
                 self.closed_.insert({current_coord})
@@ -84,7 +84,7 @@ class A_star:
                 if n != self.open.end():
                     neighbor_handle = n.second
                     if neighbor_handle.g > current.g + step_cost:
-                        neighbor_handle.g  = current.g + step_cost
+                        neighbor_handle.g = current.g + step_cost
                         neighbor_handle.come_from = current
                         neighbor_handle.steps_distance = current.steps_distance + 1
                         self.heap_.decrease(neighbor_handle)

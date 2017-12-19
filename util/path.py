@@ -25,7 +25,7 @@ class AStar:
         return 0
 
     @staticmethod
-    def finished(u, v):
+    def finished(u, v, time):
         return u == v
 
     @staticmethod
@@ -50,7 +50,7 @@ class AStar:
         explored = {}
         while queue:
             _, time, curnode, dist, parent = heappop(queue)
-            if self._finished(curnode, target):
+            if self._finished(curnode, target, time):
                 return self._build_path(explored, curnode, parent)
             if curnode in explored:
                 continue
@@ -132,6 +132,96 @@ class CAStar(AStar):
         return plans
 
 
+class RRAStar(AStar):
+    def find_path(self, graph, source, target):
+        if source == target:
+            return 0
+        c = count()
+        queue = [(0, next(c), source, 0, None)]
+        enqueued = {}
+        explored = {}
+
+        def RRA(position):
+            while position not in explored:
+                _, time, curnode, dist, parent = heappop(queue)
+                if self._finished(curnode, position, time):
+                    break
+                if curnode in explored:
+                    continue
+                explored[curnode] = parent
+                for neighbor, w in self._successors(graph, curnode, time):
+                    if neighbor in explored:
+                        continue
+                    ncost = dist + self._cost(w)
+                    if neighbor in enqueued:
+                        qcost, h = enqueued[neighbor]
+                        if qcost <= ncost:
+                            continue
+                    else:
+                        h = self._heuristic(neighbor, source)
+                    enqueued[neighbor] = ncost, h
+                    heappush(queue, (ncost + h, next(c), neighbor, ncost, curnode))
+            return enqueued[position]
+
+        return RRA(target)[0]
+
+
+class HCAStar(CAStar):
+    def __init__(self, graph, occupied_nodes, weight='length'):
+        super().__init__(occupied_nodes, weight)
+        self._heuristic = self.heuristic
+        self.graph = graph
+
+    def heuristic(self, u, v):
+        slv = RRAStar()
+        return slv.find_path(self.graph, u, v)
+
+
+class WHCAStar(HCAStar):
+    def __init__(self, graph, occupied_nodes, window, weight='length'):
+        super().__init__(graph, occupied_nodes, weight)
+        self._finished = self.finished
+        self.window = window
+
+    def finished(self, u, v, t):
+        return u == v or t >= self.window
+
+
+def test_LRAStar(state):
+    print('LRA*')
+    trains = copy.deepcopy(state)
+    solver = LRAStar([train[0] for train in trains])
+    print('T1: {} T2: {} T3: {} T4: {}'.format(*[train[0] for train in trains]))
+    while any(map(lambda t: t[0] != t[1], trains)):
+        for train in trains:
+            train[0] = solver.find_path(Graph, train[0], train[1])[1]
+        print('T1: {} T2: {} T3: {} T4: {}'.format(*[train[0] for train in trains]))
+
+
+def test_CAStar(state):
+    print('CA*')
+    trains = copy.deepcopy(state)
+    solver = CAStar([train[0] for train in trains])
+    for i, path in enumerate(solver.CA(Graph, trains)):
+        print(f'T{i+1}: ', path)
+
+
+def test_HCAStar(state):
+    print('HCA*')
+    trains = copy.deepcopy(state)
+    solver = HCAStar(Graph, [train[0] for train in trains])
+    for i, path in enumerate(solver.CA(Graph, trains)):
+        print(f'T{i+1}: ', path)
+
+
+def test_WHCAStar(state):
+    print('WHCA*')
+    trains = copy.deepcopy(state)
+    solver = WHCAStar(Graph, [train[0] for train in trains], 10)
+    for i, path in enumerate(solver.CA(Graph, trains)):
+        print(f'T{i+1}: ', path)
+
+
 if __name__ == '__main__':
     Graph = nx.Graph()
     Graph.add_nodes_from(range(1, 16))
@@ -146,24 +236,7 @@ if __name__ == '__main__':
              [15, 5],
              [12, 4]]
 
-
-    def test_LRAStar():
-        print('LRA*')
-        trains = copy.deepcopy(state)
-        solver = LRAStar([train[0] for train in trains])
-        print('T1: {} T2: {} T3: {} T4: {}'.format(*[train[0] for train in trains]))
-        while any(map(lambda t: t[0] != t[1], trains)):
-            for train in trains:
-                train[0] = solver.find_path(Graph, train[0], train[1])[1]
-            print('T1: {} T2: {} T3: {} T4: {}'.format(*[train[0] for train in trains]))
-
-    def test_CAStar():
-        print('CA*')
-        trains = copy.deepcopy(state)
-        solver = CAStar([train[0] for train in trains])
-        for i, path in enumerate(solver.CA(Graph, trains)):
-            print(f'T{i+1}: ', path)
-
-
-    test_LRAStar()
-    test_CAStar()
+    test_LRAStar(state)
+    test_CAStar(state)
+    test_HCAStar(state)
+    test_WHCAStar(state)

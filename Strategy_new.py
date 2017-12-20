@@ -2,7 +2,7 @@ from model.UpObject import UpObject
 from itertools import cycle
 from model.Move import Move
 from model.Map import Position
-from util.path import CAStar
+from util.path import CAStar, PathSolver
 
 
 class Strategy:
@@ -19,6 +19,8 @@ class Strategy:
         self.solver = CAStar(
             self.map.Graph,
             [train.point for train in self.objects.trains.values()])
+        self.trains_reservations = dict()
+
         self.up_ready = False
         self.up_object = UpObject()  # Empty up object
 
@@ -38,9 +40,11 @@ class Strategy:
 
     def get_enemy_trains_pos(self):
         enemy_trains = self.objects.get_enemys()
-        return [Position(t.point, t.line_idx, t.position) for t in enemy_trains]
+        return [
+            Position(t.point, t.line_idx, t.position) for t in enemy_trains
+        ]
 
-    def valid(self, train, next_pos):
+    def get_innvalid_pos(self, train):
         invalid_positions = []
 
         enemy_pos = self.get_enemy_trains_pos()
@@ -58,6 +62,8 @@ class Strategy:
                     if market_pos not in invalid_positions:
                         invalid_positions.append(market_pos)
 
+    def valid(self, train, next_pos):
+        invalid_pos = self.get_innvalid_pos(train)
         return next_pos in invalid_positions
 
     def _get_roles(self):
@@ -99,38 +105,22 @@ class Strategy:
     def update_targets(self):
         for train_id, points in self.trains_points.items():
             # if empty (stay at town) get new
-            if not points:
+            if len(points) == 0:
+                self._get_target_points(self.objects.trains[train_id])
+
+            if self.objects.trains[train_id][0] == self.objects.trains[
+                    train_id].point:
+                self.trains_points[train_id].pop(0)
+
+            if len(points) == 0:
                 self._get_target_points(self.objects.trains[train_id])
 
     def get_moves(self):
-        moves = []
-
         self.update_targets()
 
-        states = dict()
-
-        for train_id, points in self.trains_points.items():
-
-            if self.objects.trains[train_id].point == None:
-                print("train %d at line, no find_path" % train_id)
-                continue
-
-            next_target = self.trains_points[train_id][0]
-            if next_target == self.objects.trains[train_id].point:
-                self.trains_points[train_id].pop(0)
-                if not self.trains_points[train_id]:
-                    self._get_target_points(self.objects.trains[train_id])
-                next_target = self.trains_points[train_id][0]
-            states.update({self.objects.trains[train_id]: next_target})
-
-        next_steps = self.solver.solve(states)
-
-        for train, path in next_steps.items():
-            move_obj = self._move_to_point(train, path[1])
-            print("train %d at point, next_step %d" % (train.idx, path[1]))
-
-            if move_obj:
-                moves.append(move_obj)
+        move_obj = self.solver.solve(states)
+        if move_obj:
+            moves.append(move_obj)
 
         return moves
 
@@ -211,12 +201,12 @@ class Strategy:
             if not self.valid(train, maybe_next):
                 print("Path Invalid")
 
-                old_path = self.paths.pop(train_id)
-                maybe_next = self.next_step(pos, old_path)
+                maybe_next = self.next_step(train_id)
+
             if not maybe_next:
                 continue
 
-            line_speed = self.pos_to_move(pos, maybe_next)
+            line_speed = self.pos_to_line_speed(pos, maybe_next)
 
             if line_speed[0] == train.line_idx and line_speed[1] == train.speed:
                 continue
@@ -224,7 +214,70 @@ class Strategy:
 
         return moves
 
-    def pos_to_move(self, from_, to):
+    def get_invalid_type(self, train):
+        if train.goods != 0:
+            return 0
+        elif self.trains_roles[train.idx] == 2:
+            return 3
+        else:
+            return 2
+
+    def next_step(self, train_id):
+        train = self.objects.trains[train_id]
+        train_pos = Position(train.point, train.line_idx, train.position)
+
+        if (len(self.paths[train_id]) < 2):
+            self.paths[train_id] = self.recalculate(train_id, train_pos)
+
+        if (len(self.paths[train_id]) < 2):
+            return None
+
+        assert (self.paths[train_id][0] == train_pos)
+        self.paths[train_id].pop(0)
+        return self.paths[train_id][0]
+
+    def recalculate(self, train_id, train_pos):
+
+        self.unreserve(train_id)
+
+        target_pos = Position(self.trains_points[train_id][0])
+        new_path = self.find_path(train_pos, target_pos, train_id)
+
+        if new_path:
+            self.reserve(train_id, new_path)
+
+        return new_path
+
+    def unreserve(self, train_id):
+        for time, reserv_pos in self.trains_reservations:
+            if train_id in reserv_pos.keys():
+                reserv_pos.pop(train_id)
+
+    def reserve(self, train_id, path, time_offset):
+        for time in range(len(path)):
+            pos = path[time]
+            train_id_pos = {train_id: pos}
+
+            assert (
+                train_id_pos not in self.trains_reservations[time
+                                                             + time_offset])
+            if time == 0:
+                continue
+            else:
+                self.trains_reservations.update({time + time_offset: pos})
+
+    def find_path(self, source, target, train_id):
+        train = self.objects.trains[train_id]
+        invalid_pos = self.get_innvalid_pos(train)
+        a_star = PathSolver(
+            self.map_graph,
+            self.trains_reservations,
+            invalid_pos
+        )
+        new_path = a_star.find_path(source, target)
+        return new_path
+
+    def pos_to_line_speed(self, from_, to):
         if from_ == to:
             line = from_.line
             speed = 0

@@ -10,6 +10,7 @@ class AStar:
 
     AStar.solve(source, target) return a list of nodes in a shortest path between source and target
     """
+
     def __init__(self, graph, weight='length'):
         self._cost = self.cost
         self._heuristic = self.heuristic
@@ -78,6 +79,7 @@ class LRAStar(AStar):
 
     LRAStar.solve(source, target) return a list of nodes in a shortest path between source and target
     """
+
     def __init__(self, graph, occupied_nodes, weight='length'):
         super().__init__(graph, weight)
         self._successors = self.successors
@@ -111,6 +113,7 @@ class CAStar(AStar):
 
     !!!Arrived agents are ignored!!!
     """
+
     def __init__(self, graph, occupied_nodes, weight='length'):
         super().__init__(graph, weight)
         self._successors = self.successors
@@ -119,16 +122,16 @@ class CAStar(AStar):
     def successors(self, node, time):
         result = []
         for node, weight in super().successors(node, time):
-            if time+1 not in self._occupied_nodes.keys():
-                self._occupied_nodes[time+1] = []
-            if node not in self._occupied_nodes[time+1]:
+            if time + 1 not in self._occupied_nodes.keys():
+                self._occupied_nodes[time + 1] = []
+            if node not in self._occupied_nodes[time + 1]:
                 result.append((node, weight))
         return result
 
     def replan(self, source, target):
         plan = super().find_path(source, target)
         for i, node in enumerate(plan):
-                self._occupied_nodes[i].append(node)
+            self._occupied_nodes[i].append(node)
         return plan
 
     def solve(self, train_target):
@@ -145,6 +148,7 @@ class RRAStar(AStar):
     Secondary algorithm for HCA*.
     Using as distance function in HCA*.
     """
+
     def find_path(self, source, target):
         if source == target:
             return 0
@@ -172,7 +176,8 @@ class RRAStar(AStar):
                     else:
                         h = self._heuristic(neighbor, source)
                     enqueued[neighbor] = ncost, h
-                    heappush(queue, (ncost + h, next(c), neighbor, ncost, curnode))
+                    heappush(queue,
+                             (ncost + h, next(c), neighbor, ncost, curnode))
             return enqueued[position]
 
         return RRA(target)[0]
@@ -187,6 +192,7 @@ class HCAStar(CAStar):
 
     !!!Arrived agents are ignored!!!
     """
+
     def __init__(self, graph, occupied_nodes, weight='length'):
         super().__init__(graph, occupied_nodes, weight)
         self._heuristic = self.heuristic
@@ -205,6 +211,7 @@ class WHCAStar(HCAStar):
 
     !!!Arrived agents are ignored!!!    ???
     """
+
     def __init__(self, graph, occupied_nodes, window=10, weight='length'):
         super().__init__(graph, occupied_nodes, weight)
         self._finished = self.finished
@@ -214,66 +221,59 @@ class WHCAStar(HCAStar):
         return u == v or t >= self.window
 
 
-
 class Position:
     def __init__(self, point, line, pos):
         self.point = point
         self.line = line
         self.pos = pos
 
+
 class PathSolver(AStar):
     """
     Implementation of CA
     """
-    def __init__(self, graph, occupied_nodes, weight='length'):
-        super().__init__(graph, weight)
-        self._successors = self.successors
-        self._occupied_nodes = {0: occupied_nodes}
 
-    def successors(self, node, time):
+    def __init__(self, map_graph, reserv_pos, invalid_field, weight='length'):
+        super().__init__(map_graph.Graph, weight)
+        self.map = map_graph  # need lines property for func get_neighbors
+        self._successors = self.successors
+        self._reserv_pos = reserv_pos
+        self._invalid_field = invalid_field
+
+    def successors(self, pos, time):
         result = []
-        for node, weight in super().successors(node, time):
-            if time+1 not in self._occupied_nodes.keys():
-                self._occupied_nodes[time+1] = []
-            if node not in self._occupied_nodes[time+1]:
-                result.append((node, weight))
+        neighbours = self.map.get_neighbors_pos(pos)
+
+        result = [neighbour for neighbour in neighbours
+                  if self.passable(pos, neighbour)]
+
         return result
 
-    def replan(self, source, target):
-        plan = super().find_path(source, target)
-        for i, node in enumerate(plan):
-                self._occupied_nodes[i].append(node)
-        return plan
+    def passable(self, from_pos, to_pos, time):
+        if time + 1 not in self._reserv_pos.keys():
+            self._reserv_pos[time + 1] = []
 
-    
+        if (to_pos in self._reserv_pos[time + 1]
+                or to_pos in self._reserv_pos[time]
+                and from_pos in self._reserv_pos[time + 1]):
+            return False
+        elif to_pos in self._invalid_field:
+            return False
 
-
-    def solve(self, train_target):
-        plans = dict()
-        for train, target in train_target.items():
-            plans.update({train: self.replan(train.point, target)})
-        return plans
-
-
-
-
-
-
-
-
-
-
+        return True
 
 
 def test_LRAStar(state):
     print('LRA*')
     trains = copy.deepcopy(state)
     solver = LRAStar(Graph, [train[0] for train in trains])
-    print('T1: {} T2: {} T3: {} T4: {}'.format(*[train[0] for train in trains]))
+    print(
+        'T1: {} T2: {} T3: {} T4: {}'.format(*[train[0] for train in trains]))
     while any(map(lambda t: t[0] != t[1], trains)):
         for train in trains:
             train[0] = solver.solve(train[0], train[1])[1]
-        print('T1: {} T2: {} T3: {} T4: {}'.format(*[train[0] for train in trains]))
+        print('T1: {} T2: {} T3: {} T4: {}'.format(
+            *[train[0] for train in trains]))
 
 
 def test_CAStar(state):
@@ -309,10 +309,12 @@ if __name__ == '__main__':
     # print(Graph.nodes)
     # print(Graph.edges)
 
-    state = [[1, 15],       # [start, goal]
-             [5, 11],
-             [15, 5],
-             [12, 4]]
+    state = [
+        [1, 15],  # [start, goal]
+        [5, 11],
+        [15, 5],
+        [12, 4]
+    ]
 
     test_LRAStar(state)
     test_CAStar(state)

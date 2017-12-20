@@ -1,7 +1,7 @@
 from model.UpObject import UpObject
 from itertools import cycle
 from model.Move import Move
-from util.path import LRAStar
+from util.path import LRAStar, WHCAStar
 
 
 class Strategy:
@@ -13,7 +13,7 @@ class Strategy:
         for train in self.objects.trains.values():
             train.point = self.map.get_train_point(train)
 
-        self.solver = LRAStar([train.point for train in self.objects.trains.values()])
+        self.solver = WHCAStar(self.map.Graph, [train.point for train in self.objects.trains.values()])
         self.up_ready = False
         self.up_object = UpObject()  # Empty up object
 
@@ -69,6 +69,9 @@ class Strategy:
 
         self.update_targets()
 
+        trains1 = []
+        trains2 = []
+
         for train_id, points in self.trains_points.items():
 
 
@@ -83,15 +86,18 @@ class Strategy:
                     self._get_target_points(self.objects.trains[train_id])
                 next_target = self.trains_points[train_id][0]
 
-            next_step = self.solver.find_path(self.map.Graph,
-             self.objects.trains[train_id].point, next_target)[1]
+            trains1.append((self.objects.trains[train_id].point, next_target))
+            trains2.append(train_id)
 
-            print("move %d, %d" % (self.objects.trains[train_id].point, next_step))
-            move_obj = self._move_to_point(self.objects.trains[train_id], next_step)
-            #print("train %d at point, next_step %d" % (train_id, next_step))
+            self.solver = WHCAStar(self.map.Graph, [train.point for train in self.objects.trains.values()])
+            paths = self.solver.solve(trains1)
 
-            if move_obj:
-                moves.append(move_obj)
+            for i, train_id in enumerate(trains2):
+                next_step = paths[i][1]
+                print("move %d, %d" % (self.objects.trains[train_id].point, next_step))
+                move_obj = self._move_to_point(self.objects.trains[train_id], next_step)
+                if move_obj:
+                    moves.append(move_obj)
 
         return moves
 

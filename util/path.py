@@ -2,6 +2,7 @@ import networkx as nx
 from heapq import heappush, heappop
 from itertools import count
 import copy
+from model.Map import Position
 
 
 class AStar:
@@ -21,7 +22,7 @@ class AStar:
         self._graph = graph
 
     def cost(self, w):
-        return w.get(self._weight, 1)
+        return 1
 
     def heuristic(self, u, v):
         return 0
@@ -55,10 +56,10 @@ class AStar:
             if curnode in explored:
                 continue
             explored[curnode] = parent
-            for neighbor, w in self._successors(curnode, time):
+            for neighbor in self._successors(curnode, time):
                 if neighbor in explored:
                     continue
-                ncost = dist + self._cost(w)
+                ncost = dist + self._cost(neighbor)
                 if neighbor in enqueued:
                     qcost, h = enqueued[neighbor]
                     if qcost <= ncost:
@@ -221,46 +222,46 @@ class WHCAStar(HCAStar):
         return u == v or t >= self.window
 
 
-class Position:
-    def __init__(self, point, line, pos):
-        self.point = point
-        self.line = line
-        self.pos = pos
-
-
 class PathSolver(AStar):
     """
     Implementation of CA
     """
 
-    def __init__(self, map_graph, reserv_pos, invalid_field, weight='length'):
-        super().__init__(map_graph.Graph, weight)
+    def __init__(self, map_graph, player, reserv_pos, invalid_field, window=10):
+        super().__init__(map_graph.Graph)
         self.map = map_graph  # need lines property for func get_neighbors
+        self.player = player
         self._successors = self.successors
         self._reserv_pos = reserv_pos
         self._invalid_field = invalid_field
+        self._finished = self.finished
+        self.window = window
 
     def successors(self, pos, time):
         result = []
         neighbours = self.map.get_neighbors_pos(pos)
 
         result = [neighbour for neighbour in neighbours
-                  if self.passable(pos, neighbour)]
+                  if self.passable(pos, neighbour, time)]
 
         return result
 
     def passable(self, from_pos, to_pos, time):
         if time + 1 not in self._reserv_pos.keys():
-            self._reserv_pos[time + 1] = []
-
-        if (to_pos in self._reserv_pos[time + 1]
-                or to_pos in self._reserv_pos[time]
-                and from_pos in self._reserv_pos[time + 1]):
+            return True
+        if to_pos == Position(self.player.town):
+            return True
+        if (to_pos in self._reserv_pos[time + 1].values()
+                or to_pos in self._reserv_pos[time].values()
+                and from_pos in self._reserv_pos[time + 1].values()):
             return False
         elif to_pos in self._invalid_field:
             return False
 
         return True
+
+    def finished(self, u, v, t):
+        return u == v or t >= self.window
 
 
 def test_LRAStar(state):

@@ -4,6 +4,7 @@ from model.Move import Move
 from model.Map import Position
 from util.path import CAStar, PathSolver
 
+from random import shuffle
 
 class Strategy:
     def __init__(self, player, map_graph, objects):
@@ -16,10 +17,7 @@ class Strategy:
         for train in self.objects.trains.values():
             train.point = self.map.get_train_point(train)
 
-        self.solver = CAStar(
-            self.map.Graph,
-            [train.point for train in self.objects.trains.values()])
-        self.trains_reservations = dict()
+        self.trains_reservations = {0: dict()}
 
         self.up_ready = False
         self.up_object = UpObject()  # Empty up object
@@ -39,12 +37,12 @@ class Strategy:
         ]
 
     def get_enemy_trains_pos(self):
-        enemy_trains = self.objects.get_enemys()
+        enemy_trains = self.objects.get_enemy_trains(self.player.idx)
         return [
             Position(t.point, t.line_idx, t.position) for t in enemy_trains
         ]
 
-    def get_innvalid_pos(self, train):
+    def get_invalid_pos(self, train):
         invalid_positions = []
 
         enemy_pos = self.get_enemy_trains_pos()
@@ -57,14 +55,16 @@ class Strategy:
                 for stor_pos in self.pos_storages:
                     if stor_pos not in invalid_positions:
                         invalid_positions.append(stor_pos)
-            if self.trains_roles[train.idx] == 2:
+            if self.trains_roles[train.idx] == 3:
                 for market_pos in self.pos_markets:
                     if market_pos not in invalid_positions:
                         invalid_positions.append(market_pos)
 
+        return invalid_positions
+
     def valid(self, train, next_pos):
-        invalid_pos = self.get_innvalid_pos(train)
-        return next_pos in invalid_positions
+        invalid_pos = self.get_invalid_pos(train)
+        return next_pos not in invalid_pos
 
     def _get_roles(self):
         roles = {}
@@ -108,7 +108,7 @@ class Strategy:
             if len(points) == 0:
                 self._get_target_points(self.objects.trains[train_id])
 
-            if self.objects.trains[train_id][0] == self.objects.trains[
+            if self.trains_points[train_id][0] == self.objects.trains[
                     train_id].point:
                 self.trains_points[train_id].pop(0)
 
@@ -118,11 +118,9 @@ class Strategy:
     def get_moves(self):
         self.update_targets()
 
-        move_obj = self.solver.solve(states)
+        move_obj = self.step()
         if move_obj:
-            moves.append(move_obj)
-
-        return moves
+            return move_obj
 
     def _get_target_points(self, train):
         if self.trains_roles[train.idx] == 2:
@@ -156,28 +154,12 @@ class Strategy:
         else:
             self.trains_points[train.idx] = [self.player.home]
 
-    def _move_to_point(self, train, arrival_point):
-        if train.point == arrival_point:
-            return None
-        if train.point is None:
-            line = self.map.lines[train.line_idx]
-        else:
-            line = self.map.Graph.get_edge_data(train.point,
-                                                arrival_point)['line']
-            if line is None:
-                return None
-        speed = -1 if line.start_point == arrival_point else 1
-
-        if line == train.line_idx and speed == train.speed:
-            return None
-        return Move(line.idx, speed, train.idx)
-
     def step(self):
         moves = []
 
         self.update_targets()
 
-        trains = []
+        trains = dict()
         trains_order = []
 
         for train_id in self.player.trains:
@@ -185,6 +167,8 @@ class Strategy:
             pos = Position(train.point, train.line_idx, train.position)
             trains.update({train_id: pos})
             trains_order.append(train_id)
+
+        shuffle(trains_order)
 
         for train_id in trains_order:
             train = self.objects.trains[train_id]
@@ -211,23 +195,17 @@ class Strategy:
             if line_speed[0] == train.line_idx and line_speed[1] == train.speed:
                 continue
             moves.append(Move(line_speed[0], line_speed[1], train_id))
-
+        print(self.paths)
         return moves
-
-    def get_invalid_type(self, train):
-        if train.goods != 0:
-            return 0
-        elif self.trains_roles[train.idx] == 2:
-            return 3
-        else:
-            return 2
 
     def next_step(self, train_id):
         train = self.objects.trains[train_id]
         train_pos = Position(train.point, train.line_idx, train.position)
 
+        if train_id not in self.paths.keys():
+            self.paths[train_id] = []
         if (len(self.paths[train_id]) < 2):
-            self.paths[train_id] = self.recalculate(train_id, train_pos)
+            self.paths[train_id] = self.recalculate(train_id)
 
         if (len(self.paths[train_id]) < 2):
             return None
@@ -236,44 +214,42 @@ class Strategy:
         self.paths[train_id].pop(0)
         return self.paths[train_id][0]
 
-    def recalculate(self, train_id, train_pos):
+    def recalculate(self, train_id):
 
         self.unreserve(train_id)
 
         target_pos = Position(self.trains_points[train_id][0])
-        new_path = self.find_path(train_pos, target_pos, train_id)
+        new_path = self.find_path(train_id, target_pos)
 
         if new_path:
-            self.reserve(train_id, new_path)
+            self.reserve(train_id, new_path, self.objects.tick)
 
         return new_path
 
     def unreserve(self, train_id):
-        for time, reserv_pos in self.trains_reservations:
+        for time, reserv_pos in self.trains_reservations.items():
             if train_id in reserv_pos.keys():
-                reserv_pos.pop(train_id)
+                self.trains_reservations[time].pop(train_id)
 
     def reserve(self, train_id, path, time_offset):
         for time in range(len(path)):
             pos = path[time]
             train_id_pos = {train_id: pos}
 
-            assert (
-                train_id_pos not in self.trains_reservations[time
+            if time+time_offset not in self.trains_reservations.keys():
+                self.trains_reservations[time+time_offset] = dict()
+            assert (train_id not in self.trains_reservations[time
                                                              + time_offset])
             if time == 0:
                 continue
             else:
-                self.trains_reservations.update({time + time_offset: pos})
+                self.trains_reservations[time + time_offset].update(train_id_pos)
 
-    def find_path(self, source, target, train_id):
+    def find_path(self, train_id, target):
         train = self.objects.trains[train_id]
-        invalid_pos = self.get_innvalid_pos(train)
-        a_star = PathSolver(
-            self.map_graph,
-            self.trains_reservations,
-            invalid_pos
-        )
+        source = Position(train.point, train.line_idx, train.position)
+        invalid_pos = self.get_invalid_pos(train)
+        a_star = PathSolver(self.map, self.player, self.trains_reservations, invalid_pos, 3)
         new_path = a_star.find_path(source, target)
         return new_path
 
@@ -284,10 +260,11 @@ class Strategy:
         else:
             if from_.point != None:
                 line = to.line
-                line_obj = self.objects.lines[line]
-                from_pos = line_obj.length if from_.point == line.end_point else 0
+                line_obj = self.map.lines[line]
+                from_pos = line_obj.length if from_.point == line_obj.end_point else 0
             else:
                 from_pos = from_.pos
+                line = to.line
 
             speed = -1 if from_pos > to.pos else 1
 

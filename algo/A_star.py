@@ -1,28 +1,72 @@
+class position_distance_storage:
+    def __init__(self):
+        self.storage = dict()
+
+    def store(self, pos, node):
+        self.storage.update({pos: node})
+
+    def get(self):
+        return self.storage
+
+
+class space_time_coordinate:
+    def __init__(self, time, pos):
+        self.time = time
+        self.pos = pos
+
+    def __eq__(self, other):
+        return self.time == other.time and self.pos == other.pos
+
+    def __hash__(self):
+        if self.pos.point != None:
+            return hash((self.time, self.pos.point, None, None))
+        else:
+            return hash((self.time, None, self.pos.line, self.pos.pos))
+
+    def __repr__(self):
+        return "time - %d " % self.time + str(self.pos)
+
 class A_star:
-    def __init__(self, from_, to, passable, finished, distance, step_cost):
+    def __init__(self, map_graph, from_, to, cur_tick, window):
+        self.map = map_graph
         self.from_ = from_
-        self.to_ = to
-        self.heap_ = []
+        self.to = to
+        self.open_ = dict()  # time_pos : node
+        self.closed_ = dict()  # time_pos : node
         self.expanded_ = 0
-        self.node_pool_ = None
-        self.open_ = None
-        self.closed_ = None
-        self.distance_storage_ = dict()  # pos : node
-        self.passable_ = passable
-        self.distance_ = distance
-        self.step_cost_ = step_cost
-        self._finished = finished
+        self.distance_storage_ = position_distance_storage()
+        self.cur_tick = cur_tick
+        self.window = window
 
-        start = node(from_, 0.0, distance_(from_), 0 )
-        self.heap_.append(start)
+        start = node(from_, 0.0, self.distance(from_), 0)
+        self.open_[space_time_coordinate(0, from_)] = start
 
+    # always true for base implementation
+    def passable(self, from_, to_, time):
+        return True
 
-    def find_path(self, world, window):
-        goal = lambda n : n.steps_distance == window
-        return do_find_path(world, goal)
+    def finished(self, node):
+        return node.pos == self.to or node.time == self.window
 
-    def find_distance(p, world):
-        shortest_paths = distance_storage_.get()
+    # unitary step cost
+    def step_cost(self, from_, to):
+        return 1
+
+    # base successors func
+    def successors(self, pos):
+        return self.map.get_neighbors_pos(pos)
+
+    # manhatan distance to goal(to)
+    def distance(self, pos):
+        if pos.point != None:
+            return self.map.get_distance(pos.point, self.to.point)
+        else:
+            return self.map.get_distance_from_line(pos.line, pos.pos,
+                                                   self.to.point)
+
+    # func for hierarchial_distance
+    def find_distance(self, p, world):
+        shortest_paths = self.distance_storage_.get()
 
         it = shortest_paths.find(p)
         if it != shortest_paths.end():
@@ -30,36 +74,35 @@ class A_star:
         else:
             return 9999
 
-    def do_find_path(self, world, goal, limit=9999):
+    def find_path(self):
 
         result = []
-        current = self.expand_until(goal, world, limit)
+        current = self.expand_loop()
         if not current:
             return []
         while current:
             result.append(current.pos)
             current = current.come_from
 
-        return result.reverse()
+        result.reverse()
+        return result
 
-    def expand_until(self, end, world, limit=9999):
-        while not len(self.heap_):
-            if self.stop_flag_:
-                return None
+    def expand_loop(self, limit=100):
+        while len(self.open_):
+            current = min(self.open_.values(), key=lambda x: x.f())
+            current_coord = space_time_coordinate(current.steps_distance,
+                                                  current.pos)
 
-            current = min(self.heap_, key = lambda x: x.f())
-            current_coord = Cordinate(current.pos, current.steps_distance)
+            assert current_coord in self.open_, str(current_coord.time) + str(current_coord.pos)
+            assert (current_coord not in self.closed_)
+            
+            if self.finished(current_coord):
+                return current
 
-            assert(self.open_.count(current_coord))
-            assert(!self.closed_.count(current_coord)
-
-            self.heap_.pop(current)
             self.open_.pop(current_coord)
-
-            self.closed_.insert({current_coord})
+            self.closed_[current_coord] = current
 
             self.distance_storage_.store(current.pos, current)
-
             self.expanded_ += 1
 
             if (current.steps_distance == limit):
@@ -67,51 +110,45 @@ class A_star:
 
             neighbours = self.successors(current.pos)
 
-            if Cordinate(current.pos, current.steps_distance +1) != current_coord:
+            if not space_time_coordinate(
+                   current.steps_distance + 1,  current.pos) == current_coord:
                 neighbours.append(current.pos)
-
-
             for neighbor in neighbours:
-                neighbor_coord = Cordinate(neighbor, current.steps_distance +1)
-
-                if self.closed_.count(neighbor_coord):
+                neighbour_coord = space_time_coordinate(
+                    current.steps_distance + 1, neighbor)
+                if neighbour_coord in self.closed_.keys():
                     continue
-
-                if (!self.passable_(neighbor, current.pos, world, current.steps_distance + 1)):
+                if not (self.passable(current.pos, neighbor,
+                                      current.steps_distance + self.cur_tick + 1)):
                     continue
+                step_cost = self.step_cost(current.pos, neighbor)
 
-                step_cost = self.step_cost_(current_coord, neighbor_coord, current.steps_distance + 1)
-
-                n = self.open_.find(neighbor_coord)
-                if n != self.open.end():
-                    neighbor_handle = n.second
-                    if neighbor_handle.g > current.g + step_cost:
-                        neighbor_handle.g = current.g + step_cost
-                        neighbor_handle.come_from = current
-                        neighbor_handle.steps_distance = current.steps_distance + 1
-                        self.heap_.decrease(neighbor_handle)
-
-                    else:
-                        neighbor_node = self.node_pool_.construct(Node(neghbour, current.g + step_cost,
-                                                                        self.distance_(neighbor, world),
-                                                                        current.steps_distance + 1))
-                        handh = self.push(neighbor_node)
-                        neighbor_node.come_from = current
-                        self.open_.insert((neighbor_node, h))
-            if end(current):
-                return current
-
+                if neighbour_coord in self.open_.keys():
+                    n = self.open_[neighbour_coord]
+                    if n.g > current.g + step_cost:
+                        n.g = current.g + step_cost
+                        n.steps_distance = current.steps_distance + 1
+                        n.come_from = current
+                else:
+                    n = node(neighbor, current.g + step_cost,
+                             self.distance(neighbor),
+                             current.steps_distance + 1)
+                    n.come_from = current
+                    self.open_[neighbour_coord] = n
         return None
 
+
 class node:
-    def __init__(pos, g, h, steps_distance):
+    def __init__(self, pos, g, h, steps_distance):
         self.pos = pos
         self.g = g
         self.h = h
         self.steps_distance = steps_distance
 
+        self.come_from = None
+
     def f(self):
-        return g + h
+        return self.g + self.h
 
     def __gt__(self, other):
         return self.f() > other.f()

@@ -2,9 +2,10 @@ from model.UpObject import UpObject
 from itertools import cycle
 from model.Move import Move
 from model.Map import Position
-from util.path import CAStar, PathSolver
+from algo.WCA import WCAStar
 
 from random import shuffle
+
 
 class Strategy:
     def __init__(self, player, map_graph, objects):
@@ -17,7 +18,7 @@ class Strategy:
         for train in self.objects.trains.values():
             train.point = self.map.get_train_point(train)
 
-        self.trains_reservations = {0: dict()}
+        self.trains_reservations = {}  # train_id : {time, pos}
 
         self.up_ready = False
         self.up_object = UpObject()  # Empty up object
@@ -178,8 +179,9 @@ class Strategy:
             pos = trains[train_id]
 
             if not maybe_next:
-                if pos != self.trains_points[train_id][0]:  # not at target
+                if pos != Position(self.trains_points[train_id][0]):  # not at target
                     print("No Path")
+                moves.append(Move(train.line_idx, 0, train_id))
                 continue
 
             if not self.valid(train, maybe_next):
@@ -195,7 +197,6 @@ class Strategy:
             if line_speed[0] == train.line_idx and line_speed[1] == train.speed:
                 continue
             moves.append(Move(line_speed[0], line_speed[1], train_id))
-        print(self.paths)
         return moves
 
     def next_step(self, train_id):
@@ -227,30 +228,33 @@ class Strategy:
         return new_path
 
     def unreserve(self, train_id):
-        for time, reserv_pos in self.trains_reservations.items():
-            if train_id in reserv_pos.keys():
-                self.trains_reservations[time].pop(train_id)
+        if train_id in self.trains_reservations.keys():
+            self.trains_reservations.pop(train_id)
 
     def reserve(self, train_id, path, time_offset):
+        self.trains_reservations[train_id] = dict()
         for time in range(len(path)):
             pos = path[time]
-            train_id_pos = {train_id: pos}
 
-            if time+time_offset not in self.trains_reservations.keys():
-                self.trains_reservations[time+time_offset] = dict()
-            assert (train_id not in self.trains_reservations[time
-                                                             + time_offset])
-            if time == 0:
-                continue
-            else:
-                self.trains_reservations[time + time_offset].update(train_id_pos)
+            self.trains_reservations[train_id].update({
+                time + time_offset:
+                pos
+            })
 
     def find_path(self, train_id, target):
         train = self.objects.trains[train_id]
         source = Position(train.point, train.line_idx, train.position)
         invalid_pos = self.get_invalid_pos(train)
-        a_star = PathSolver(self.map, self.player, self.trains_reservations, invalid_pos, 3)
-        new_path = a_star.find_path(source, target)
+        towns = [Position(town.point) for town in self.objects.towns.values()]
+        a_star = WCAStar(self.map,
+                         towns,
+                         self.trains_reservations,
+                         invalid_pos,
+                         source,
+                         target,
+                         self.objects.tick,
+                         3)
+        new_path = a_star.find_path()
         return new_path
 
     def pos_to_line_speed(self, from_, to):
@@ -264,7 +268,7 @@ class Strategy:
                 from_pos = line_obj.length if from_.point == line_obj.end_point else 0
             else:
                 from_pos = from_.pos
-                line = to.line
+                line = from_.line
 
             speed = -1 if from_pos > to.pos else 1
 

@@ -48,6 +48,12 @@ class Map:
         return nx.shortest_path_length(
             self.Graph, source=u, target=v, weight='length')
 
+    def get_distance_from_line(self, line_idx, pos, point):
+        line = self.lines[line_idx]
+        return min(
+            self.get_distance(line.start_point, point) + pos,
+            self.get_distance(line.end_point, point)+ line.length - pos)
+
     def get_next_point(self, u, v):
         next_point = nx.shortest_path(self.Graph, source=u, target=v)[1]
         return next_point

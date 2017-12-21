@@ -103,5 +103,22 @@ def test_find_path():
     objects = Objects(factory.get_objects())
 
     strategy = Strategy(player, map_graph, objects)
+    path = [Position(1, 1, 0),
+               Position(None, 1, 1),
+               Position(None, 1, 2),
+               Position(None, 1, 3)]
+    assert(strategy.find_path(1, Position(33)) == path )
 
-    print(strategy.find_path(1, Position(33)))
+def test_recalculate():
+    factory = WorldGetter(3)
+
+    player = Player(factory.get_player())
+    map_graph = Map(factory.get_map())
+    objects = Objects(factory.get_objects())
+
+    strategy = Strategy(player, map_graph, objects)
+    strategy.trains_points[1] = [33]
+    strategy.trains_points[2] = [29]
+
+    print(strategy.recalculate(1))
+    print(strategy.recalculate(2))

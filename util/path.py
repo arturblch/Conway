@@ -7,7 +7,6 @@ import copy
 class AStar:
     """
     Implementation of A* algorithm.
-
     AStar.solve(source, target) return a list of nodes in a shortest path between source and target
     """
     def __init__(self, graph, weight='length'):
@@ -75,7 +74,6 @@ class AStar:
 class LRAStar(AStar):
     """
     Implementation of Local-Repair A* algorithm.
-
     LRAStar.solve(source, target) return a list of nodes in a shortest path between source and target
     """
     def __init__(self, graph, occupied_nodes, weight='length'):
@@ -104,34 +102,62 @@ class LRAStar(AStar):
 class CAStar(AStar):
     """
     Implementation of Cooperative A* algorithm.
-
     LRAStar.solve(agents) return a list of paths for each agent. Each agent defined by source
     and target nodes. Ex: LRAStar.solve([[start1, target1], [start2, target2], ...])
-
     !!!Arrived agents are ignored!!!
     """
     def __init__(self, graph, occupied_nodes, weight='length'):
         super().__init__(graph, weight)
         self._successors = self.successors
         self._occupied_nodes = {0: occupied_nodes}
+        self._occupied_lines = {0: []}
 
-    def successors(self, node, time):
+    def successors(self, source, time):
         result = []
-        for node, weight in super().successors(node, time):
-            if time+1 not in self._occupied_nodes.keys():
-                self._occupied_nodes[time+1] = []
-            if node not in self._occupied_nodes[time+1]:
+        for node, weight in super().successors(source, time):
+            delta = self._cost(weight)
+            if time+delta not in self._occupied_nodes.keys():
+                self._occupied_nodes[time+delta] = []
+            if time+1 not in self._occupied_lines.keys():
+                self._occupied_lines[time+1] = []
+            if node not in self._occupied_nodes[time+delta]\
+                    and (source, node) not in self._occupied_lines[time+1]:
                 result.append((node, weight))
         return result
 
     def replan(self, source, target):
         plan = super().find_path(source, target)
-        for i, node in enumerate(plan):
-                self._occupied_nodes[i].append(node)
+        time = 0
+        prev_node = plan[0]
+        for node in plan[1:]:
+            if prev_node == node:
+                continue
+            delta = self._cost(self._graph[prev_node][node])
+            for t in range(time, time + delta + 1):
+                if t not in self._occupied_lines.keys():
+                    self._occupied_lines[t] = [(node, prev_node), ]
+                else:
+                    self._occupied_lines[t].append((node, prev_node))
+            if time + delta not in self._occupied_nodes.keys():
+                self._occupied_nodes[time + delta] = [node, ]
+            else:
+                self._occupied_nodes[time + delta].append(node)
+            time = time + delta
+            prev_node = node
         return plan
 
-    def solve(self, agents):
+    def solve(self, agents, moving_trains):
         plans = []
+        for delta, target, source in moving_trains:
+            if delta not in self._occupied_nodes.keys():
+                self._occupied_nodes[delta] = [target, ]
+            else:
+                self._occupied_nodes[delta].append(target)
+            for t in range(delta + 1):
+                if t not in self._occupied_lines.keys():
+                    self._occupied_lines[t] = [(target, source), ]
+                else:
+                    self._occupied_lines[t].append((target, source))
         for agent in agents:
             plans.append(self.replan(*agent))
         return plans
@@ -140,7 +166,6 @@ class CAStar(AStar):
 class RRAStar(AStar):
     """
     Reverse Resumable A*
-
     Secondary algorithm for HCA*.
     Using as distance function in HCA*.
     """
@@ -180,10 +205,8 @@ class RRAStar(AStar):
 class HCAStar(CAStar):
     """
     Hierarchical Cooperative A* algorithm.
-
     HCAStar.solve(agents) return a list of paths for each agent. Each agent defined by source
     and target nodes. Ex: HCAStar.solve([[start1, target1], [start2, target2], ...])
-
     !!!Arrived agents are ignored!!!
     """
     def __init__(self, graph, occupied_nodes, weight='length'):
@@ -198,13 +221,11 @@ class HCAStar(CAStar):
 class WHCAStar(HCAStar):
     """
     Windowed Hierarchical Cooperative A* algorithm.
-
     WHCAStar.solve(agents) return a list of paths for each agent. Each agent defined by source
     and target nodes. Ex: WHCAStar.solve([[start1, target1], [start2, target2], ...])
-
     !!!Arrived agents are ignored!!!    ???
     """
-    def __init__(self, graph, occupied_nodes, window=10, weight='length'):
+    def __init__(self, graph, occupied_nodes, window=50, weight='length'):
         super().__init__(graph, occupied_nodes, weight)
         self._finished = self.finished
         self.window = window
@@ -228,7 +249,7 @@ def test_CAStar(state):
     print('CA*')
     trains = copy.deepcopy(state)
     solver = CAStar(Graph, [train[0] for train in trains])
-    for i, path in enumerate(solver.solve(trains)):
+    for i, path in enumerate(solver.solve(trains, [])):
         print(f'T{i+1}: ', path)
 
 
@@ -236,7 +257,7 @@ def test_HCAStar(state):
     print('HCA*')
     trains = copy.deepcopy(state)
     solver = HCAStar(Graph, [train[0] for train in trains])
-    for i, path in enumerate(solver.solve(trains)):
+    for i, path in enumerate(solver.solve(trains, [])):
         print(f'T{i+1}: ', path)
 
 
@@ -244,7 +265,7 @@ def test_WHCAStar(state):
     print('WHCA*')
     trains = copy.deepcopy(state)
     solver = WHCAStar(Graph, [train[0] for train in trains], window=10)
-    for i, path in enumerate(solver.solve(trains)):
+    for i, path in enumerate(solver.solve(trains, [])):
         print(f'T{i+1}: ', path)
 
 

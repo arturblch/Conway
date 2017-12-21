@@ -110,41 +110,57 @@ class CAStar(AStar):
         super().__init__(graph, weight)
         self._successors = self.successors
         self._occupied_nodes = {0: occupied_nodes}
+        self._occupied_lines = {0: []}
 
-    def successors(self, node, time):
+    def successors(self, source, time):
         result = []
-        for node, weight in super().successors(node, time):
+        for node, weight in super().successors(source, time):
             delta = self._cost(weight)
             if time+delta not in self._occupied_nodes.keys():
                 self._occupied_nodes[time+delta] = []
-            if node not in self._occupied_nodes[time+delta]:
+            if time+1 not in self._occupied_lines.keys():
+                self._occupied_lines[time+1] = []
+            if node not in self._occupied_nodes[time+delta]\
+                    and (source, node) not in self._occupied_lines[time+1]:
                 result.append((node, weight))
         return result
 
     def replan(self, source, target):
         plan = super().find_path(source, target)
-        i = 0
+        time = 0
         prev_node = plan[0]
         for node in plan[1:]:
             if prev_node == node:
                 continue
-            i = i + self._cost(self._graph[prev_node][node])
-            if i not in self._occupied_nodes.keys():
-                self._occupied_nodes[i] = [node, ]
+            delta = self._cost(self._graph[prev_node][node])
+            for t in range(time, time + delta + 1):
+                if t not in self._occupied_lines.keys():
+                    self._occupied_lines[t] = [(node, prev_node), ]
+                else:
+                    self._occupied_lines[t].append((node, prev_node))
+            if time + delta not in self._occupied_nodes.keys():
+                self._occupied_nodes[time + delta] = [node, ]
             else:
-                self._occupied_nodes[i].append(node)
+                self._occupied_nodes[time + delta].append(node)
+            time = time + delta
             prev_node = node
         return plan
 
     def solve(self, agents, moving_trains):
         plans = []
-        for i, node in moving_trains:
-            if i not in self._occupied_nodes.keys():
-                self._occupied_nodes[i] = [node, ]
+        for delta, target, source in moving_trains:
+            if delta not in self._occupied_nodes.keys():
+                self._occupied_nodes[delta] = [target, ]
             else:
-                self._occupied_nodes[i].append(node)
+                self._occupied_nodes[delta].append(target)
+            for t in range(delta + 1):
+                if t not in self._occupied_lines.keys():
+                    self._occupied_lines[t] = [(target, source), ]
+                else:
+                    self._occupied_lines[t].append((target, source))
         for agent in agents:
             plans.append(self.replan(*agent))
+        # print(self._occupied_lines)
         return plans
 
 

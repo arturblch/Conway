@@ -80,9 +80,9 @@ class Strategy:
                 print("train %d at line, no find_path" % train_id)
                 line = self.map.lines[train.line_idx]
                 if train.speed == -1:
-                    moving_trains.append((train.position, line.start_point))
+                    moving_trains.append((train.position, line.start_point, line.end_point))
                 else:
-                    moving_trains.append((line.length - train.position, line.end_point))
+                    moving_trains.append((line.length - train.position, line.end_point, line.start_point))
                 continue
 
             next_target = self.trains_points[train_id][0]

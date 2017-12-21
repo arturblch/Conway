@@ -136,8 +136,13 @@ class CAStar(AStar):
             prev_node = node
         return plan
 
-    def solve(self, agents):
+    def solve(self, agents, moving_trains):
         plans = []
+        for i, node in moving_trains:
+            if i not in self._occupied_nodes.keys():
+                self._occupied_nodes[i] = [node, ]
+            else:
+                self._occupied_nodes[i].append(node)
         for agent in agents:
             plans.append(self.replan(*agent))
         return plans

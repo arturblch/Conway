@@ -71,12 +71,18 @@ class Strategy:
 
         trains1 = []
         trains2 = []
+        moving_trains = []
 
         for train_id, points in self.trains_points.items():
 
-
-            if self.objects.trains[train_id].point == None:
+            train = self.objects.trains[train_id]
+            if train.point is None:
                 print("train %d at line, no find_path" % train_id)
+                line = self.map.lines[train.line_idx]
+                if train.speed == -1:
+                    moving_trains.append((train.position, line.start_point))
+                else:
+                    moving_trains.append((line.length - train.position, line.end_point))
                 continue
 
             next_target = self.trains_points[train_id][0]
@@ -89,15 +95,15 @@ class Strategy:
             trains1.append((self.objects.trains[train_id].point, next_target))
             trains2.append(train_id)
 
-            self.solver = WHCAStar(self.map.Graph, [train.point for train in self.objects.trains.values()])
-            paths = self.solver.solve(trains1)
+        self.solver = WHCAStar(self.map.Graph, [train.point for train in self.objects.trains.values()])
+        paths = self.solver.solve(trains1, moving_trains)
 
-            for i, train_id in enumerate(trains2):
-                next_step = paths[i][1]
-                print("move %d, %d" % (self.objects.trains[train_id].point, next_step))
-                move_obj = self._move_to_point(self.objects.trains[train_id], next_step)
-                if move_obj:
-                    moves.append(move_obj)
+        for i, train_id in enumerate(trains2):
+            next_step = paths[i][1]
+            print("move %d, %d" % (self.objects.trains[train_id].point, next_step))
+            move_obj = self._move_to_point(self.objects.trains[train_id], next_step)
+            if move_obj:
+                moves.append(move_obj)
 
         return moves
 

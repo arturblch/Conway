@@ -69,6 +69,7 @@ class Runner:
         if up_obj:
             self.process_client.upgrade(up_obj)
         self.process_client.turn()
+        self.objects.tick += 1
 
     def print_state(self):
         str_post = []

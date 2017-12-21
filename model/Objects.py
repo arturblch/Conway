@@ -13,6 +13,7 @@ class Objects:
         self.towns = {}
         self.markets = {}
         self.storages = {}
+        self.tick = 0
         for post in response['post']:
             if post['type'] == 1:
                 self.towns[post['idx']] = Town(post)
@@ -38,3 +39,7 @@ class Objects:
         for train_response in trains:
             train = self.trains[train_response["idx"]]
             train.update(train_response, map_graph)
+
+    def get_enemy_trains(self, my_id):
+        return [train for train in self.trains.values()
+               if train.player_id != my_id]

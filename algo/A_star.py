@@ -1,17 +1,20 @@
 class A_star:
-    def __init__(self, from_, to, passable, distance, step_cost, stop_flag):
+    def __init__(self, from_, to, passable, finished, distance, step_cost):
         self.from_ = from_
         self.to_ = to
-        self.heap_ = None
+        self.heap_ = []
         self.expanded_ = 0
         self.node_pool_ = None
         self.open_ = None
         self.closed_ = None
-        self.distance_storage_ = None
+        self.distance_storage_ = dict()  # pos : node
         self.passable_ = passable
         self.distance_ = distance
         self.step_cost_ = step_cost
-        self.stop_flag_ = stop_flag
+        self._finished = finished
+
+        start = node(from_, 0.0, distance_(from_), 0 )
+        self.heap_.append(start)
 
 
     def find_path(self, world, window):
@@ -32,29 +35,28 @@ class A_star:
         result = []
         current = self.expand_until(goal, world, limit)
         if not current:
-            return None
+            return []
         while current:
             result.append(current.pos)
             current = current.come_from
 
-        return result
+        return result.reverse()
 
     def expand_until(self, end, world, limit=9999):
         while not len(self.heap_):
             if self.stop_flag_:
                 return None
 
-            current = self.heap_.pop(0)
+            current = min(self.heap_, key = lambda x: x.f())
             current_coord = Cordinate(current.pos, current.steps_distance)
 
-            assert self.open_.count(current_coord)
-            assert !self.closed_.count(current_coord)
+            assert(self.open_.count(current_coord))
+            assert(!self.closed_.count(current_coord)
 
-            self.heap_.pop()
+            self.heap_.pop(current)
             self.open_.pop(current_coord)
 
-            if (ShouldClosePred.get(current_coord)):
-                self.closed_.insert({current_coord})
+            self.closed_.insert({current_coord})
 
             self.distance_storage_.store(current.pos, current)
 
@@ -63,7 +65,7 @@ class A_star:
             if (current.steps_distance == limit):
                 return None
 
-            neighbours = SuccesorsFunc.get(current.pos, world)
+            neighbours = self.successors(current.pos)
 
             if Cordinate(current.pos, current.steps_distance +1) != current_coord:
                 neighbours.append(current.pos)
@@ -101,3 +103,15 @@ class A_star:
 
         return None
 
+class node:
+    def __init__(pos, g, h, steps_distance):
+        self.pos = pos
+        self.g = g
+        self.h = h
+        self.steps_distance = steps_distance
+
+    def f(self):
+        return g + h
+
+    def __gt__(self, other):
+        return self.f() > other.f()

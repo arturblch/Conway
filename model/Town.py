@@ -25,7 +25,6 @@ class Town:
         self.name = post["name"]
         self.type = post["type"]
         self.event = post['event']
-        self.point = None
             # armor properties
         self.armor = post["armor"]
         self.armor_capacity = post["armor_capacity"]

@@ -4,6 +4,7 @@ from tabulate import tabulate
 from RemoteProcessClient import RemoteProcessClient
 from model.LoginError import LoginError
 from GUI import GUI
+from time import sleep
 
 
 class Runner:
@@ -11,19 +12,28 @@ class Runner:
         self.player = None
         self.map_graph = None
         self.objects = None
-        self.gui = None
-        if len(sys.argv) >= 2 and sys.argv[1] == '-gui':
-            self.is_gui = True
-        else:
-            self.is_gui = False
+        self.gui = False
+        self.multi = False
+        self.name = name
+        if len(sys.argv) >= 2:
+            if '-gui' in sys.argv:
+                self.is_gui = True
+            if '-m' in sys.argv:
+                self.multi = True
+                self.name = input("Name:")
+                self.game = input("Game name:")
+                self.num_players = input("Num of players:")
         self.process_client = RemoteProcessClient('wgforge-srv.wargaming.net',
                                                   443)
-        self.name = name
 
     def run(self):
         try:
             try:
-                self.player = self.process_client.login(self.name)
+                if self.multi == False:
+                    self.player = self.process_client.login(self.name)
+                else:
+                    self.player = self.process_client.multi_login(
+                        self.name)
             except LoginError:
                 self.process_client.logout()
                 print('BAD LOGIN\nTRY AGAIN')
@@ -31,10 +41,10 @@ class Runner:
             self.init_world()
             strategy = Strategy(self.player, self.map_graph, self.objects)
             if self.is_gui:
-                self.gui = GUI(self.player, self.map_graph, self.objects)
+                self.gui = GUI(self.player, self.map_graph, self.objects, strategy)
             while self.player.is_alive:
                 self.process_client.update_objects(self.objects,
-                                                   self.map_graph)
+                                                   self.map_graph, self.player)
                 # self.print_state()
                 if self.is_gui:
                     self.gui.turn()
@@ -50,12 +60,9 @@ class Runner:
 
     def init_world(self):
         self.map_graph = self.process_client.read_map()
-        self.map_graph.pos = dict([
-            (
-                cord['idx'], (cord['x'] / 200, cord['y'] / 200)
-            )
-            for cord in self.process_client.read_position()["coordinate"]
-        ])
+        self.map_graph.pos = dict(
+            [(cord['idx'], (cord['x'] / 200, cord['y'] / 200))
+             for cord in self.process_client.read_position()["coordinate"]])
         self.objects = self.process_client.read_objects()
         # self.map_graph.define_points(self.objects)
         self.player.settle(self.map_graph, self.objects)

@@ -95,7 +95,7 @@ class A_star:
 
             assert current_coord in self.open_, str(current_coord.time) + str(current_coord.pos)
             assert (current_coord not in self.closed_)
-            
+
             if self.finished(current_coord):
                 return current
 
@@ -109,21 +109,21 @@ class A_star:
                 return None
 
             neighbours = self.successors(current.pos)
-
             if not space_time_coordinate(
                    current.steps_distance + 1,  current.pos) == current_coord:
                 neighbours.append(current.pos)
+
             for neighbor in neighbours:
                 neighbour_coord = space_time_coordinate(
                     current.steps_distance + 1, neighbor)
                 if neighbour_coord in self.closed_.keys():
                     continue
                 if not (self.passable(current.pos, neighbor,
-                                      current.steps_distance + self.cur_tick + 1)):
+                                      current.steps_distance + self.cur_tick)):
                     continue
                 step_cost = self.step_cost(current.pos, neighbor)
 
-                if neighbour_coord in self.open_.keys():
+                if any(neighbour_coord == coord for coord in self.open_.keys()):
                     n = self.open_[neighbour_coord]
                     if n.g > current.g + step_cost:
                         n.g = current.g + step_cost

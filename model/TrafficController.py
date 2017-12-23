@@ -6,10 +6,10 @@ class TrafficController:
         self.algorithm = algorithm
 
     def find_paths(self, map_graph, trains, trains_targets):
-        graph = map_graph.graph
+        graph = map_graph.Graph
         occupied_nodes = []
         moving_trains = []
-        for train in trains:
+        for train in trains.values():
             if train.point:
                 occupied_nodes.append(train.point)
             else:
@@ -18,7 +18,7 @@ class TrafficController:
                     moving_trains.append((train.position, line.start_point, line.end_point))
                 else:
                     moving_trains.append((line.length - train.position, line.end_point, line.start_point))
-        solver = self.algorithm(graph, occupied_nodes, moving_trains)
-        agents = [(train_id, trains[train_id].point, trains_targets[train_id])
-                  for train_id in trains_targets if trains[train_id].point]
+        solver = self.algorithm(graph, occupied_nodes)
+        agents = {train_id: trains_targets[train_id]
+                  for train_id in trains_targets if trains[train_id].point}
         return solver.solve(agents, moving_trains)

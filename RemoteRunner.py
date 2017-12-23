@@ -1,5 +1,5 @@
 import sys
-from Strategy_new import Strategy
+from Strategy import Strategy
 from tabulate import tabulate
 from RemoteProcessClient import RemoteProcessClient
 from model.LoginError import LoginError
@@ -15,7 +15,8 @@ class Runner:
         if len(sys.argv) >= 2 and sys.argv[1] == '-gui':
             self.is_gui = True
         else:
-            self.is_gui = False
+            # self.is_gui = False
+            self.is_gui = True
         self.process_client = RemoteProcessClient('wgforge-srv.wargaming.net',
                                                   443)
         self.name = name

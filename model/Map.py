@@ -8,7 +8,10 @@ class Map:
         self.Graph = nx.Graph()
         self.lines = {line['idx']: Line(**line) for line in response["line"]}
         self.points = [point['idx'] for point in response["point"]]
-        self.posts = [point['post_id'] for point in response["point"] if point['post_id'] is not None]
+        self.posts = {
+            point['post_id']: point['idx']
+            for point in response["point"] if point['post_id'] is not None
+        }
         self.Graph.add_nodes_from(self.points)
         self.Graph.add_edges_from([(*line['point'], {
             'length': line['length'], 'line': Line(**line)

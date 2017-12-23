@@ -159,6 +159,7 @@ class CAStar(AStar):
                 else:
                     self._occupied_lines[t].append((target, source))
         for train_id in agents:
+            print(agents)
             source, target = agents[train_id]
             plans[train_id] = self.replan(source, target)
         return plans

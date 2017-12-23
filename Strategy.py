@@ -39,7 +39,7 @@ class Strategy:
 
     def _get_up_object(self):
         home = self.player.home
-        town = self.objects.towns[home]
+        town = self.player.town
 
         armor = town.armor
         train_up = []

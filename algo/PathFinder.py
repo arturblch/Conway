@@ -147,7 +147,7 @@ class CAStar(AStar):
         return plan
 
     def solve(self, agents, moving_trains):
-        plans = []
+        plans = {}
         for delta, target, source in moving_trains:
             if delta not in self._occupied_nodes.keys():
                 self._occupied_nodes[delta] = [target, ]
@@ -158,8 +158,9 @@ class CAStar(AStar):
                     self._occupied_lines[t] = [(target, source), ]
                 else:
                     self._occupied_lines[t].append((target, source))
-        for agent in agents:
-            plans.append(self.replan(*agent))
+        for train_id in agents:
+            source, target = agents[train_id]
+            plans[train_id] = self.replan(source, target)
         return plans
 
 

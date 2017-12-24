@@ -7,22 +7,19 @@ from GUI import GUI
 
 
 class Runner:
-    def __init__(self, name="Mickey"):
+    def __init__(self):
         self.player = None
         self.map_graph = None
         self.objects = None
         self.gui = None
-        self.name = name
-        if len(sys.argv) >= 2 and sys.argv[1] == '-gui':
-            self.is_gui = True
-            self.name = sys.argv[2]
-        else:
-            # self.is_gui = False
-            self.is_gui = True
+        self.name = 'player1'
+        self.game = 'gamename'
+        self.num_players = 4
+        if len(sys.argv) >= 2:
+            self.name = sys.argv[1]
+        self.is_gui = True
         self.process_client = RemoteProcessClient('wgforge-srv.wargaming.net',
                                                   443)
-        self.num_players = 2
-        self.game = 'Conway'
 
     def run(self):
         try:

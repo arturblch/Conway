@@ -36,5 +36,8 @@ class Objects:
 
     def _update_trains(self, trains, map_graph):
         for train_response in trains:
-            train = self.trains[train_response["idx"]]
-            train.update(train_response, map_graph)
+            if train_response["idx"] in self.trains:
+                train = self.trains[train_response["idx"]]
+                train.update(train_response, map_graph)
+            else:
+                self.trains[train_response["idx"]] = Train(train_response)

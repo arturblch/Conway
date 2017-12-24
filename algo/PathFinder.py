@@ -39,10 +39,10 @@ class AStar:
     def successors(self, node, time):
         return self._graph[node].items()
 
-    def find_path(self, source, target):
+    def find_path(self, source, target, time):
         if source == target:
-            return [source, target]
-        c = count()
+            return None
+        c = count(time)
         queue = [(0, next(c), source, 0, None)]
         enqueued = {}
         explored = {}
@@ -65,7 +65,7 @@ class AStar:
                     h = self._heuristic(neighbor, target)
                 enqueued[neighbor] = ncost, h
                 heappush(queue, (ncost + h, next(c), neighbor, ncost, curnode))
-        return [source, source]
+        return None
 
     def solve(self, source, target):
         return self.find_path(source, target)
@@ -92,7 +92,7 @@ class LRAStar(AStar):
         path = super().find_path(source, target)
         next_node = path[1]
         self._occupied_nodes.remove(source)
-        self._occupied_nodes.append(next_node)
+        self._occupied_nodes.add(next_node)
         return path
 
     def solve(self, source, target):
@@ -106,60 +106,48 @@ class CAStar(AStar):
     and target nodes. Ex: LRAStar.solve([[start1, target1], [start2, target2], ...])
     !!!Arrived agents are ignored!!!
     """
-    def __init__(self, graph, occupied_nodes, weight='length'):
+    def __init__(self, graph, occupied_nodes, occupied_lines, weight='length'):
         super().__init__(graph, weight)
         self._successors = self.successors
-        self._occupied_nodes = {0: occupied_nodes}
-        self._occupied_lines = {0: []}
+        self._occupied_nodes = occupied_nodes
+        self._occupied_lines = occupied_lines
 
     def successors(self, source, time):
         result = []
         for node, weight in super().successors(source, time):
             delta = self._cost(weight)
             if time+delta not in self._occupied_nodes.keys():
-                self._occupied_nodes[time+delta] = []
+                self._occupied_nodes[time+delta] = set()
             if time+1 not in self._occupied_lines.keys():
-                self._occupied_lines[time+1] = []
+                self._occupied_lines[time+1] = set()
             if node not in self._occupied_nodes[time+delta]\
                     and (source, node) not in self._occupied_lines[time+1]:
                 result.append((node, weight))
         return result
 
-    def replan(self, source, target):
-        plan = super().find_path(source, target)
-        time = 0
+    def replan(self, source, target, time=0):
+        plan = super().find_path(source, target, time)
+        if plan is None:
+            return plan
         prev_node = plan[0]
         for node in plan[1:]:
-            if prev_node == node:
-                continue
             delta = self._cost(self._graph[prev_node][node])
             for t in range(time, time + delta + 1):
                 if t not in self._occupied_lines.keys():
-                    self._occupied_lines[t] = [(node, prev_node), ]
+                    self._occupied_lines[t] = {(node, prev_node)}
                 else:
-                    self._occupied_lines[t].append((node, prev_node))
+                    self._occupied_lines[t].add((node, prev_node))
             if time + delta not in self._occupied_nodes.keys():
-                self._occupied_nodes[time + delta] = [node, ]
+                self._occupied_nodes[time + delta] = {node}
             else:
-                self._occupied_nodes[time + delta].append(node)
+                self._occupied_nodes[time + delta].add(node)
             time = time + delta
             prev_node = node
         return plan
 
     def solve(self, agents, moving_trains):
         plans = {}
-        for delta, target, source in moving_trains:
-            if delta not in self._occupied_nodes.keys():
-                self._occupied_nodes[delta] = [target, ]
-            else:
-                self._occupied_nodes[delta].append(target)
-            for t in range(delta + 1):
-                if t not in self._occupied_lines.keys():
-                    self._occupied_lines[t] = [(target, source), ]
-                else:
-                    self._occupied_lines[t].append((target, source))
         for train_id in agents:
-            # print(agents)
             source, target = agents[train_id]
             plans[train_id] = self.replan(source, target)
         return plans
@@ -181,6 +169,7 @@ class RRAStar(AStar):
 
         def RRA(position):
             while position not in explored:
+                # print(queue)
                 _, time, curnode, dist, parent = heappop(queue)
                 if self._finished(curnode, position, time):
                     break
@@ -211,8 +200,8 @@ class HCAStar(CAStar):
     and target nodes. Ex: HCAStar.solve([[start1, target1], [start2, target2], ...])
     !!!Arrived agents are ignored!!!
     """
-    def __init__(self, graph, occupied_nodes, weight='length'):
-        super().__init__(graph, occupied_nodes, weight)
+    def __init__(self, graph, occupied_nodes, occupied_lines, weight='length'):
+        super().__init__(graph, occupied_nodes, occupied_lines, weight)
         self._heuristic = self.heuristic
 
     def heuristic(self, u, v):
@@ -227,8 +216,8 @@ class WHCAStar(HCAStar):
     and target nodes. Ex: WHCAStar.solve([[start1, target1], [start2, target2], ...])
     !!!Arrived agents are ignored!!!    ???
     """
-    def __init__(self, graph, occupied_nodes, window=50, weight='length'):
-        super().__init__(graph, occupied_nodes, weight)
+    def __init__(self, graph, occupied_nodes, occupied_lines, window=50, weight='length'):
+        super().__init__(graph, occupied_nodes, occupied_lines, weight)
         self._finished = self.finished
         self.window = window
 

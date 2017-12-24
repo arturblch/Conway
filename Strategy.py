@@ -14,7 +14,6 @@ class Strategy:
         for train in self.objects.trains.values():
             train.point = self.map.get_train_point(train)
 
-        self.solver = WHCAStar(self.map.Graph, [train.point for train in self.objects.trains.values()])
         self.up_ready = False
         self.up_object = UpObject()  # Empty up object
 
@@ -98,11 +97,14 @@ class Strategy:
 
         for train_id in paths:
             path = paths[train_id]
-            next_step = path[1]
-            print("move %d, %d" % (self.objects.trains[train_id].point, next_step))
-            move_obj = self._move_to_point(self.objects.trains[train_id], next_step)
-            if move_obj:
+            if path:
+                next_step = path[1]
+                print("move {}, {}".format(self.objects.trains[train_id].point, next_step))
+                move_obj = self._move_to_point(self.objects.trains[train_id], next_step)
                 moves.append(move_obj)
+            else:
+                train = self.objects.trains[train_id]
+                moves.append(Move(train.line_idx, 0, train.idx))
 
         return moves
 
@@ -137,8 +139,6 @@ class Strategy:
             self.trains_points[train.idx] = path
         else:
             self.trains_points[train.idx] = [self.player.home]
-
-
 
     def _move_to_point(self, train, arrival_point):
         if train.point == arrival_point:

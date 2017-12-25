@@ -57,3 +57,8 @@ class Objects:
         return [
             train for train in self.trains.values() if train.player_id != my_id
         ]
+        
+    def get_my_trains(self, my_id):
+        return [
+            train for train in self.trains.values() if train.player_id == my_id
+        ]

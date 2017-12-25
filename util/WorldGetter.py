@@ -2422,7 +2422,7 @@ class WorldGetter:
                 "level": 1,
                 "line_idx": 1,
                 "next_level_price": 40,
-                "player_id": "92b23d2f-81ae-4c2d-b4e5-aa81f70fda8e",
+                "player_id": "07f32b23-8127-49f5-ab65-be7d5c775d6a",
                 "position": 0,
                 "post_type": null,
                 "speed": 0
@@ -2435,8 +2435,21 @@ class WorldGetter:
                 "level": 1,
                 "line_idx": 1,
                 "next_level_price": 40,
-                "player_id": "92b23d2f-81ae-4c2d-b4e5-aa81f70fda8e",
+                "player_id": "07f32b23-8127-49f5-ab65-be7d5c775d6a",
                 "position": 0,
+                "post_type": null,
+                "speed": 0
+            },
+            {
+                "event": [],
+                "goods": 0,
+                "goods_capacity": 40,
+                "idx": 3,
+                "level": 1,
+                "line_idx": 11,
+                "next_level_price": 40,
+                "player_id": "92b23d2f-81ae-4c2d-b4e5-aa81f70fda8e",
+                "position": 3,
                 "post_type": null,
                 "speed": 0
             }

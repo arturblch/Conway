@@ -13,6 +13,7 @@ class Objects:
         self.towns = {}
         self.markets = {}
         self.storages = {}
+        self.tick = 0
         for post in response['post']:
             if post['type'] == 1:
                 self.towns[post['idx']] = Town(post)
@@ -21,9 +22,15 @@ class Objects:
             if post['type'] == 3:
                 self.storages[post['idx']] = Storage(post)
 
-    def update(self, layer, map_graph):
+        self.score = 0
+
+    def update(self, layer, map_graph, player):
         self._update_trains(layer["train"], map_graph)
         self._update_posts(layer["post"])
+        self._update_score(layer["rating"], player)
+
+    def get_score(self):
+        return self.score
 
     def _update_posts(self, posts):
         for post_response in posts:
@@ -36,5 +43,22 @@ class Objects:
 
     def _update_trains(self, trains, map_graph):
         for train_response in trains:
+            if train_response["idx"] not in self.trains.keys():
+                self.trains.update({
+                    train_response["idx"]: Train(train_response)
+                })
             train = self.trains[train_response["idx"]]
             train.update(train_response, map_graph)
+
+    def _update_score(self, rating, player):
+        self.score = rating[player.name]
+
+    def get_enemy_trains(self, my_id):
+        return [
+            train for train in self.trains.values() if train.player_id != my_id
+        ]
+        
+    def get_my_trains(self, my_id):
+        return [
+            train for train in self.trains.values() if train.player_id == my_id
+        ]

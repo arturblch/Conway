@@ -7,11 +7,13 @@ from GUI import GUI
 
 
 class Runner:
-    def __init__(self, name="Mickey"):
+    def __init__(self, name="player1"):
         self.player = None
         self.map_graph = None
         self.objects = None
-        self.gui = False
+        self.is_gui = True
+        self.game = 'Conway'
+        self.num_players = 2
         self.multi = False
         self.name = name
         if len(sys.argv) >= 2:
@@ -21,7 +23,7 @@ class Runner:
                 self.multi = True
                 self.name = input("Name:")
                 self.game = input("Game name:")
-                self.num_players = input("Num of players:")
+                self.num_players = int(input("Num of players:"))
         self.process_client = RemoteProcessClient('wgforge-srv.wargaming.net',
                                                   443)
 
@@ -29,10 +31,9 @@ class Runner:
         try:
             try:
                 if self.multi == False:
-                    self.player = self.process_client.login(self.name)
+                    self.player = self.process_client.login(self.name, self.num_players, self.game)
                 else:
-                    self.player = self.process_client.multi_login(
-                        self.name)
+                    self.player = self.process_client.login(self.name, self.num_players, self.game)
             except LoginError:
                 self.process_client.logout()
                 print('BAD LOGIN\nTRY AGAIN')

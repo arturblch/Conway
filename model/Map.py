@@ -1,6 +1,5 @@
 import networkx as nx
 from model.Line import Line
-from model.Point import Point
 
 
 class Map:
@@ -14,10 +13,18 @@ class Map:
         }
         self.Graph.add_nodes_from(self.points)
         self.Graph.add_edges_from([(*line['point'], {
-            'length': line['length'], 'line': Line(**line)
+            'length': line['length'],
+            'line': Line(**line)
         }) for line in response["line"]])
-        self.pos = nx.spring_layout(
-            self.Graph, scale=0.5, center=(0.5, 0.5), iterations=200, weight="length")
+
+        self.pos = None
+
+        # self.pos = nx.spring_layout(
+        #     self.Graph,
+        #     scale=0.5,
+        #     center=(0.5, 0.5),
+        #     iterations=200,
+        #     weight="length")
 
     def get_neighbors(self, point):
         return list(self.Graph.neighbors(point))
@@ -30,14 +37,22 @@ class Map:
     # TODO:
     # 1. delete departure_point (departure_point == train.point)
     # 2. add departure from any position of the line
-    def departure(self, departure_point, arrival_point):                        # можно преоразовать сразу в Move
+    def departure(self, departure_point,
+                  arrival_point):  # можно преоразовать сразу в Move
         print(departure_point, arrival_point)
         line = self.Graph.get_edge_data(departure_point, arrival_point)['line']
         speed = 1 if line.start_point == departure_point else -1
         return line, speed
 
     def get_distance(self, u, v):
-        return nx.shortest_path_length(self.Graph, source=u, target=v, weight='length')
+        return nx.shortest_path_length(
+            self.Graph, source=u, target=v, weight='length')
+
+    def get_distance_from_line(self, line_idx, pos, point):
+        line = self.lines[line_idx]
+        return min(
+            self.get_distance(line.start_point, point) + pos,
+            self.get_distance(line.end_point, point)+ line.length - pos)
 
     def get_next_point(self, u, v):
         next_point = nx.shortest_path(self.Graph, source=u, target=v)[1]
@@ -50,3 +65,57 @@ class Map:
         elif train.position == 0:
             return current_line.start_point
         return None
+
+    def get_point(self, line_idx, posit):
+        line = self.lines[line_idx]
+        if posit == line.length:
+            return line.end_point
+        elif posit == 0:
+            return line.start_point
+        return None
+
+    def get_neighbors_pos(self, pos):
+        nb_pos = []
+
+        if pos.point != None:
+            nb = self.Graph.neighbors(pos.point)
+            nb_lines = [
+                self.Graph.get_edge_data(pos.point, nb_point)['line']
+                for nb_point in nb
+            ]
+            for line in nb_lines:
+                posit = line.length - 1 if pos.point == line.end_point else 1
+                point = self.get_point(line.idx, posit)
+                nb_pos.append(Position(point, line.idx, posit))
+        else:
+            pos_1 = pos.pos - 1
+            point_1 = self.get_point(pos.line, pos_1)
+            nb_pos.append(Position(point_1, pos.line, pos_1))
+
+            pos_2 = pos.pos + 1
+            point_2 = self.get_point(pos.line, pos_2)
+            nb_pos.append(Position(point_2, pos.line, pos_2))
+
+        return nb_pos
+
+
+class Position:
+    def __init__(self, point, line=None, pos=None):
+        self.point = point
+        self.line = line
+        self.pos = pos
+
+    def __eq__(self, other):
+        return (self.point != None and self.point == other.point
+                or self.line != None and self.line == other.line
+                and self.pos == other.pos)
+
+    def __repr__(self):
+        return 'p - {}, l - {}, pos - {}'.format(self.point, self.line,
+                                                 self.pos)
+
+    def __hash__(self):
+        if self.point != None:
+            return hash((self.point, None, None))
+        else:
+            return hash((None, self.line, self.pos))

@@ -1,7 +1,7 @@
 import pygame as pg
 from pygame.locals import *
 import math
-from time import sleep
+from pprint import pprint
 
 BACKGROUND_IMAGE = 'grass.jpg'
 POINT_LABEL_COLOR = (255, 255, 255)
@@ -11,13 +11,23 @@ RADIUS = 20
 white = (255, 255, 255)
 red = (255, 0, 0)
 green = (0, 255, 0)
+green_2 = (20, 230, 20)
 blue = (0, 0, 255)
+blue_2 = (20, 20, 230)
+yelow = (255, 255, 0)
 black = (0, 0, 0)
 grey = (128, 128, 128)
 
+player_colors = [red, green_2, blue_2, yelow]
 
 class GUI:
-    def __init__(self, player, map_graph, objects, width=600, height=600):
+    def __init__(self,
+                 player,
+                 map_graph,
+                 objects,
+                 strategy,
+                 width=600,
+                 height=600):
         pg.init()
         self.width = width
         self.height = height
@@ -27,8 +37,10 @@ class GUI:
         self.player = player
         self.map = map_graph
         self.objects = objects
-        self.screen = pg.display.set_mode((self.width, self.height))
+        self.strategy = strategy
+        self.screen = pg.display.set_mode((self.width, self.height + 100))
         self.surf = pg.Surface((width, height))
+        self.stat = pg.Surface((width, 100))
         self.background = pg.image.load(BACKGROUND_IMAGE).convert_alpha()
         self.background = pg.transform.scale(self.background, (width, height))
         self.clock = pg.time.Clock()
@@ -37,21 +49,19 @@ class GUI:
         self.onestep = False
         pg.display.set_caption("Train Game")
         self.myfont = pg.font.SysFont('arial', 15)
+        self.player_colors = dict()
 
     def draw_points(self, ):
         for point in self.map.points:
-            x_pos = int(
-                (self.display_width * self.map.pos[point][0] + RADIUS))
+            x_pos = int((self.display_width * self.map.pos[point][0] + RADIUS))
             y_pos = int(
                 (self.display_height * self.map.pos[point][1] + RADIUS))
 
             pg.draw.circle(self.surf, black, (x_pos, y_pos), RADIUS)
 
         for post_id, idx in self.map.posts.items():
-            x_pos = int(
-                (self.display_width * self.map.pos[idx][0] + RADIUS))
-            y_pos = int(
-                (self.display_height * self.map.pos[idx][1] + RADIUS))
+            x_pos = int((self.display_width * self.map.pos[idx][0] + RADIUS))
+            y_pos = int((self.display_height * self.map.pos[idx][1] + RADIUS))
 
             if post_id in self.objects.markets.keys():
                 mask = pg.Surface((RADIUS * 2, RADIUS * 2))
@@ -80,6 +90,7 @@ class GUI:
             edgelist = self.map.lines
 
         for l in edgelist.values():
+
             pg.draw.line(
                 self.surf, LINE_COLOR,
                 (int((self.display_width) * self.map.pos[l.start_point][0] +
@@ -93,17 +104,16 @@ class GUI:
 
     def draw_node_labels(self):
         for idx in self.map.points:
-            num_idx = pg.font.Font(None, 25).render(
-                str(idx), False, white)
-            text_pos_x = int((self.display_width) * self.map.pos[idx][0] + RADIUS
-                             - (num_idx.get_width() / 2))
+            num_idx = pg.font.Font(None, 25).render(str(idx), False, white)
+            text_pos_x = int((self.display_width) * self.map.pos[idx][0] +
+                             RADIUS - (num_idx.get_width() / 2))
             text_pos_y = int((self.display_height) * self.map.pos[idx][1] +
                              RADIUS - (num_idx.get_height() / 2))
             self.surf.blit(num_idx, (text_pos_x, text_pos_y))
 
         for post_id, idx in self.map.posts.items():
-            text_pos_x = int((self.display_width) * self.map.pos[idx][0] + RADIUS
-                             - (num_idx.get_width() / 2))
+            text_pos_x = int((self.display_width) * self.map.pos[idx][0] +
+                             RADIUS - (num_idx.get_width() / 2))
             text_pos_y = int((self.display_height) * self.map.pos[idx][1] +
                              RADIUS - (num_idx.get_height() / 2))
             name = ""
@@ -118,34 +128,46 @@ class GUI:
             else:
                 name = self.objects.towns[post_id].name
                 product = self.objects.towns[post_id].product
+                armor = self.objects.towns[post_id].armor
                 population = self.objects.towns[post_id].population
 
                 post_population = pg.font.Font(None, 19).render(
                     str(population), False, white)
-                self.surf.blit(post_population, (text_pos_x - RADIUS, text_pos_y - RADIUS))
+                self.surf.blit(post_population,
+                               (text_pos_x - RADIUS, text_pos_y - RADIUS))
+                post_armor = pg.font.Font(None, 19).render(
+                    str(armor), False, white)
+                self.surf.blit(post_armor,
+                               (text_pos_x + RADIUS, text_pos_y - RADIUS - 10))
 
-            post_name = pg.font.Font(None, 19).render(
-                name, False, white)
+            post_name = pg.font.Font(None, 19).render(name, False, white)
             post_product = pg.font.Font(None, 19).render(
                 str(product), False, white)
 
             self.surf.blit(post_name, (text_pos_x, text_pos_y - RADIUS))
             self.surf.blit(post_product, (text_pos_x, text_pos_y + RADIUS))
 
-    def draw_fps(self):
-        self.surf.blit(
+    def draw_fps_score_tick(self):
+        self.stat.blit(
             pg.font.Font(None, 30).render(
                 str('fps : %.1f' % self.clock.get_fps()), False,
-                (255, 255, 255)),
-            (self.display_width - 60, self.display_height - 20))
+                (255, 255, 255)), (20, 20))
+        self.stat.blit(
+            pg.font.Font(None, 30).render(
+                str('score : %d' % self.objects.get_score()), False,
+                (255, 255, 255)), (200, 20))
+        self.stat.blit(
+            pg.font.Font(None, 30).render(
+                str('tick : %d' % self.objects.tick), False, (255, 255, 255)),
+            (400, 20))
 
     def draw_train(self):
         for train in self.objects.trains.values():
+            if train.player_id not in self.player_colors.keys():
+                self.player_colors[train.player_id] = player_colors.pop(0)
+            color = self.player_colors[train.player_id]
             if train.line_idx == None:
-                return
-            train_surf = pg.Surface((30, 30), pg.SRCALPHA)
-            pg.draw.polygon(train_surf, (255, 0, 0), [[0, 0], [30, 15], [0, 30]], 0)
-
+                continue
             line = self.map.lines[train.line_idx]
 
             (x1, y1) = self.map.pos[line.start_point]
@@ -163,21 +185,30 @@ class GUI:
             else:
                 angle = None
 
-            if angle:
-                angle = angle
+            train_surf = pg.Surface((20, 20), pg.SRCALPHA)
+            center = (int(train_surf.get_width() / 2), int(
+                train_surf.get_height() / 2))
+            pg.draw.circle(train_surf, color, center, 10)
+            if angle != None:
+                pg.draw.polygon(train_surf, black, [[0, 0], [20, 10], [0, 20]],
+                                0)
                 train_surf = pg.transform.rotate(train_surf, angle)
-            self.surf.blit(
-                train_surf, (int(self.display_width * x), int(self.display_height * y)))
+            self.surf.blit(train_surf,
+                           (int(self.display_width * x + center[0]),
+                            int(self.display_height * y + center[1])))
 
     def update(self):
         self.surf.blit(self.background, (0, 0))
+        self.stat.fill(grey)
         self.draw_edges()
         self.draw_points()
-        self.draw_fps()
+        self.draw_fps_score_tick()
         self.draw_node_labels()
         self.draw_train()
 
         self.screen.blit(self.surf, (0, 0))
+        self.screen.blit(self.stat, (0, self.height))
+
         pg.display.update()
 
     def turn(self):
@@ -195,6 +226,10 @@ class GUI:
                         self.onestep = True
                     elif event.key == K_p:
                         self.paused = not self.paused
+                    elif event.key == K_r:
+                        pprint(self.strategy.trains_points)
+                        pprint(self.strategy.paths)
+
                     elif (event.key == K_PLUS) or (event.key == K_EQUALS):
                         self.fps += 1
                     elif event.key == K_MINUS:

@@ -1,14 +1,3 @@
-class position_distance_storage:
-    def __init__(self):
-        self.storage = dict()
-
-    def store(self, pos, node):
-        self.storage.update({pos: node})
-
-    def get(self):
-        return self.storage
-
-
 class space_time_coordinate:
     def __init__(self, time, pos):
         self.time = time
@@ -34,7 +23,6 @@ class A_star:
         self.open_ = dict()  # time_pos : node
         self.closed_ = dict()  # time_pos : node
         self.expanded_ = 0
-        self.distance_storage_ = position_distance_storage()
         self.cur_tick = cur_tick
         self.window = window
 
@@ -65,14 +53,6 @@ class A_star:
                                                    self.to.point)
 
     # func for hierarchial_distance
-    def find_distance(self, p, world):
-        shortest_paths = self.distance_storage_.get()
-
-        it = shortest_paths.find(p)
-        if it != shortest_paths.end():
-            return it.second.g
-        else:
-            return 9999
 
     def find_path(self):
 
@@ -101,8 +81,6 @@ class A_star:
 
             self.open_.pop(current_coord)
             self.closed_[current_coord] = current
-
-            self.distance_storage_.store(current.pos, current)
             self.expanded_ += 1
 
             if (current.steps_distance == limit):

@@ -5,6 +5,7 @@ from model.Map import Position
 from algo.WCA import WCAStar
 import logging
 from pprint import pprint, pformat
+from model.TrafficController import TrafficController
 
 from random import shuffle
 
@@ -124,7 +125,7 @@ class Strategy:
 
     def _get_up_object(self):
         home = self.player.home
-        town = self.objects.towns[home]
+        town = self.player.town
 
         armor = town.armor
         train_up = []
@@ -159,9 +160,47 @@ class Strategy:
     def get_moves(self):
         self.update_targets()
 
-        move_obj = self.step()
-        if move_obj:
-            return move_obj
+        moves = []
+        trains_targets = dict()
+        for train_id in self.trains_points:
+            train = self.objects.trains[train_id]
+            if train.point:
+                trains_targets[train.idx] = (train.point, self.trains_points[train.idx][0])
+        print(trains_targets)
+
+        self.solver = TrafficController()
+        paths = self.solver.find_paths(self.map, self.objects.trains, trains_targets)
+
+        for train_id in paths:
+            path = paths[train_id]
+            if path:
+                next_step = path[1]
+                print("move {}, {}".format(self.objects.trains[train_id].point, next_step))
+                move_obj = self._move_to_point(self.objects.trains[train_id], next_step)
+                moves.append(move_obj)
+            else:
+                train = self.objects.trains[train_id]
+                moves.append(Move(train.line_idx, 0, train.idx))
+
+        # moves = self.step()
+        # print(move_obj)
+        if moves:
+            return moves
+
+    def _move_to_point(self, train, arrival_point):
+        if train.point == arrival_point:
+            return None
+        if train.point is None:
+            line = self.map.lines[train.line_idx]
+        else:
+            line = self.map.Graph.get_edge_data(train.point, arrival_point)['line']
+            if line is None:
+                return None
+        speed = -1 if line.start_point == arrival_point else 1
+
+        if line == train.line_idx and speed == train.speed:
+            return None
+        return Move(line.idx, speed, train.idx)
 
     def _get_target_points(self, train):
         if self.trains_roles[train.idx] == 2:

@@ -11,10 +11,10 @@ def test_base():
     factory = WorldGetter(3)
     _map = Map(factory.get_map())
     _map.pos = factory.get_pos()
-    objects = Objects(factory.get_objects())
+    objects =  Objects(factory.get_objects())
     player = Player(factory.get_player())
     i = 30
-    gui = GUI(player, _map, objects)
+    gui = GUI(player, _map, objects, None)
     gui.fps = 30
     gui.paused = True
     while player.is_alive:

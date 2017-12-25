@@ -17,7 +17,7 @@ def test_valid():
     objects = Objects(factory.get_objects())
 
     strategy = Strategy(player, map_graph, objects)
-    strategy.get_invalid_pos = lambda x: []
+    strategy.get_invalid_pos = lambda x: {}
     
     reserv_pos = {
         1: {},
@@ -25,7 +25,10 @@ def test_valid():
             1: Position(2, 2, 0)}
     }
     strategy.trains_reservations = reserv_pos
-    print(strategy.valid(1, Position(2, 3, 5), Position(None, 2, 1)))
+    objects.trains[1].line_idx = 2
+    objects.trains[1].position = 1
+    train = objects.trains[2]
+    print(strategy.valid(train, Position(2, 3, 5), Position(None, 2, 1)))
 
 def test_correct_init():
     factory = WorldGetter(3)

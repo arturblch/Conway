@@ -187,10 +187,10 @@ class Strategy:
                     post_goods = post.product_capacity
                 elif self.trains_roles[train.idx] == 3:
                     post_goods = post.armor_capacity
-                if (need_cap - post_goods) / need_cap > 0.2:
+                if need_cap - post_goods> 20:
                     path.append(self.map.posts[post.idx])
                     need_cap -= post_goods
-                elif (need_cap - post_goods) / need_cap <= 0.2:
+                elif need_cap - post_goods <= 20:
                     path.append(self.map.posts[post.idx])
                     break
             path.append(town.point)

@@ -12,7 +12,7 @@ class Runner:
         self.player = None
         self.map_graph = None
         self.objects = None
-        self.gui = False
+        self.is_gui = True
         self.multi = False
         self.name = name
         if len(sys.argv) >= 2:
@@ -22,7 +22,7 @@ class Runner:
                 self.multi = True
                 self.name = input("Name:")
                 self.game = input("Game name:")
-                self.num_players = input("Num of players:")
+                self.num_players = int(input("Num of players:"))
         self.process_client = RemoteProcessClient('wgforge-srv.wargaming.net',
                                                   443)
 
@@ -33,7 +33,7 @@ class Runner:
                     self.player = self.process_client.login(self.name)
                 else:
                     self.player = self.process_client.multi_login(
-                        self.name)
+                        self.name, self.game, self.num_players)
             except LoginError:
                 self.process_client.logout()
                 print('BAD LOGIN\nTRY AGAIN')

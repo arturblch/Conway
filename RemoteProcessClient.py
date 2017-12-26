@@ -57,7 +57,7 @@ class RemoteProcessClient:
         response = self.write_message('LOGIN', {"name": name})[1]
         return Player(response)
 
-    def multi_login(self, name, game_name='Conway', num_players=2, security_key=None):
+    def multi_login(self, name, game_name='Conway', num_players=4, security_key=None):
         message = {
             "name": name,
             "game": game_name,

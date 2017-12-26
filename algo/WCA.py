@@ -27,7 +27,6 @@ class WCAStar(A_star):
     def passable(self, from_pos, to_pos, time):
 
         if to_pos in self._invalid_field:
-            print("inval")
             return False
 
         for train_id, reserv_path in self._reserv_table.items():

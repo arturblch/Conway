@@ -51,7 +51,7 @@ class RemoteProcessClient:
         logger.info("Create socket")
         self.socket.connect((host, port))
         logger.info("Connection done")
-        self.socket.settimeout(5)
+        self.socket.settimeout(10)
 
     def login(self, name):
         response = self.write_message('LOGIN', {"name": name})[1]

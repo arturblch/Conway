@@ -54,12 +54,8 @@ class RemoteProcessClient:
         logger.info("Connection done")
         self.socket.settimeout(10)
 
-    def login(self, name, num_players, game_name):
-        if game_name:
-            game = vars(Game(name, num_players, game_name))
-        else:
-            game = {"name": name}
-        response = self.write_message('LOGIN', game)[1]
+    def login(self, name):
+        response = self.write_message('LOGIN', {"name": name})[1]
         return Player(response)
 
     def multi_login(self, name, game_name='Conway', num_players=4, security_key=None):

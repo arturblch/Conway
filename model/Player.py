@@ -18,4 +18,3 @@ class Player:
 
     def settle(self, map_graph, objects):
         self.town = objects.towns[self.town]
-        self.trains = [objects.trains[train_id] for train_id in self.trains]

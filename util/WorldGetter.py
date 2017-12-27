@@ -445,47 +445,64 @@ class WorldGetter:
     objects02 = json.loads('''{
         "idx": 1,
         "post": [
-            {
-                "armor": 0,
+            {"armor": 100,
+                "armor_capacity": 100,
+                "event": [],
                 "idx": 1,
+                "level": 1,
                 "name": "town-one",
+                "next_level_price": 100,
+                "player_id": "92b23d2f-81ae-4c2d-b4e5-aa81f70fda8e",
+                "point_id": 1,
                 "population": 3,
+                "population_capacity": 10,
                 "product": 35,
+                "product_capacity": 200,
                 "type": 1
             },
             {
+                "event": [],
                 "idx": 2,
-                "name": "market-big",
-                "product": 36,
-                "product_capacity": 36,
-                "replenishment": 2,
+                "name": "market-medium",
+                "point_id": 49,
+                "product": 250,
+                "product_capacity": 250,
+                "replenishment": 10,
                 "type": 2
             },
             {
+                "event": [],
                 "idx": 3,
                 "name": "market-medium",
-                "product": 28,
-                "product_capacity": 28,
-                "replenishment": 1,
+                "point_id": 49,
+                "product": 250,
+                "product_capacity": 250,
+                "replenishment": 10,
                 "type": 2
             },
             {
+                "event": [],
                 "idx": 4,
-                "name": "market-small",
-                "product": 5,
-                "product_capacity": 5,
-                "replenishment": 1,
+                "name": "market-medium",
+                "point_id": 49,
+                "product": 250,
+                "product_capacity": 250,
+                "replenishment": 10,
                 "type": 2
             }
         ],
         "train": [
             {
-                "capacity": 200,
-                "idx": 0,
+                "event": [],
+                "goods": 0,
+                "goods_capacity": 40,
+                "idx": 1,
+                "level": 1,
                 "line_idx": 1,
-                "player_id": "082309a9-354d-4673-9533-b97fdf9a042a",
+                "next_level_price": 40,
+                "player_id": "07f32b23-8127-49f5-ab65-be7d5c775d6a",
                 "position": 0,
-                "product": 0,
+                "post_type": null,
                 "speed": 0
             }
         ]
@@ -2437,19 +2454,6 @@ class WorldGetter:
                 "next_level_price": 40,
                 "player_id": "07f32b23-8127-49f5-ab65-be7d5c775d6a",
                 "position": 0,
-                "post_type": null,
-                "speed": 0
-            },
-            {
-                "event": [],
-                "goods": 0,
-                "goods_capacity": 40,
-                "idx": 3,
-                "level": 1,
-                "line_idx": 11,
-                "next_level_price": 40,
-                "player_id": "92b23d2f-81ae-4c2d-b4e5-aa81f70fda8e",
-                "position": 3,
                 "post_type": null,
                 "speed": 0
             }

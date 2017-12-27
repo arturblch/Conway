@@ -8,13 +8,11 @@ from time import sleep
 
 
 class Runner:
-    def __init__(self, name="player1"):
+    def __init__(self, name="Mickey"):
         self.player = None
         self.map_graph = None
         self.objects = None
         self.is_gui = True
-        self.game = 'Conway'
-        self.num_players = 2
         self.multi = False
         self.name = name
         if len(sys.argv) >= 2:
@@ -32,9 +30,10 @@ class Runner:
         try:
             try:
                 if self.multi == False:
-                    self.player = self.process_client.login(self.name, self.num_players, self.game)
+                    self.player = self.process_client.login(self.name)
                 else:
-                    self.player = self.process_client.login(self.name, self.num_players, self.game)
+                    self.player = self.process_client.multi_login(
+                        self.name, self.game, self.num_players)
             except LoginError:
                 self.process_client.logout()
                 print('BAD LOGIN\nTRY AGAIN')

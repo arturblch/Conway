@@ -51,7 +51,8 @@ class Objects:
             train.update(train_response, map_graph)
 
     def _update_score(self, rating, player):
-        self.score = rating[player.name]
+        print(rating, player.idx)
+        self.score = rating[player.idx]['rating']
 
     def get_enemy_trains(self, my_id):
         return [

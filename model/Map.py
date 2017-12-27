@@ -19,12 +19,12 @@ class Map:
 
         self.pos = None
 
-        # self.pos = nx.spring_layout(
-        #     self.Graph,
-        #     scale=0.5,
-        #     center=(0.5, 0.5),
-        #     iterations=200,
-        #     weight="length")
+        self.pos = nx.spring_layout(
+            self.Graph,
+            scale=0.5,
+            center=(0.5, 0.5),
+            iterations=200,
+            weight="length")
 
     def get_neighbors(self, point):
         return list(self.Graph.neighbors(point))

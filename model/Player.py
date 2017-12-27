@@ -5,7 +5,7 @@ class Player:
     def __init__(self, response):
         if response['home'] is None:
             raise LoginError('Bad login')
-        self.home = response['home']['idx']
+        self.home = response['home']['post_id']
         self.town = response['town']["idx"]
         self.population = response["town"]["population"]
         self.idx = response['idx']

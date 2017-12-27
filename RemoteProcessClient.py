@@ -5,13 +5,14 @@ import logging
 from model.Objects import Objects
 from model.Map import Map
 from model.Player import Player
+from model.Game import Game
 
 # create logger
 logger = logging.getLogger('RemouteClient')
 logger.setLevel(logging.DEBUG)
 
 # create file handler which logs even debug messages
-fh = logging.FileHandler('RemouteClient.log')
+fh = logging.FileHandler('RemouteClient.log', mode='w')
 fh.setLevel(logging.DEBUG)
 
 # create console handler and set level to debug
@@ -19,8 +20,7 @@ ch = logging.StreamHandler()
 ch.setLevel(logging.ERROR)
 
 # create formatter and add it to the handlers
-formatter = logging.Formatter(
-    '%(asctime)s - %(message)s')
+formatter = logging.Formatter('%(asctime)s - %(message)s')
 fh.setFormatter(formatter)
 ch.setFormatter(formatter)
 
@@ -38,18 +38,37 @@ class RemoteProcessClient:
     SIGNED_BYTE_SIZE_BYTES = 1
     UNSIGNED_INTEGER_SIZE_BYTES = 4
 
-    ACTION = {"LOGIN": 1, "LOGOUT": 2, "MOVE": 3, "UPGRADE": 4, "TURN": 5, "MAP": 10}
+    ACTION = {
+        "LOGIN": 1,
+        "LOGOUT": 2,
+        "MOVE": 3,
+        "UPGRADE": 4,
+        "TURN": 5,
+        "MAP": 10
+    }
 
     def __init__(self, host, port):
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         logger.info("Create socket")
         self.socket.connect((host, port))
         logger.info("Connection done")
-        self.socket.settimeout(5)
+        self.socket.settimeout(10)
 
     def login(self, name):
         response = self.write_message('LOGIN', {"name": name})[1]
         return Player(response)
+
+    def multi_login(self, name, game_name='Conway', num_players=4, security_key=None):
+        message = {
+            "name": name,
+            "game": game_name,
+            "num_players": num_players
+        }
+        if security_key:
+            message.update({"security_key": security_key})
+        response = self.write_message('LOGIN', message)
+        assert(response[0]==0)
+        return Player(response[1])
 
     def logout(self):
         return self.write_message('LOGOUT')
@@ -137,9 +156,9 @@ class RemoteProcessClient:
         layer = self.write_message('MAP', {"layer": 10})[1]
         return layer
 
-    def update_objects(self, objects, map_grap):
+    def update_objects(self, objects, map_grap, player):
         layer = self.write_message('MAP', {"layer": 1})[1]
-        objects.update(layer, map_grap)
+        objects.update(layer, map_grap, player)
 
     def read_map(self):
         layer = self.write_message('MAP', {"layer": 0})[1]

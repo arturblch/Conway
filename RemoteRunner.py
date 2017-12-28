@@ -23,8 +23,8 @@ class Runner:
                 self.name = input("Name:")
                 self.game = input("Game name:")
                 self.num_players = int(input("Num of players:"))
-        self.process_client = RemoteProcessClient('wgforge-srv.wargaming.net',
-                                                  443)
+        self.process_client = RemoteProcessClient('localhost',
+                                                  2000)
 
     def run(self):
         try:

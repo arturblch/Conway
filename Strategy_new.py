@@ -25,33 +25,37 @@ class Strategy:
 
         self.paths = dict()
 
-        for train in self.objects.trains.values():
-            train.point = self.map.get_train_point(train)
-
         self.up_ready = False
         self.up_object = UpObject()  # Empty up object
 
         self.trains_reservations = {}  # train_id : {time, pos}
-        self.trains_roles = self._get_roles()
+        self.trains_path = {train_idx: [] for train_idx in self.player.trains}
+
+        self.trains_roles = dict()
         self.trains_points = {
             train.idx: []
             for train in self.objects.get_my_trains(player.idx)
         }
-        self.trains_path = {train_idx: [] for train_idx in self.player.trains}
 
-        self.pos_markets = {
-            Position(m.point)
-            for m in self.objects.markets.values()
+    def get_markets_pos(self):
+        return {
+            Position(market.point)
+            for market in self.objects.markets.values()
         }
-        self.pos_storages = {
-            Position(s.point)
-            for s in self.objects.storages.values()
+
+    def get_storages_pos(self):
+        return {
+            Position(storage.point)
+            for storage in self.objects.storages.values()
         }
+
+    def get_towns_pos(self):
+        return {Position(town.point) for town in self.objects.towns.values()}
 
     def get_enemy_trains_fields(self):
         enemy_trains = self.objects.get_enemy_trains(self.player.idx)
         enemy_trains_pos = [
-            Position(t.point, t.line_idx, t.position) for t in enemy_trains
+            Position(train=train) for train in enemy_trains
         ]
         enemy_trains_fields = []
         for pos in enemy_trains_pos:
@@ -63,21 +67,18 @@ class Strategy:
     def get_my_trains_pos(self, t_id):
         my_trains = self.objects.get_my_trains(self.player.idx)
         return {
-            t.idx: Position(t.point, t.line_idx, t.position)
-            for t in my_trains
+            train.idx: Position(train=train)
+            for train in my_trains
         }
 
     def get_invalid_posts_pos(self, train):
         if train.goods == 0:
             if self.trains_roles[train.idx] == 2:
-                return self.pos_storages
+                return self.get_storages_pos()
             if self.trains_roles[train.idx] == 3:
-                return self.pos_markets
+                return self.get_markets_pos()
         else:
             return set()
-
-    def get_towns_pos(self):
-        return {Position(town.point) for town in self.objects.towns.values()}
 
     def valid(self, train, from_pos, next_pos):
         towns_pos = self.get_towns_pos()
@@ -87,6 +88,8 @@ class Strategy:
 
         invalid = invalid_posts.union(enemy_field)
         if next_pos is None:
+            return False
+        if next_pos in invalid:
             return False
         for train_id, reserv_path in self.trains_reservations.items():
             if train_id == train.idx:
@@ -106,12 +109,12 @@ class Strategy:
                 return False
         return True
 
-    def _get_roles(self):
+    def set_roles(self):
         roles = {}
         rol_gen = cycle([2, 3])
         for train in self.objects.get_my_trains(self.player.idx):
             roles[train.idx] = next(rol_gen)
-        return roles
+        self.trains_roles = roles
 
     def get_upgrade(self):
         self._get_up_object()
@@ -133,22 +136,23 @@ class Strategy:
                 armor -= town.next_level_price
                 town_up.append(town.idx)
         else:
-            if armor - town.next_level_price > 40:
-                armor -= town.next_level_price
-                town_up.append(town.idx)
+            if town.next_level_price:
+                if armor - town.next_level_price > 40:
+                    armor -= town.next_level_price
+                    town_up.append(town.idx)
             for train in self.objects.get_my_trains(self.player.idx):
                 if self.objects.trains[train.idx].point == town.point:
-                    if armor - self.objects.trains[train.
-                                                   idx].next_level_price > 40:
-                        armor -= self.objects.trains[
-                            train.idx].next_level_price
-                        train_up.append(train.idx)
+                    if self.objects.trains[train.idx].next_level_price:
+                        if armor - self.objects.trains[train.
+                                                       idx].next_level_price > 40:
+                            armor -= self.objects.trains[
+                                train.idx].next_level_price
+                            train_up.append(train.idx)
         if town_up or train_up:
             self.up_ready = True
             self.up_object.update(town_up, train_up)
 
     def update_targets(self):
-        self.change_targets()
         for train_id, points in self.trains_points.items():
             # if empty (stay at town) get new
             train = self.objects.trains[train_id]
@@ -157,13 +161,11 @@ class Strategy:
 
             if self.trains_points[train_id][0] == train.point:
                 self.trains_points[train_id].pop(0)
+                if len(points) == 0:
+                    self._get_target_points(train)
 
-            if len(points) == 0:
-                self._get_target_points(train)
 
     def get_moves(self):
-        self.update_targets()
-
         move_obj = self.step()
         if move_obj:
             return move_obj
@@ -171,35 +173,28 @@ class Strategy:
     def _get_target_points(self, train):
         town = self.objects.towns[self.player.home]
         if self.trains_roles[train.idx] == 2:
-            post_list = [(self.map.get_distance(town.point, post.point), post)
-                         for post in self.objects.markets.values()]
+            post_list = self.map.distance_to_all_targets(Position(train=train), self.objects.markets.values())
         elif self.trains_roles[train.idx] == 3:
-            post_list = [(self.map.get_distance(town.point, post.point), post)
-                         for post in self.objects.storages.values()]
-        post_list = sorted(
-            [dist_post for dist_post in post_list], key=lambda x: x[0])
-        if train.point == town.point and train.goods == 0:
-            need_cap = train.goods_capacity
-            path = []
-            for dist_post in post_list:
-                post = dist_post[1]
-                if self.trains_roles[train.idx] == 2:
-                    post_goods = post.product_capacity
-                elif self.trains_roles[train.idx] == 3:
-                    post_goods = post.armor_capacity
-                if need_cap - post_goods> 20:
-                    path.append(self.map.posts[post.idx])
-                    need_cap -= post_goods
-                elif need_cap - post_goods <= 20:
-                    path.append(self.map.posts[post.idx])
-                    break
-            path.append(town.point)
-            self.trains_points[train.idx] = path
-        else:
-            print("train - ", train.idx, " has - ", train.goods, " goods")
-            self.trains_points[train.idx] = [town.point]
+            post_list = self.map.distance_to_all_targets(Position(train=train), self.objects.storages.values())
 
-    def change_targets(self):
+        need_cap = train.goods_capacity
+        path = []
+        for dist_post in post_list:
+            post = dist_post[1]
+            if self.trains_roles[train.idx] == 2:
+                post_goods = post.product_capacity
+            elif self.trains_roles[train.idx] == 3:
+                post_goods = post.armor_capacity
+            if need_cap - post_goods > 20:
+                path.append(self.map.posts[post.idx])
+                need_cap -= post_goods
+            elif need_cap - post_goods <= 20:
+                path.append(self.map.posts[post.idx])
+                break
+        path.append(town.point)
+        self.trains_points[train.idx] = path
+
+    def rebalance_of_roles(self):
         town = self.objects.towns[self.player.home]
         need_cap = 45 * max(town.population, (
             town.product_capacity - town.product) / town.product_capacity * 5)
@@ -216,48 +211,48 @@ class Strategy:
             self.add_role(3)
 
     def add_role(self, role):
-        town = self.objects.towns[self.player.home]
-        trains_home = [
+        empty_trains = [
             train for train in self.objects.get_my_trains(self.player.idx)
-            if train.point == town.point and self.trains_roles != role
+            if train.goods == 0 and self.trains_roles[train.idx] != role
         ]
-        if trains_home:
-            self.trains_roles[trains_home[0].idx] = role
-            self._get_target_points(trains_home[0])
+        if empty_trains:
+            train = empty_trains[0]
+            self.trains_roles[train.idx] = role
+            self.trains_points[train.idx] = []
+            self._get_target_points(train)
 
     def step(self):
-        moves = []
-        trains = dict()
-        trains_order = []
+        if not self.trains_roles:
+            self.set_roles()
+
+        self.rebalance_of_roles()
         self.update_targets()
 
-        for train in self.objects.get_my_trains(self.player.idx):
-            pos = Position(train.point, train.line_idx, train.position)
-            trains.update({train.idx: pos})
-            trains_order.append(train.idx)
-        shuffle(trains_order)
+        moves = []
+        trains_order = sorted([train.idx for  train in self.objects.get_my_trains(self.player.idx)])
 
         while len(trains_order):
             train_id = trains_order.pop(0)
             train = self.objects.trains[train_id]
-            maybe_next = self.next_step(train_id)
-            pos = trains[train_id]
+            pos = Position(train=train)
 
-            if not maybe_next:
+            next_pos = self.next_step(train_id)
+
+            if not next_pos:
                 print("No Path")
                 for t in trains_order:
                     self.unreserve(t)
                     self.paths[t] = []
 
-            if not self.valid(train, pos, maybe_next):
+            if not self.valid(train, pos, next_pos):
                 print("Path Invalid")
                 self.paths[train_id] = []
-                maybe_next = self.next_step(train_id)
+                next_pos = self.next_step(train_id)
 
-            if not maybe_next:
-                maybe_next = pos
+            if not next_pos:
+                next_pos = pos
 
-            line_speed = self.pos_to_line_speed(pos, maybe_next)
+            line_speed = self.pos_to_line_speed(pos, next_pos)
             if line_speed[0] == train.line_idx and line_speed[1] == train.speed:
                 continue
             if train.speed == -line_speed[1]:
@@ -270,7 +265,7 @@ class Strategy:
 
     def next_step(self, train_id):
         train = self.objects.trains[train_id]
-        train_pos = Position(train.point, train.line_idx, train.position)
+        train_pos = Position(train=train)
 
         if train_id not in self.paths.keys():
             self.paths[train_id] = []
@@ -314,10 +309,10 @@ class Strategy:
 
     def find_path(self, train_id, target):
         train = self.objects.trains[train_id]
-        source = Position(train.point, train.line_idx, train.position)
+        source = Position(train=train)
 
         invalid_pos = self.get_invalid_posts_pos(train).union(
-                self.get_enemy_trains_fields())
+            self.get_enemy_trains_fields())
         towns = self.get_towns_pos()
         trains_pos = self.get_my_trains_pos(train_id)
         a_star = WCAStar(self.map, towns, trains_pos, self.trains_reservations,

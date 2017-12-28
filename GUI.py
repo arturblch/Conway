@@ -8,6 +8,8 @@ POINT_LABEL_COLOR = (255, 255, 255)
 LINE_COLOR = (101, 67, 33)
 RADIUS = 20
 
+TRAIN_SCALE = (20, 20)
+
 white = (255, 255, 255)
 red = (255, 0, 0)
 green = (0, 255, 0)
@@ -16,7 +18,7 @@ blue = (0, 0, 255)
 blue_2 = (20, 20, 230)
 yelow = (255, 255, 0)
 black = (0, 0, 0)
-grey = (128, 128, 128)
+grey = (50, 50, 50)
 
 player_colors = [red, green_2, blue_2, yelow]
 
@@ -185,14 +187,17 @@ class GUI:
             else:
                 angle = None
 
-            train_surf = pg.Surface((20, 20), pg.SRCALPHA)
+            train_surf = pg.Surface(TRAIN_SCALE, pg.SRCALPHA)
             center = (int(train_surf.get_width() / 2), int(
                 train_surf.get_height() / 2))
             pg.draw.circle(train_surf, color, center, 10)
+
             if angle != None:
-                pg.draw.polygon(train_surf, black, [[0, 0], [20, 10], [0, 20]],
+                pg.draw.polygon(train_surf, black, [[5, 2.34], [20, 10], [5, 17.66]],
                                 0)
                 train_surf = pg.transform.rotate(train_surf, angle)
+            scale = [int(scale * (0.5 + 0.2*train.level)) for scale in TRAIN_SCALE]
+            train_surf = pg.transform.scale(train_surf, scale)
             self.surf.blit(train_surf,
                            (int(self.display_width * x + center[0]),
                             int(self.display_height * y + center[1])))

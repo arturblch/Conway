@@ -48,11 +48,25 @@ class Map:
         return nx.shortest_path_length(
             self.Graph, source=u, target=v, weight='length')
 
+    def distance_to_all_targets(self, source, targets):
+        distance_list = [(self.distance_pos_pos(source, target), target)
+                         for target in targets]
+        distance_list = sorted(distance_list,  key=lambda x: x[0])
+        return distance_list
+
+
     def get_distance_from_line(self, line_idx, pos, point):
         line = self.lines[line_idx]
         return min(
             self.get_distance(line.start_point, point) + pos,
-            self.get_distance(line.end_point, point)+ line.length - pos)
+            self.get_distance(line.end_point, point) + line.length - pos)
+
+    def distance_pos_pos(self, from_pos, to_pos):
+        if from_pos.point != None:
+            return self.get_distance(from_pos.point, to_pos.point)
+        else:
+            return self.get_distance_from_line(from_pos.line, from_pos.pos,
+                                                   to_pos.point)
 
     def get_next_point(self, u, v):
         next_point = nx.shortest_path(self.Graph, source=u, target=v)[1]
@@ -100,10 +114,15 @@ class Map:
 
 
 class Position:
-    def __init__(self, point, line=None, pos=None):
-        self.point = point
-        self.line = line
-        self.pos = pos
+    def __init__(self, point=None, line=None, pos=None, train=None):
+        if train is None:
+            self.point = point
+            self.line = line
+            self.pos = pos
+        else:
+            self.point = train.point
+            self.line = train.line_idx
+            self.pos = train.position
 
     def __eq__(self, other):
         return (self.point != None and self.point == other.point
